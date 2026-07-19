@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Pengumuman extends Model
 {
-    use HasFactory, \Spatie\Activitylog\Traits\LogsActivity;
+    use HasFactory, LogsActivity;
 
     protected $table = 'pengumumans';
 
@@ -17,9 +19,9 @@ class Pengumuman extends Model
         'is_aktif',
     ];
 
-    public function getActivitylogOptions(): \Spatie\Activitylog\LogOptions
+    public function getActivitylogOptions(): LogOptions
     {
-        return \Spatie\Activitylog\LogOptions::defaults()
+        return LogOptions::defaults()
             ->logFillable()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
