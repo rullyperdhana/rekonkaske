@@ -23,6 +23,7 @@ class Pengaturan extends Model
         'nama_kepala', 'nip_kepala', 'pangkat_kepala', 'jabatan_kepala',
         'nama_bendahara', 'nip_bendahara', 'pangkat_bendahara', 'jabatan_bendahara',
         'nama_kasubag', 'nip_kasubag', 'pangkat_kasubag', 'jabatan_kasubag',
+        'is_registration_open',
     ];
 
     public function skpd()

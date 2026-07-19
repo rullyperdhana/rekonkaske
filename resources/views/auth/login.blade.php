@@ -123,6 +123,15 @@
                     </button>
                 </div>
             </form>
+
+            @if($pengaturanGlobal && $pengaturanGlobal->is_registration_open)
+            <div class="mt-4 text-center border-t border-gray-200 pt-4">
+                <p class="text-sm text-gray-600 mb-1">Belum memiliki akun operator SKPD?</p>
+                <a href="{{ route('register') }}" class="text-sm font-bold text-[#00346f] hover:underline">
+                    Daftar Akun Mandiri
+                </a>
+            </div>
+            @endif
         </div>
     </div>
 

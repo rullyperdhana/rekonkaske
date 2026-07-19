@@ -33,4 +33,9 @@ class Skpd extends Model
     {
         return $this->hasOne(Pengaturan::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }

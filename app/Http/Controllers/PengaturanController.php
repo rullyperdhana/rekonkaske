@@ -63,6 +63,10 @@ class PengaturanController extends Controller
         }
         unset($validated['logo_file']);
 
+        if (auth()->user()->role === 'admin') {
+            $validated['is_registration_open'] = $request->has('is_registration_open') ? true : false;
+        }
+
         $pengaturan->update($validated);
 
         return redirect()->route('pengaturan.instansi.edit')->with('success', 'Pengaturan instansi berhasil diperbarui.');
