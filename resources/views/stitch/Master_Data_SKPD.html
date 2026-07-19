@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script><script id="tailwind-config">try{
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb870",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-bright": "#f8f9fb",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-container": "#9bbdff",
+                        "outline": "#737783",
+                        "background": "#f8f9fb",
+                        "surface": "#f8f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "tertiary": "#512d00",
+                        "on-error-container": "#93000a",
+                        "tertiary-container": "#714000",
+                        "primary-container": "#004a99",
+                        "inverse-primary": "#abc7ff",
+                        "outline-variant": "#c2c6d3",
+                        "secondary-container": "#a0f399",
+                        "on-surface": "#191c1e",
+                        "primary-fixed-dim": "#abc7ff",
+                        "surface-container-high": "#e6e8ea",
+                        "on-tertiary-container": "#ffaa4d",
+                        "on-error": "#ffffff",
+                        "inverse-surface": "#2d3133",
+                        "on-secondary-container": "#217128",
+                        "on-primary-fixed-variant": "#00458f",
+                        "surface-variant": "#e0e3e5",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-secondary-fixed-variant": "#005312",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#1b6d24",
+                        "on-background": "#191c1e",
+                        "on-surface-variant": "#424751",
+                        "tertiary-fixed": "#ffdcbe",
+                        "surface-container": "#eceef0",
+                        "on-primary-fixed": "#001b3f",
+                        "surface-tint": "#255dad",
+                        "secondary-fixed": "#a3f69c",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "on-primary": "#ffffff",
+                        "primary-fixed": "#d7e2ff",
+                        "surface-dim": "#d8dadc",
+                        "secondary-fixed-dim": "#88d982",
+                        "error": "#ba1a1a",
+                        "primary": "#00346f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "container-max": "1200px",
+                        "margin-desktop": "48px",
+                        "baseline": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "data-tabular": ["JetBrains Mono"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "data-tabular": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    }catch(_e){}</script><meta charset="utf-8"></head><body class="bg-surface font-body-md text-on-surface antialiased h-screen flex overflow-hidden">
+<!-- SideNavBar -->
+<nav class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container w-64 border-r border-outline-variant dark:border-outline shadow-md dark:shadow-none z-20">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-surface-container-lowest rounded-full flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[24px]">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary-fixed">BAPENDA</h1>
+<p class="text-label-sm font-label-sm text-on-primary/80">Kabupaten Tapin</p>
+</div>
+</div>
+<button class="mt-6 w-full bg-secondary text-on-secondary hover:bg-secondary-fixed-dim transition-colors py-2 px-4 rounded-lg text-label-sm font-label-sm font-semibold flex items-center justify-center gap-2 scale-95 active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                Rekonsiliasi Baru
+            </button>
+</div>
+<div class="flex-1 overflow-y-auto space-y-1">
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<div class="space-y-1">
+    <div class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center gap-3 px-4 py-3 cursor-pointer">
+        <span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">database</span>
+        <span class="text-label-sm font-label-sm font-bold">Master Data</span>
+        <span class="material-symbols-outlined ml-auto text-[18px]">expand_more</span>
+    </div>
+    <div class="ml-6 space-y-1">
+        <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-2 transition-colors duration-200 bg-primary-container/30" href="#">
+            <span class="material-symbols-outlined text-[18px]">corporate_fare</span>
+            <span class="text-label-sm font-label-sm">Master SKPD</span>
+        </a>
+        <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="#">
+            <span class="material-symbols-outlined text-[18px]">account_balance_wallet</span>
+            <span class="text-label-sm font-label-sm">Master Rekening</span>
+        </a>
+    </div>
+</div>
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">swap_horiz</span>
+<span class="text-label-sm font-label-sm">Transaksi</span>
+</a>
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">assessment</span>
+<span class="text-label-sm font-label-sm">Laporan</span>
+</a>
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="text-label-sm font-label-sm">Pengaturan</span>
+</a>
+</div>
+<div class="mt-auto px-2 pt-4 border-t border-on-primary/20 space-y-1">
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="text-label-sm font-label-sm">Bantuan</span>
+</a>
+<a href="#" class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span class="text-label-sm font-label-sm">Logout</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 ml-64 flex flex-col h-screen">
+<!-- TopNavBar (Simulated, as it wasn't requested but provides context for the main-->
+<header class="h-16 px-8 flex justify-between items-center bg-surface-container-lowest dark:bg-surface-dim border-b border-outline-variant dark:border-outline z-10 shrink-0">
+<div>
+<h2 class="text-headline-sm font-headline-sm font-black text-primary dark:text-primary-fixed">Sistem Rekonsiliasi SIPANDA</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 rounded-full hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden border border-outline-variant cursor-pointer hover:opacity-80 transition-opacity">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A small, professional headshot photo of an administrator, clean corporate look, white background, well-lit, soft shadow." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn3y2vT2zIbitEjo_fM1n1inOD9-Xc5JoPgbflbrXocAw1z1X_YNwEkzfl8XWTiAAJqFWEvgpJM8KBIFZoHNHEGvHuT9-AHuNFf9k1MUtH0EFBlGbjqKcXjjDJRHw-E4ZEh4xX01Mdmcb8DV0SqaUyohA06LYKP99zlRgSVqgDci2m_669uyZf_n2rsS5yexIhSSbw-X94AMnKwPJIL3N6Fv28ru7N4KodKop58b3Ety-2BtXxFFSC">
+</div>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-gutter bg-surface">
+<div class="max-w-container-max mx-auto space-y-6">
+<!-- Page Header -->
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b-2 border-primary pb-4">
+<div>
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Master SKPD</h2>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Kelola data Satuan Kerja Perangkat Daerah (SKPD)</p>
+</div>
+<button class="bg-primary hover:bg-primary-fixed-variant text-on-primary px-5 py-2.5 rounded-lg text-label-sm font-label-sm flex items-center gap-2 shadow-sm transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_circle</span>
+                        Tambah SKPD
+                    </button>
+</div>
+<!-- Action Bar & Table Container -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<!-- Toolbar -->
+<div class="p-4 border-b border-outline-variant bg-surface-bright flex justify-between items-center gap-4">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full h-[40px] pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Cari Kode atau Nama SKPD..." type="text">
+</div>
+<div class="flex gap-2">
+<button class="h-[40px] px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2 text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                                Filter
+                            </button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-16">No</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-32 border-l-2 border-outline-variant/30">Kode SKPD</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Nama SKPD</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-40 border-l border-outline-variant/30">Singkatan</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Alamat</th>
+<th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-28 text-center border-l border-outline-variant/30">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface">1</td>
+<td class="py-3 px-4 text-data-tabular font-data-tabular text-on-surface border-l-2 border-outline-variant/10">1.01.01.01</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface font-semibold border-l border-outline-variant/10">DINAS PENDIDIKAN</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">DISDIK</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant truncate max-w-xs border-l border-outline-variant/10">Jl. Jend. Sudirman No. 12, Rantau</td>
+<td class="py-3 px-4 border-l border-outline-variant/10">
+<div class="flex justify-center gap-2">
+<button class="text-primary hover:bg-primary-container/20 p-1.5 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-error hover:bg-error-container/50 p-1.5 rounded transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface">2</td>
+<td class="py-3 px-4 text-data-tabular font-data-tabular text-on-surface border-l-2 border-outline-variant/10">4.01.01.01</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface font-semibold border-l border-outline-variant/10">BADAN PENDAPATAN DAERAH</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">BAPENDA</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant truncate max-w-xs border-l border-outline-variant/10">Kawasan Perkantoran Pemkab Tapin</td>
+<td class="py-3 px-4 border-l border-outline-variant/10">
+<div class="flex justify-center gap-2">
+<button class="text-primary hover:bg-primary-container/20 p-1.5 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-error hover:bg-error-container/50 p-1.5 rounded transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface">3</td>
+<td class="py-3 px-4 text-data-tabular font-data-tabular text-on-surface border-l-2 border-outline-variant/10">1.02.01.01</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface font-semibold border-l border-outline-variant/10">DINAS KESEHATAN</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">DINKES</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant truncate max-w-xs border-l border-outline-variant/10">Jl. Brigjen H. Hasan Basri, Rantau</td>
+<td class="py-3 px-4 border-l border-outline-variant/10">
+<div class="flex justify-center gap-2">
+<button class="text-primary hover:bg-primary-container/20 p-1.5 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-error hover:bg-error-container/50 p-1.5 rounded transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface">4</td>
+<td class="py-3 px-4 text-data-tabular font-data-tabular text-on-surface border-l-2 border-outline-variant/10">1.03.01.01</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface font-semibold border-l border-outline-variant/10">DINAS PEKERJAAN UMUM DAN PENATAAN RUANG</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">PUPR</td>
+<td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant truncate max-w-xs border-l border-outline-variant/10">Jl. A. Yani Km. 2, Rantau</td>
+<td class="py-3 px-4 border-l border-outline-variant/10">
+<div class="flex justify-center gap-2">
+<button class="text-primary hover:bg-primary-container/20 p-1.5 rounded transition-colors" title="Edit">
+<span class="material-symbols-outlined text-[18px]">edit</span>
+</button>
+<button class="text-error hover:bg-error-container/50 p-1.5 rounded transition-colors" title="Hapus">
+<span class="material-symbols-outlined text-[18px]">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination (Static mockup) -->
+<div class="p-4 border-t border-outline-variant bg-surface-container-lowest flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Menampilkan 1-4 dari 45 SKPD</span>
+<div class="flex gap-1">
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-outline hover:bg-surface-container-low transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-primary text-on-primary text-label-sm font-label-sm">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors text-label-sm font-label-sm">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors text-label-sm font-label-sm">3</button>
+<button class="w-8 h-8 flex items-center justify-center rounded border border-outline-variant text-on-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

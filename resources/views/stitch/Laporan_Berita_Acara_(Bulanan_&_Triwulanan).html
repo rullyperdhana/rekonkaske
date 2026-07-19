@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Laporan Berita Acara Rekonsiliasi - BAPENDA</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#004a99",
+                        "surface-container-high": "#e6e8ea",
+                        "secondary-fixed": "#a3f69c",
+                        "error": "#ba1a1a",
+                        "outline": "#737783",
+                        "on-surface": "#191c1e",
+                        "surface-tint": "#255dad",
+                        "on-secondary-container": "#217128",
+                        "on-tertiary-container": "#ffaa4d",
+                        "surface-dim": "#d8dadc",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "on-primary-fixed-variant": "#00458f",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface": "#f8f9fb",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed": "#2c1600",
+                        "on-secondary": "#ffffff",
+                        "secondary": "#1b6d24",
+                        "tertiary": "#512d00",
+                        "background": "#f8f9fb",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#eceef0",
+                        "tertiary-container": "#714000",
+                        "inverse-primary": "#abc7ff",
+                        "primary-fixed-dim": "#abc7ff",
+                        "surface-bright": "#f8f9fb",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#001b3f",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e0e3e5",
+                        "surface-variant": "#e0e3e5",
+                        "inverse-surface": "#2d3133",
+                        "on-error": "#ffffff",
+                        "secondary-container": "#a0f399",
+                        "primary": "#00346f",
+                        "outline-variant": "#c2c6d3",
+                        "on-surface-variant": "#424751",
+                        "secondary-fixed-dim": "#88d982",
+                        "primary-fixed": "#d7e2ff",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#9bbdff",
+                        "on-secondary-fixed-variant": "#005312",
+                        "tertiary-fixed": "#ffdcbe",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#693c00"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    spacing: {
+                        "container-max": "1200px",
+                        "margin-desktop": "48px",
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "baseline": "4px"
+                    },
+                    fontFamily: {
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "data-tabular": ["JetBrains Mono"]
+                    },
+                    fontSize: {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "600" }],
+                        "headline-sm": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "data-tabular": ["14px", { "lineHeight": "20px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<nav class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container shadow-md dark:shadow-none border-r border-outline-variant dark:border-outline docked full-height left-0 w-64 z-20">
+<!-- Brand Header -->
+<div class="px-6 mb-8 flex flex-col gap-2">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">account_balance</span>
+</div>
+<div>
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary dark:text-primary-fixed leading-tight">BAPENDA</h1>
+<p class="text-label-sm font-label-sm text-on-primary/80">Kabupaten Tapin</p>
+</div>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto px-2 space-y-1">
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="text-label-sm font-label-sm">Dashboard</span>
+</a>
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="text-label-sm font-label-sm">Master Data</span>
+</a>
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span class="text-label-sm font-label-sm">Transaksi</span>
+</a>
+<!-- ACTIVE TAB: Laporan -->
+<a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined icon-filled">assessment</span>
+<span class="text-label-sm font-label-sm">Laporan</span>
+</a>
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-label-sm font-label-sm">Pengaturan</span>
+</a>
+</div>
+<!-- CTA & Footer -->
+<div class="px-4 mt-auto space-y-4">
+<button class="w-full bg-secondary text-on-secondary hover:bg-secondary-fixed-dim transition-colors py-3 rounded-lg text-label-sm font-label-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span>
+                Rekonsiliasi Baru
+            </button>
+<div class="space-y-1">
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="text-label-sm font-label-sm">Bantuan</span>
+</a>
+<a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-label-sm font-label-sm">Logout</span>
+</a>
+</div>
+</div>
+</nav>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col ml-64 min-w-0">
+<!-- TopNavBar (Shared Component) -->
+<header class="flex justify-between items-center h-16 px-8 bg-surface-container-lowest dark:bg-surface-dim docked full-width top-0 border-b-2 border-primary dark:border-primary-container flat no shadows z-10 w-full">
+<div class="flex items-center gap-8">
+<div class="text-headline-sm font-headline-sm font-black text-primary dark:text-primary-fixed">
+                    Sistem Rekonsiliasi SIPANDA
+                </div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex gap-6 h-full items-center pt-1">
+<!-- ACTIVE LINK: Berita Acara -->
+<a class="text-primary font-bold border-b-2 border-primary pb-1 text-label-sm font-label-sm Active: opacity-80 transition-opacity" href="#">Berita Acara</a>
+<a class="text-on-surface-variant hover:text-primary text-label-sm font-label-sm hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors py-1 px-2 rounded" href="#">Buku Kas</a>
+<a class="text-on-surface-variant hover:text-primary text-label-sm font-label-sm hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors py-1 px-2 rounded" href="#">Rekening Koran</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-primary hover:bg-surface-container-low p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined">search</span>
+</button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="border border-outline hover:bg-surface-container-low text-primary px-4 py-2 rounded text-label-sm font-label-sm transition-colors flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">calendar_month</span>Filter Periode</button>
+<button class="bg-primary hover:bg-primary-container hover:text-on-primary-container text-on-primary px-4 py-2 rounded text-label-sm font-label-sm transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                    Export PDF
+                </button>
+<div class="h-6 w-px bg-outline-variant mx-2"></div>
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Page Content Canvas -->
+<main class="flex-1 p-margin-desktop overflow-y-auto w-full"><div class="max-w-[1000px] mx-auto w-full mb-6"><div class="flex border-b border-outline-variant"><button class="px-6 py-3 text-label-sm font-bold text-primary border-b-2 border-primary bg-surface-container-low transition-colors">Bulanan</button><button class="px-6 py-3 text-label-sm font-medium text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors">Triwulanan</button></div></div>
+<div class="max-w-[1000px] mx-auto w-full">
+<!-- Document Toolbar -->
+<div class="flex justify-end gap-3 mb-6">
+<button class="border border-outline-variant hover:bg-surface-container-low text-on-surface px-4 py-2 rounded-DEFAULT text-label-sm font-label-sm transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                        Cetak Berita Acara
+                    </button>
+<button class="bg-primary hover:bg-primary-container hover:text-on-primary-container text-on-primary px-4 py-2 rounded-DEFAULT text-label-sm font-label-sm transition-colors flex items-center gap-2 shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Download PDF
+                    </button>
+</div>
+<!-- Document "Paper" Container -->
+<article class="bg-surface-container-lowest border border-outline-variant shadow-sm rounded-DEFAULT p-10 lg:p-14 mb-10 w-full text-on-surface">
+<!-- KOP Surat (Formal Header) -->
+<div class="flex items-center gap-6 border-b-[3px] border-primary pb-4 mb-8">
+<div class="w-24 h-24 shrink-0 flex items-center justify-center">
+<img class="object-contain h-full w-full" data-alt="Official government logo of Kabupaten Tapin, featuring a shield with a star, paddy, and cotton, primarily green and yellow colors, high resolution, isolated on white." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGQglX4a91lGBKJ3x84BjayBzB86CFjav3SqOK5oE63MWbYO2Qcazq0aldyUiq4O4QUHgyHX3dIYsy_YZxQrgNA3gnZu-9IDh5PBQyqlamviMO9EYFfXzj-ZmB1cLlx2nTyOGUzDWwaUmkCW2sxkgnhAFG2520U_AyWNIov7XjxkjfYKcEDsZudVlfdUva_l58gAIdKZlkfCSf_qyyKiJjlMlPtKy6VdEbjqUDxlo92seLSowz38NN"/>
+</div>
+<div class="flex-1 text-center">
+<h2 class="text-headline-md font-headline-md font-bold uppercase leading-tight tracking-wide text-on-surface">PEMERINTAH KABUPATEN TAPIN</h2>
+<h1 class="text-headline-lg font-headline-lg font-black uppercase leading-tight tracking-wide text-primary">BADAN PENDAPATAN DAERAH</h1>
+<p class="text-body-md font-body-md text-on-surface-variant mt-1">Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru</p>
+<p class="text-body-md font-body-md text-on-surface-variant">RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173</p>
+<p class="text-body-md font-body-md text-on-surface-variant">Kode Pos 71114 Email: bapenda@tapinkab.go.id</p>
+<h3 class="text-headline-sm font-headline-sm font-bold uppercase mt-1 tracking-[0.2em] text-on-surface">RANTAU</h3>
+</div>
+</div>
+<!-- Document Title -->
+<div class="text-center mb-8">
+<h2 class="text-headline-md font-headline-md font-bold uppercase underline underline-offset-4 decoration-2">BERITA ACARA REKONSILIASI PERIODE</h2>
+<h3 class="text-headline-sm font-headline-sm font-bold mt-2">Bulan : APRIL 2026 / Triwulan : I (Januari - Maret) 2026</h3>
+</div>
+<!-- Introductory Text -->
+<div class="text-body-lg font-body-lg text-justify space-y-4 mb-8 leading-relaxed">
+<p class="indent-10">Pada hari ini Senin Tanggal Sebelas Bulan Mei Tahun 2026, telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran untuk periode yang berakhir pada tanggal 30 April 2026 pada Badan Pendapatan Daerah Kabupaten Tapin.</p>
+<p class="indent-10">
+                            Dengan mencocokkan BKU Bendahara Pengeluaran per 30 April 2026 pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per 30 April 2026 dengan hasil sebagai berikut :
+                        </p>
+</div>
+<!-- Financial Table (High Density) -->
+<div class="border border-outline-variant mb-8 overflow-hidden rounded-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="py-3 px-4 font-headline-sm text-headline-sm text-center border-r-[2px] border-outline-variant font-bold text-primary" colspan="2">BKU Bendahara Pengeluaran</th>
+<th class="py-3 px-4 font-headline-sm text-headline-sm text-center font-bold text-primary" colspan="2">Rekening Koran Bank Kalsel</th>
+</tr>
+</thead>
+<tbody class="text-body-md">
+<!-- Saldo Awal -->
+<tr class="border-b border-outline-variant/50">
+<td class="py-2 px-4 font-semibold">Saldo Kas Awal</td>
+<td class="py-2 px-4 text-right font-data-tabular font-bold border-r-[2px] border-outline-variant">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>345.450.000,00</span></div>
+</td>
+<td class="py-2 px-4 font-semibold">Saldo Kas Awal</td>
+<td class="py-2 px-4 text-right font-data-tabular font-bold">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>345.450.000,00</span></div>
+</td>
+</tr>
+<!-- Ditambah -->
+<tr>
+<td class="py-2 px-4">Ditambah:</td>
+<td class="py-2 px-4 border-r-[2px] border-outline-variant"></td>
+<td class="py-2 px-4">Ditambah:</td>
+<td class="py-2 px-4"></td>
+</tr>
+<tr>
+<td class="py-1 px-4 pl-8">Penerimaan</td>
+<td class="py-1 px-4 text-right font-data-tabular border-r-[2px] border-outline-variant">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>1.343.107.351,00</span></div>
+</td>
+<td class="py-1 px-4 pl-8">Penerimaan</td>
+<td class="py-1 px-4 text-right font-data-tabular">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>-</span></div>
+</td>
+</tr>
+<!-- Dikurang -->
+<tr>
+<td class="py-2 px-4 mt-2">Dikurang:</td>
+<td class="py-2 px-4 border-r-[2px] border-outline-variant"></td>
+<td class="py-2 px-4 mt-2">Dikurang:</td>
+<td class="py-2 px-4"></td>
+</tr>
+<tr class="border-b border-outline-variant">
+<td class="py-1 px-4 pl-8 pb-4">Pengeluaran</td>
+<td class="py-1 px-4 pb-4 text-right font-data-tabular border-r-[2px] border-outline-variant">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>1.674.793.185,00</span></div>
+</td>
+<td class="py-1 px-4 pl-8 pb-4">Pengeluaran</td>
+<td class="py-1 px-4 pb-4 text-right font-data-tabular">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>331.685.834,00</span></div>
+</td>
+</tr>
+<!-- Saldo Akhir -->
+<tr class="bg-surface-container-low font-bold">
+<td class="py-3 px-4">Saldo Akhir Kas</td>
+<td class="py-3 px-4 text-right font-data-tabular border-r-[2px] border-outline-variant border-b-2 border-outline">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>13.764.166,00</span></div>
+</td>
+<td class="py-3 px-4">Saldo Akhir Kas</td>
+<td class="py-3 px-4 text-right font-data-tabular border-b-2 border-outline">
+<div class="flex justify-between w-full"><span class="text-outline">Rp</span><span>13.764.166,00</span></div>
+</td>
+</tr>
+<!-- Selisih -->
+<tr class="bg-error-container/20 text-on-surface font-bold">
+<td class="py-3 px-4 text-center border-r-[2px] border-outline-variant border-b border-outline-variant italic" colspan="2">Selisih</td>
+<td class="py-3 px-4 text-right font-data-tabular border-b border-outline-variant" colspan="2">
+<div class="flex justify-center w-full gap-4 text-error"><span>Rp</span><span>-</span></div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Penjelasan -->
+<div class="mb-12">
+<h4 class="text-body-lg font-bold mb-2">Penjelasan :</h4>
+<p class="text-body-md font-body-md leading-relaxed text-justify">
+                            Perbedaan transaksi atas Bukti Pengeluaran No. ...... pada aplikasi SIPANDA yang dilakukan tanggal ....., sedang pemindahbukuan di Bank dilakukan tanggal ....
+                        </p>
+</div>
+<!-- Lampiran Note -->
+<div class="mb-12 text-label-sm text-on-surface-variant font-medium">
+                        ** Rincian terlampir
+                    </div>
+<!-- Signatures Section -->
+<div class="grid grid-cols-2 gap-8 mb-16">
+<div class="text-center">
+<p class="mb-1 text-body-md font-body-md"> </p>
+<p class="mb-24 text-body-md font-body-md">Bendahara Pengeluaran</p>
+<!-- Signature visual placeholder -->
+<div class="relative flex justify-center items-center h-24 -mt-20 mb-4 opacity-70">
+<span class="material-symbols-outlined text-[64px] text-outline rotate-12">draw</span>
+</div>
+<p class="font-bold underline underline-offset-2">MAKHROJI KHAIRI, A.Md</p>
+<p class="text-body-md font-body-md">NIP. 19841126 201903 1 004</p>
+</div>
+<div class="text-center">
+<p class="mb-1 text-body-md font-body-md">Rantau, 11 Mei 2026</p>
+<p class="mb-24 text-body-md font-body-md">Mengetahui,<br/>Plt. Kasubag Keuangan</p>
+<!-- Signature visual placeholder -->
+<div class="relative flex justify-center items-center h-24 -mt-20 mb-4 opacity-70">
+<span class="material-symbols-outlined text-[80px] text-outline -rotate-6">gesture</span>
+</div>
+<p class="font-bold underline underline-offset-2 uppercase">Adinda Ayudhia Miranda, S.Tr.IP</p>
+<p class="text-body-md font-body-md">NIP. 20000307 202208 2 001</p>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<!-- Lampiran List -->
+<div class="text-body-md font-body-md">
+<p class="font-bold italic mb-1">Lampiran :</p>
+<ol class="list-decimal list-inside italic text-on-surface-variant">
+<li>Buku Kas Pengeluaran</li>
+<li>Buku Pembantu Bank</li>
+<li>Rekening Koran Bank</li>
+</ol>
+</div>
+<!-- Final Signature -->
+<div class="text-center w-1/3">
+<p class="mb-1 text-body-md font-body-md font-bold">Disetujui Oleh,</p>
+<p class="mb-20 text-body-md font-body-md">Kepala BAPENDA Kabupaten Tapin</p>
+<!-- Stamp & Signature visual placeholder -->
+<div class="relative flex justify-center items-center h-24 -mt-16 mb-2">
+<div class="absolute w-24 h-24 rounded-full border-[3px] border-primary opacity-30 flex items-center justify-center -rotate-12">
+<span class="text-[10px] font-bold text-primary uppercase text-center leading-none">Pemerintah<br/>Kabupaten<br/>Tapin</span>
+</div>
+<span class="material-symbols-outlined text-[72px] text-outline-variant z-10 rotate-3">history_edu</span>
+</div>
+<p class="font-bold underline underline-offset-2">DR. H. ZAINAL AQLI, S.T. M.T</p>
+<p class="text-body-md font-body-md">NIP. 19690214 199403 1 011</p>
+</div>
+</div>
+</article>
+</div>
+</main>
+</div>
+</body></html>

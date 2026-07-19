@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login SiReKe - BAPENDA Kabupaten Tapin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#004a99",
+                    "tertiary-container": "#714000",
+                    "outline": "#737783",
+                    "on-background": "#191c1e",
+                    "on-primary-container": "#9bbdff",
+                    "secondary": "#1b6d24",
+                    "on-tertiary-fixed": "#2c1600",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#88d982",
+                    "background": "#f8f9fb",
+                    "on-secondary-fixed": "#002204",
+                    "on-tertiary-container": "#ffaa4d",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "tertiary-fixed": "#ffdcbe",
+                    "on-primary-fixed-variant": "#00458f",
+                    "on-primary-fixed": "#001b3f",
+                    "tertiary": "#512d00",
+                    "secondary-container": "#a0f399",
+                    "on-surface": "#191c1e",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9fb",
+                    "on-surface-variant": "#424751",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-high": "#e6e8ea",
+                    "primary": "#00346f",
+                    "primary-fixed-dim": "#abc7ff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#005312",
+                    "secondary-fixed": "#a3f69c",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#217128",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#d7e2ff",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "outline-variant": "#c2c6d3",
+                    "inverse-primary": "#abc7ff",
+                    "surface-tint": "#255dad",
+                    "surface-bright": "#f8f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "48px",
+                    "baseline": "4px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "data-tabular": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #f8f9fb;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .paper-container {
+            border: 1px solid #D1D5DB;
+            background-color: #ffffff;
+        }
+        /* Mobile-first specific height to ensure centered content on all devices */
+        .min-h-screen-safe {
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background flex flex-col items-center justify-center min-h-screen p-margin-mobile">
+<!-- Background Decorative Element -->
+<div class="fixed inset-0 -z-10 overflow-hidden">
+<div class="absolute top-[-10%] right-[-10%] w-[300px] h-[300px] rounded-full bg-primary/5 blur-3xl"></div>
+<div class="absolute bottom-[-5%] left-[-5%] w-[250px] h-[250px] rounded-full bg-secondary/5 blur-3xl"></div>
+</div>
+<!-- Main Login Canvas -->
+<main class="w-full max-w-[400px] flex flex-col items-center">
+<!-- Header Branding (Institutional Style) -->
+<header class="mb-10 text-center flex flex-col items-center">
+<div class="mb-6 float-animation">
+<!-- Kabupaten Tapin Logo Placeholder -->
+<img class="w-24 h-24 object-contain" data-alt="A high-quality, professional logo of Kabupaten Tapin with golden and green official heraldry details, presented against a clean white background. The logo reflects government authority and local heritage, with sharp lines and crisp colors. The overall aesthetic is institutional and trustworthy, perfectly fitting a modern light-mode government portal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCZsjFlwXFphe8S-F5CrFM6XpRJkPBh4hhQeEHNAntEsNMzhKasWjpGwcQE1LRyr9NPgOl_X3Ea9Rdo4AnTp_DhTtlx-6M2siePCJ45Z6-wh6FybQT1iRQrEDA9nMmuLQejDK4ct3TVQWf5YYhVLFSxgEJfJ9XK9-KFzn557j2iWDQysQIuyxRKYQKdrDjilSByBTdcrYMBPbA4tOmfnr1BCSMAIfgANhZyZuIaPzLbbGEqWcmw4A0g"/>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-primary tracking-tight mb-1">
+                SiReKe
+            </h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant tracking-[0.2em] uppercase">
+                Sistem Rekonsiliasi SIPANDA
+            </p>
+<div class="w-16 h-1 mt-4 bg-primary rounded-full"></div>
+</header>
+<!-- Login Form Container (Paper Surface) -->
+<div class="w-full paper-container rounded-xl shadow-sm px-8 py-10">
+<div class="mb-8">
+<h2 class="font-headline-sm text-headline-sm text-on-surface mb-1 text-center">Selamat Datang</h2>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">Silakan masuk ke akun BAPENDA Anda</p>
+</div>
+<form class="space-y-6" onsubmit="event.preventDefault();">
+<!-- NIP / User Input -->
+<div class="space-y-2">
+<label class="font-body-md font-bold text-on-surface" for="username">NIP atau Username</label>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">
+                            person
+                        </span>
+<input class="w-full h-[48px] pl-11 pr-4 bg-surface-container-low border border-outline-variant rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="username" name="username" placeholder="Masukkan NIP Anda" type="text"/>
+</div>
+</div>
+<!-- Password Input -->
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="font-body-md font-bold text-on-surface" for="password">Password</label>
+</div>
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">
+                            lock
+                        </span>
+<input class="w-full h-[48px] pl-11 pr-11 bg-surface-container-low border border-outline-variant rounded-lg font-body-md focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all" id="password" name="password" placeholder="••••••••" type="password"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors" type="button">
+<span class="material-symbols-outlined" id="togglePassword">visibility</span>
+</button>
+</div>
+</div>
+<!-- Remember Me & Forgot Password -->
+<div class="flex items-center justify-between py-1">
+<label class="flex items-center gap-2 cursor-pointer group">
+<input class="w-4 h-4 rounded border-outline-variant text-primary focus:ring-primary/20 transition-all" type="checkbox"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant group-hover:text-on-surface">Ingat Saya</span>
+</label>
+<a class="font-label-sm text-label-sm text-primary font-bold hover:underline" href="#">Lupa Sandi?</a>
+</div>
+<!-- Action Button -->
+<button class="w-full h-[48px] bg-primary text-on-primary font-headline-sm text-[16px] rounded-lg shadow-md hover:bg-primary-container active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="submit">
+<span>Masuk Aplikasi</span>
+<span class="material-symbols-outlined text-[20px]">login</span>
+</button>
+</form>
+</div>
+<!-- Footer / Support -->
+<footer class="mt-12 text-center">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">
+                © 2024 BAPENDA Kabupaten Tapin. <br/> Seluruh Hak Cipta Dilindungi.
+            </p>
+<div class="flex items-center justify-center gap-6">
+<a class="flex items-center gap-1.5 font-label-sm text-label-sm text-outline hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+                    Bantuan
+                </a>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<a class="flex items-center gap-1.5 font-label-sm text-label-sm text-outline hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">security</span>
+                    Kebijakan Privasi
+                </a>
+</div>
+</footer>
+</main>
+<script>
+        // Simple Interaction Logic
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? 'visibility' : 'visibility_off';
+        });
+
+        // Form submission feedback
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const btn = this.querySelector('button[type="submit"]');
+            const originalContent = btn.innerHTML;
+            
+            btn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Menghubungkan...
+            `;
+            btn.disabled = true;
+            btn.classList.add('opacity-80', 'cursor-not-allowed');
+
+            setTimeout(() => {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                alert('Informasi Login: Versi Mobile SiReKe telah siap. Silakan integrasikan backend Anda.');
+            }, 1500);
+        });
+    </script>
+</body></html>

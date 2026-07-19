@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Master Data SKPD - BAPENDA Kabupaten Tapin</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-container": "#004a99",
+                        "tertiary-container": "#714000",
+                        "outline": "#737783",
+                        "on-background": "#191c1e",
+                        "on-primary-container": "#9bbdff",
+                        "secondary": "#1b6d24",
+                        "on-tertiary-fixed": "#2c1600",
+                        "inverse-surface": "#2d3133",
+                        "surface-container-highest": "#e0e3e5",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "background": "#f8f9fb",
+                        "on-secondary-fixed": "#002204",
+                        "on-tertiary-container": "#ffaa4d",
+                        "on-error": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb870",
+                        "tertiary-fixed": "#ffdcbe",
+                        "on-primary-fixed-variant": "#00458f",
+                        "on-primary-fixed": "#001b3f",
+                        "tertiary": "#512d00",
+                        "secondary-container": "#a0f399",
+                        "on-surface": "#191c1e",
+                        "on-error-container": "#93000a",
+                        "surface": "#f8f9fb",
+                        "on-surface-variant": "#424751",
+                        "inverse-on-surface": "#eff1f3",
+                        "surface-container-high": "#e6e8ea",
+                        "primary": "#00346f",
+                        "primary-fixed-dim": "#abc7ff",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-fixed": "#a3f69c",
+                        "surface-container-low": "#f2f4f6",
+                        "error-container": "#ffdad6",
+                        "on-secondary-container": "#217128",
+                        "surface-container": "#eceef0",
+                        "primary-fixed": "#d7e2ff",
+                        "on-tertiary-fixed-variant": "#693c00",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d8dadc",
+                        "outline-variant": "#c2c6d3",
+                        "inverse-primary": "#abc7ff",
+                        "surface-tint": "#255dad",
+                        "surface-bright": "#f8f9fb",
+                        "surface-variant": "#e0e3e5",
+                        "surface-container-lowest": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "data-tabular": ["JetBrains Mono"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .tab-active {
+            border-bottom: 2px solid #00346f;
+        }
+        .glass-header {
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.8);
+        }
+        .safe-area-bottom {
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24">
+<!-- Mobile Header -->
+<header class="fixed top-0 left-0 right-0 z-40 bg-surface-container-lowest border-b-2 border-primary">
+<div class="flex items-center justify-between h-16 px-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm leading-tight text-primary">Master Data</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">SKPD - Kabupaten Tapin</p>
+</div>
+</div>
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Search & Filter Bar -->
+<div class="pt-20 px-4">
+<div class="mt-4 flex flex-col gap-4">
+<div class="relative group">
+<span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-outline" data-icon="search">search</span>
+<input class="w-full h-12 pl-12 pr-4 bg-surface-container-low border-none rounded-xl focus:ring-2 focus:ring-primary text-body-md placeholder:text-outline transition-all" placeholder="Cari Nama SKPD atau Kode..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-full text-label-sm whitespace-nowrap shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="all_inclusive">all_inclusive</span>
+                    Semua SKPD
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="corporate_fare">corporate_fare</span>
+                    Dinas
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="account_balance">account_balance</span>
+                    Badan
+                </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-surface-container-high text-on-surface-variant rounded-full text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="location_city">location_city</span>
+                    Kecamatan
+                </button>
+</div>
+</div>
+</div>
+<!-- SKPD List -->
+<main class="mt-4 px-4 flex flex-col gap-4">
+<!-- List Item 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300" id="skpd-1">
+<div class="p-4 flex items-center justify-between cursor-pointer" onclick="toggleCard('skpd-1')">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+<span class="material-symbols-outlined text-2xl" data-icon="payments">payments</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-[16px] text-primary">BAPENDA</h3>
+<p class="text-label-sm font-label-sm text-outline">Kode: 5.02.0.00.0.00.01.00</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline transition-transform duration-300" data-icon="expand_more" id="arrow-skpd-1">expand_more</span>
+</div>
+</div>
+<div class="hidden px-4 pb-4 border-t border-outline-variant bg-surface-container-low/30" id="detail-skpd-1">
+<div class="pt-4 grid grid-cols-1 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Lengkap</span>
+<span class="text-body-md font-medium">Badan Pendapatan Daerah</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Kepala SKPD</span>
+<span class="text-body-md font-medium">H. Zainal Abidin, S.Sos., M.AP</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">NIP Kepala</span>
+<span class="text-body-md font-data-tabular">19740522 199403 1 004</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Telepon</span>
+<span class="text-body-md font-data-tabular">(0517) 31057</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Alamat</span>
+<span class="text-body-md">Jl. Brigjend H. Hasan Basry No. 45, Rantau</span>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-error text-error rounded-lg text-label-sm font-bold hover:bg-error-container/10 transition-colors">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+                        Hapus
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                        Edit Data
+                    </button>
+</div>
+</div>
+</div>
+<!-- List Item 2 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300" id="skpd-2">
+<div class="p-4 flex items-center justify-between cursor-pointer" onclick="toggleCard('skpd-2')">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-secondary-fixed flex items-center justify-center text-on-secondary-fixed">
+<span class="material-symbols-outlined text-2xl" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-[16px] text-primary">DINAS KESEHATAN</h3>
+<p class="text-label-sm font-label-sm text-outline">Kode: 1.02.0.00.0.00.01.00</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline transition-transform duration-300" data-icon="expand_more" id="arrow-skpd-2">expand_more</span>
+</div>
+</div>
+<div class="hidden px-4 pb-4 border-t border-outline-variant bg-surface-container-low/30" id="detail-skpd-2">
+<div class="pt-4 grid grid-cols-1 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Lengkap</span>
+<span class="text-body-md font-medium">Dinas Kesehatan Kabupaten Tapin</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Kepala SKPD</span>
+<span class="text-body-md font-medium">Dr. H. Alfian Yusuf</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">NIP Kepala</span>
+<span class="text-body-md font-data-tabular">19820112 201001 1 008</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Telepon</span>
+<span class="text-body-md font-data-tabular">(0517) 31201</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Alamat</span>
+<span class="text-body-md">Jl. Jend. Sudirman No. 12, Rantau</span>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-error text-error rounded-lg text-label-sm font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+                        Hapus
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                        Edit Data
+                    </button>
+</div>
+</div>
+</div>
+<!-- List Item 3 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden transition-all duration-300" id="skpd-3">
+<div class="p-4 flex items-center justify-between cursor-pointer" onclick="toggleCard('skpd-3')">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
+<span class="material-symbols-outlined text-2xl" data-icon="school">school</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-[16px] text-primary">DINAS PENDIDIKAN</h3>
+<p class="text-label-sm font-label-sm text-outline">Kode: 1.01.0.00.0.00.01.00</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline transition-transform duration-300" data-icon="expand_more" id="arrow-skpd-3">expand_more</span>
+</div>
+</div>
+<div class="hidden px-4 pb-4 border-t border-outline-variant bg-surface-container-low/30" id="detail-skpd-3">
+<div class="pt-4 grid grid-cols-1 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Lengkap</span>
+<span class="text-body-md font-medium">Dinas Pendidikan Kabupaten Tapin</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Nama Kepala SKPD</span>
+<span class="text-body-md font-medium">Hj. Erani, S.Pd., MM</span>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">NIP Kepala</span>
+<span class="text-body-md font-data-tabular">19701005 199201 2 001</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Telepon</span>
+<span class="text-body-md font-data-tabular">(0517) 31442</span>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-outline">Alamat</span>
+<span class="text-body-md">Jl. Jati No. 8, Kawasan Perkantoran, Rantau</span>
+</div>
+</div>
+<div class="mt-6 flex items-center justify-end gap-3">
+<button class="flex items-center gap-2 px-4 py-2 border border-error text-error rounded-lg text-label-sm font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="delete">delete</span>
+                        Hapus
+                    </button>
+<button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-sm font-bold">
+<span class="material-symbols-outlined text-[18px]" data-icon="edit">edit</span>
+                        Edit Data
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for Adding New SKPD -->
+<button class="fixed right-6 bottom-24 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg flex items-center justify-center hover:bg-primary-container active:scale-90 transition-all z-50">
+<span class="material-symbols-outlined text-3xl" data-icon="add">add</span>
+</button>
+<!-- Bottom Navigation Bar (Context: Top Level Ecosystem) -->
+<nav class="fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest flex items-center justify-around px-2 z-40 safe-area-bottom">
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="dashboard">dashboard</span>
+<span class="text-label-sm font-label-sm mt-1">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-secondary-container bg-secondary-container rounded-xl transition-all">
+<span class="material-symbols-outlined text-2xl" data-icon="database" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="text-label-sm font-label-sm mt-1">Master Data</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="swap_horiz">swap_horiz</span>
+<span class="text-label-sm font-label-sm mt-1">Transaksi</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="assessment">assessment</span>
+<span class="text-label-sm font-label-sm mt-1">Laporan</span>
+</button>
+<button class="flex flex-col items-center justify-center w-full h-full text-on-surface-variant/70 hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="settings">settings</span>
+<span class="text-label-sm font-label-sm mt-1">Pengaturan</span>
+</button>
+</nav>
+<script>
+        function toggleCard(id) {
+            const detail = document.getElementById('detail-' + id);
+            const arrow = document.getElementById('arrow-' + id);
+            const card = document.getElementById(id);
+            
+            if (detail.classList.contains('hidden')) {
+                // Expand
+                detail.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+                card.classList.add('shadow-md', 'scale-[1.02]', 'z-10');
+            } else {
+                // Collapse
+                detail.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+                card.classList.remove('shadow-md', 'scale-[1.02]', 'z-10');
+            }
+        }
+
+        // Search Input Micro-interaction
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.01]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.01]');
+        });
+    </script>
+</body></html>

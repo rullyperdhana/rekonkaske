@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lupa Sandi - SiReKe</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-fixed": "#d7e2ff",
+                    "on-error-container": "#93000a",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#255dad",
+                    "on-primary": "#ffffff",
+                    "primary": "#00346f",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e0e3e5",
+                    "surface-container-low": "#f2f4f6",
+                    "secondary": "#1b6d24",
+                    "surface-bright": "#f8f9fb",
+                    "inverse-surface": "#2d3133",
+                    "on-tertiary": "#ffffff",
+                    "surface-container-high": "#e6e8ea",
+                    "secondary-container": "#a0f399",
+                    "on-secondary-container": "#217128",
+                    "on-tertiary-container": "#ffaa4d",
+                    "background": "#f8f9fb",
+                    "outline-variant": "#c2c6d3",
+                    "surface-container": "#eceef0",
+                    "on-primary-container": "#9bbdff",
+                    "tertiary-fixed": "#ffdcbe",
+                    "outline": "#737783",
+                    "on-surface-variant": "#424751",
+                    "surface-dim": "#d8dadc",
+                    "surface": "#f8f9fb",
+                    "secondary-fixed-dim": "#88d982",
+                    "inverse-on-surface": "#eff1f3",
+                    "on-secondary-fixed-variant": "#005312",
+                    "on-secondary": "#ffffff",
+                    "tertiary": "#512d00",
+                    "inverse-primary": "#abc7ff",
+                    "tertiary-container": "#714000",
+                    "on-surface": "#191c1e",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "on-primary-fixed-variant": "#00458f",
+                    "on-error": "#ffffff",
+                    "on-primary-fixed": "#001b3f",
+                    "surface-variant": "#e0e3e5",
+                    "primary-container": "#004a99",
+                    "error-container": "#ffdad6",
+                    "on-secondary-fixed": "#002204",
+                    "primary-fixed-dim": "#abc7ff",
+                    "on-background": "#191c1e",
+                    "secondary-fixed": "#a3f69c",
+                    "on-tertiary-fixed": "#2c1600"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "baseline": "4px",
+                    "container-max": "1200px",
+                    "margin-desktop": "48px",
+                    "margin-mobile": "16px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "data-tabular": ["JetBrains Mono"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .paper-shadow {
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .bapenda-gradient {
+            background: linear-gradient(135deg, #00346f 0%, #004a99 100%);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen flex items-center justify-center p-4">
+<!-- Main Container: Centered Card following Professional BAPENDA style -->
+<main class="max-w-[1200px] w-full grid grid-cols-1 lg:grid-cols-2 bg-surface-container-lowest border border-outline-variant overflow-hidden paper-shadow rounded-lg min-h-[600px]">
+<!-- Left Section: Visual Branding & Information (Split Layout) -->
+<section class="hidden lg:flex flex-col justify-between p-margin-desktop bapenda-gradient relative text-white">
+<div class="absolute inset-0 opacity-10">
+
+</div>
+<div class="relative z-10">
+<div class="flex items-center gap-3 mb-12">
+<div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-md">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-headline-sm tracking-tight leading-none">BAPENDA</h1>
+<p class="font-label-sm text-label-sm opacity-80">Provinsi DKI Jakarta</p>
+</div>
+</div>
+<h2 class="font-headline-lg text-headline-lg mb-4">SiReKe</h2>
+<p class="font-body-lg text-body-lg max-w-md opacity-90">
+                    Sistem Rekonsiliasi Kas yang aman dan terpercaya untuk pengelolaan data keuangan daerah yang presisi.
+                </p>
+</div>
+<div class="relative z-10">
+<div class="flex gap-4 items-center">
+<span class="material-symbols-outlined text-secondary-fixed" data-icon="security" style="font-variation-settings: 'FILL' 1;">security</span>
+<p class="font-label-sm text-label-sm">Enkripsi Data Standar Pemerintah</p>
+</div>
+<div class="mt-8 border-t border-white/20 pt-4">
+<p class="font-label-sm text-label-sm text-white/60 italic">© 2024 Badan Pendapatan Daerah. All rights reserved.</p>
+</div>
+</div>
+</section>
+<!-- Right Section: Forgot Password Form -->
+<section class="flex flex-col justify-center p-8 lg:p-margin-desktop bg-surface">
+<div class="max-w-md mx-auto w-full">
+<!-- Mobile Branding (Only visible on small screens) -->
+<div class="lg:hidden flex items-center gap-3 mb-12">
+<span class="material-symbols-outlined text-primary text-4xl" data-icon="account_balance">account_balance</span>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-primary">SiReKe</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">BAPENDA Console</p>
+</div>
+</div>
+<header class="mb-10">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Lupa Sandi?</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                        Jangan khawatir. Masukkan kredensial Anda di bawah ini dan kami akan mengirimkan instruksi untuk mengatur ulang kata sandi Anda.
+                    </p>
+</header>
+<form class="space-y-6" id="forgotPasswordForm">
+<!-- Input Field: NIP or Email -->
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface mb-2" for="identifier">Masukkan NIP atau Email</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="person">person</span>
+<input class="w-full h-12 pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg focus:ring-2 focus:ring-primary focus:border-primary transition-all font-body-md text-on-surface outline-none" id="identifier" name="identifier" placeholder="Contoh: 19850101... atau admin@jakarta.go.id" required="" type="text"/>
+</div>
+<p class="mt-2 font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+                            Gunakan email dinas yang terdaftar di sistem.
+                        </p>
+</div>
+<!-- Primary Action -->
+<button class="w-full h-12 bg-primary text-on-primary font-label-sm text-label-sm rounded-lg hover:bg-primary-container hover:shadow-md active:opacity-80 transition-all flex items-center justify-center gap-2 group" type="submit">
+<span>Kirim Instruksi Pemulihan</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="send">send</span>
+</button>
+</form>
+<!-- Footer Actions -->
+<div class="mt-10 pt-8 border-t border-outline-variant flex flex-col items-center gap-4">
+<a class="flex items-center gap-2 text-primary font-label-sm text-label-sm hover:underline transition-all" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="arrow_back">arrow_back</span>
+                        Kembali ke Halaman Login
+                    </a>
+<div class="mt-4 flex gap-4 text-outline">
+<div class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors cursor-pointer" title="Bantuan Teknis">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="support_agent">support_agent</span>
+</div>
+<div class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-surface-container transition-colors cursor-pointer" title="FAQ">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="quiz">quiz</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Success Message (Hidden by Default) -->
+<div class="fixed inset-0 bg-surface/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4" id="successOverlay">
+<div class="bg-surface-container-lowest border border-outline-variant p-8 max-w-sm w-full text-center rounded-xl paper-shadow">
+<div class="w-16 h-16 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mx-auto mb-6">
+<span class="material-symbols-outlined text-4xl" data-icon="mark_email_read" style="font-variation-settings: 'FILL' 1;">mark_email_read</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">Instruksi Terkirim</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                Silakan periksa kotak masuk email Anda untuk instruksi pengaturan ulang kata sandi.
+            </p>
+<button class="w-full py-3 border border-primary text-primary font-label-sm text-label-sm rounded-lg hover:bg-surface-container transition-all" onclick="toggleSuccess(false)">
+                Tutup
+            </button>
+</div>
+</div>
+<script>
+        // Form submission handling
+        document.getElementById('forgotPasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+            
+            // Show loading state
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin" data-icon="progress_activity">progress_activity</span>';
+            
+            // Simulate API call
+            setTimeout(() => {
+                toggleSuccess(true);
+                btn.disabled = false;
+                btn.innerHTML = originalContent;
+            }, 1500);
+        });
+
+        function toggleSuccess(show) {
+            const overlay = document.getElementById('successOverlay');
+            if (show) {
+                overlay.classList.remove('hidden');
+                overlay.classList.add('flex');
+            } else {
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+            }
+        }
+    </script>
+</body></html>

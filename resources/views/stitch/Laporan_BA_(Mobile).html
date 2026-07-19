@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Laporan Berita Acara - SIPANDA</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary-container": "#004a99",
+                    "tertiary-container": "#714000",
+                    "outline": "#737783",
+                    "on-background": "#191c1e",
+                    "on-primary-container": "#9bbdff",
+                    "secondary": "#1b6d24",
+                    "on-tertiary-fixed": "#2c1600",
+                    "inverse-surface": "#2d3133",
+                    "surface-container-highest": "#e0e3e5",
+                    "on-primary": "#ffffff",
+                    "secondary-fixed-dim": "#88d982",
+                    "background": "#f8f9fb",
+                    "on-secondary-fixed": "#002204",
+                    "on-tertiary-container": "#ffaa4d",
+                    "on-error": "#ffffff",
+                    "tertiary-fixed-dim": "#ffb870",
+                    "tertiary-fixed": "#ffdcbe",
+                    "on-primary-fixed-variant": "#00458f",
+                    "on-primary-fixed": "#001b3f",
+                    "tertiary": "#512d00",
+                    "secondary-container": "#a0f399",
+                    "on-surface": "#191c1e",
+                    "on-error-container": "#93000a",
+                    "surface": "#f8f9fb",
+                    "on-surface-variant": "#424751",
+                    "inverse-on-surface": "#eff1f3",
+                    "surface-container-high": "#e6e8ea",
+                    "primary": "#00346f",
+                    "primary-fixed-dim": "#abc7ff",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "on-secondary-fixed-variant": "#005312",
+                    "secondary-fixed": "#a3f69c",
+                    "surface-container-low": "#f2f4f6",
+                    "error-container": "#ffdad6",
+                    "on-secondary-container": "#217128",
+                    "surface-container": "#eceef0",
+                    "primary-fixed": "#d7e2ff",
+                    "on-tertiary-fixed-variant": "#693c00",
+                    "on-secondary": "#ffffff",
+                    "surface-dim": "#d8dadc",
+                    "outline-variant": "#c2c6d3",
+                    "inverse-primary": "#abc7ff",
+                    "surface-tint": "#255dad",
+                    "surface-bright": "#f8f9fb",
+                    "surface-variant": "#e0e3e5",
+                    "surface-container-lowest": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "margin-desktop": "48px",
+                    "baseline": "4px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "container-max": "1200px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "data-tabular": ["JetBrains Mono"],
+                    "headline-sm": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "data-tabular": ["14px", {"lineHeight": "20px", "fontWeight": "500"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-sm-mobile": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+                    "body-md-mobile": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            font-variation-settings: 'FILL' 1;
+        }
+        /* Custom Document Texture */
+        .paper-shadow {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+        }
+        /* Hide scrollbar for clean mobile look */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Top AppBar (Mobile Style) -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between h-16 px-4">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-sm-mobile text-headline-sm-mobile text-primary tracking-tight">Berita Acara</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Laporan Rekonsiliasi</p>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="mt-16 pb-24 px-4 pt-4 max-w-md mx-auto">
+<!-- Selection Section: Bento Style Filter -->
+<section class="grid grid-cols-2 gap-3 mb-6">
+<div class="col-span-2 p-4 bg-white border border-outline-variant rounded-xl paper-shadow">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Pilih SKPD / Organisasi</label>
+<div class="relative">
+<select class="w-full h-12 bg-surface-container-low border-none rounded-lg font-body-md px-4 text-on-surface focus:ring-2 focus:ring-primary appearance-none">
+<option>Dinas Pekerjaan Umum</option>
+<option>Dinas Pendidikan</option>
+<option>Sekretariat Daerah</option>
+<option>BAPENDA Kab. Tapin</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">expand_more</span>
+</div>
+</div>
+<div class="p-4 bg-white border border-outline-variant rounded-xl paper-shadow">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Periode</label>
+<div class="relative">
+<select class="w-full h-12 bg-surface-container-low border-none rounded-lg font-body-md px-4 text-on-surface focus:ring-2 focus:ring-primary appearance-none">
+<option>Bulanan</option>
+<option>Triwulan</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">calendar_month</span>
+</div>
+</div>
+<div class="p-4 bg-white border border-outline-variant rounded-xl paper-shadow">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Bulan/Triwulan</label>
+<div class="relative">
+<select class="w-full h-12 bg-surface-container-low border-none rounded-lg font-body-md px-4 text-on-surface focus:ring-2 focus:ring-primary appearance-none">
+<option>Januari</option>
+<option>Februari</option>
+<option>Triwulan I</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">event_note</span>
+</div>
+</div>
+</section>
+<!-- Summary Preview: Document Style -->
+<section class="bg-white rounded-xl border border-outline-variant overflow-hidden paper-shadow mb-6">
+<!-- Institutional Header -->
+<div class="p-6 border-b-[3px] border-primary flex flex-col items-center text-center">
+<div class="w-16 h-16 mb-3">
+<img class="w-full h-full object-contain" data-alt="A professional government seal or logo for BAPENDA Kabupaten Tapin, featuring Indonesian heraldic elements in high-resolution vector style, set against a clean white background. The logo reflects authority and administrative stability, with sharp lines and traditional colors like gold and dark blue." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjkhuImotOZ1OiNfMKd8PM1IhCu0ulQLar0ybrBkoGgXSeRid-ik18yF2vCmKCRTjyCCZnxVf5-RMtc4Z9ZyDtwEW_PFDsvzheZOfZr5jTDIpvZuWjhNZsrmnayKyuUcAgj058gX0m33C0EXENMSsxhvcuJ_Kh5dqYyQX4MscC76lpgE6Vp6CLBp2cWG_BrEmBfASvOfPmZKEg1MCzhguSpcfYWfbHK7N8jQ2Ft7YjoIJcp3SZTe_b"/>
+</div>
+<h2 class="font-bold text-[14px] uppercase leading-tight text-on-surface">PEMERINTAH KABUPATEN TAPIN</h2>
+<h3 class="font-bold text-[13px] uppercase leading-tight text-on-surface">BADAN PENDAPATAN DAERAH</h3>
+<p class="font-body-md text-[10px] text-on-surface-variant mt-1 italic">Jl. Brigjend H. Hasan Basry No. 1, Rantau</p>
+</div>
+<!-- Report Title -->
+<div class="p-6">
+<div class="text-center mb-6">
+<h4 class="font-bold text-body-lg uppercase underline decoration-2 underline-offset-4">BERITA ACARA REKONSILIASI</h4>
+<p class="font-body-md text-label-sm mt-1">Nomor: 900/042/BA-REKON/BAPENDA/2024</p>
+</div>
+<p class="font-body-md-mobile text-body-md-mobile leading-relaxed text-justify mb-4">
+                    Pada hari ini <strong>Selasa</strong> tanggal <strong>Dua Puluh</strong> bulan <strong>Februari</strong> tahun <strong>Dua Ribu Dua Puluh Empat</strong>, kami yang bertanda tangan di bawah ini telah melakukan rekonsiliasi data pendapatan:
+                </p>
+<!-- Data Summary Grid -->
+<div class="space-y-3 mb-6">
+<div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Saldo SIPANDA</span>
+<span class="font-data-tabular text-data-tabular text-primary font-bold">Rp 1.250.450.000</span>
+</div>
+<div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Saldo Rekening Koran</span>
+<span class="font-data-tabular text-data-tabular text-primary font-bold">Rp 1.250.450.000</span>
+</div>
+<div class="flex justify-between items-center p-3 bg-secondary-container/20 rounded-lg border border-secondary/20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-sm">check_circle</span>
+<span class="font-label-sm text-label-sm text-secondary">Selisih (Discrepancy)</span>
+</div>
+<span class="font-data-tabular text-data-tabular text-secondary font-bold">Rp 0</span>
+</div>
+</div>
+<div class="flex justify-center">
+<div class="px-3 py-1 bg-secondary-container text-on-secondary-container rounded-full flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm">STATUS: MATCHED</span>
+</div>
+</div>
+</div>
+<!-- Footer Action Visual -->
+<div class="bg-surface-container-high/30 p-4 border-t border-outline-variant">
+<div class="flex items-center justify-between opacity-50">
+<div class="text-[10px]">
+<p class="font-bold">Kepala BAPENDA</p>
+<div class="h-8"></div>
+<p>( ........................... )</p>
+</div>
+<div class="text-[10px] text-right">
+<p class="font-bold">Bendahara SKPD</p>
+<div class="h-8"></div>
+<p>( ........................... )</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Main Actions -->
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 bg-primary text-on-primary h-14 rounded-xl font-headline-sm-mobile text-headline-sm-mobile shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+<span>Export PDF</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-surface-container-highest text-primary h-14 rounded-xl font-headline-sm-mobile text-headline-sm-mobile border border-outline-variant active:scale-95 transition-transform">
+<span class="material-symbols-outlined">share</span>
+<span>Bagikan</span>
+</button>
+</div>
+<!-- History/List Section (Recent) -->
+<div class="mt-8">
+<div class="flex items-center justify-between mb-4">
+<h4 class="font-headline-sm-mobile text-headline-sm-mobile text-on-surface">Laporan Terkini</h4>
+<button class="text-primary font-label-sm text-label-sm">Lihat Semua</button>
+</div>
+<div class="space-y-3">
+<!-- Item 1 -->
+<div class="flex items-center gap-4 p-4 bg-white border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-primary-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">description</span>
+</div>
+<div class="flex-1">
+<h5 class="font-bold text-body-md text-on-surface">BA Januari 2024</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Dinas Perhubungan • 15 Jan</p>
+</div>
+<span class="material-symbols-outlined text-outline">chevron_right</span>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center gap-4 p-4 bg-white border border-outline-variant rounded-xl hover:bg-surface-container-low transition-colors cursor-pointer">
+<div class="w-12 h-12 rounded-lg bg-error-container/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="flex-1">
+<h5 class="font-bold text-body-md text-on-surface">BA Desember 2023</h5>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Dinas Sosial • 28 Des</p>
+</div>
+<div class="px-2 py-1 bg-error-container text-on-error-container text-[10px] font-bold rounded">SELISIH</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest border-t border-outline-variant h-20 px-6 flex items-center justify-between">
+<button class="flex flex-col items-center gap-1 text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-sm text-label-sm">Beranda</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-sm text-label-sm">Master</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">swap_horiz</span>
+<span class="font-label-sm text-label-sm">Transaksi</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-primary transition-colors">
+<span class="material-symbols-outlined active-tab">assessment</span>
+<span class="font-label-sm text-label-sm font-bold">Laporan</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-sm text-label-sm">Profil</span>
+</button>
+</nav>
+<!-- FAB Suppression: Not rendered on reports detail screen as per instructions -->
+<script>
+        // Micro-interaction for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('touchstart', function() {
+                this.classList.add('opacity-80');
+            });
+            btn.addEventListener('touchend', function() {
+                this.classList.remove('opacity-80');
+            });
+        });
+
+        // Simple selection logic simulation
+        const selectors = document.querySelectorAll('select');
+        selectors.forEach(select => {
+            select.addEventListener('change', () => {
+                // Potential to trigger a "loading" state or refresh summary
+                console.log('Filter changed:', select.value);
+            });
+        });
+    </script>
+</body></html>
