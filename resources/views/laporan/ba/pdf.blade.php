@@ -285,7 +285,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="ttd-cell" style="padding-top: 20px;">
+            <td colspan="2" class="ttd-cell" style="padding-top: 20px; text-align: center;">
                 {{ $kotaFallback }}, {{ $tglSumber->locale('id')->isoFormat('D MMMM YYYY') }}<br>
                 <span class="font-bold">Mengetahui,</span><br>
                 <span class="font-bold">{{ $pengaturan->jabatan_kepala ?? 'Pengguna Anggaran / Kuasa Pengguna Anggaran' }}</span>
@@ -296,6 +296,19 @@
             </td>
         </tr>
     </table>
+    
+    @if($transaksi->status_verifikasi === 'verified')
+    <div style="margin-top: 20px; text-align: left; display: table;">
+        <div style="display: table-cell; vertical-align: middle; padding-right: 15px;">
+            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(80)->margin(0)->generate(route('ba.pdf', $transaksi->id))) !!}" alt="QR Code">
+        </div>
+        <div style="display: table-cell; vertical-align: middle; font-size: 10px; line-height: 1.2;">
+            <b>Dokumen Sah</b><br>
+            Dicetak secara elektronik dari sistem<br>
+            <i>sireke.cloud</i>
+        </div>
+    </div>
+    @endif
 
     <!-- Footer Lampiran -->
     <div style="margin-top: 20px;">
