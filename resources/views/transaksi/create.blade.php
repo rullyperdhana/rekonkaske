@@ -1,4 +1,6 @@
 <x-app-layout>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <div class="max-w-[1200px] mx-auto">
         <!-- Page Header -->
         <div class="mb-8 flex items-center gap-4">
@@ -360,9 +362,16 @@
             }
 
             if (skpdSelect && skpdSelect.tagName === 'SELECT') {
-                skpdSelect.addEventListener('change', () => {
-                    filterRekenings();
-                    fetchSaldoAwal();
+                new TomSelect(skpdSelect, {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    },
+                    onChange: function() {
+                        filterRekenings();
+                        fetchSaldoAwal();
+                    }
                 });
             }
             if (rekeningSelect) rekeningSelect.addEventListener('change', fetchSaldoAwal);
