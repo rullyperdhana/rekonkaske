@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('master/skpd', SkpdController::class);
         Route::resource('master/tahun', \App\Http\Controllers\TahunAnggaranController::class)->except(['create', 'show', 'edit']);
         Route::resource('pengaturan/user', UserController::class);
+        Route::resource('pengaturan/pengumuman', \App\Http\Controllers\PengumumanController::class);
         Route::get('pengaturan/log', [\App\Http\Controllers\LogController::class, 'index'])->name('log.index');
         
         // Maintenance System

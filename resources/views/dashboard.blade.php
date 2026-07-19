@@ -1,4 +1,21 @@
 <x-app-layout>
+    @if(isset($pengumumans) && $pengumumans->count() > 0)
+        <div class="mb-8 space-y-4">
+            @foreach($pengumumans as $pengumuman)
+                <div class="p-5 bg-primary-container/20 text-on-surface rounded-xl border-l-4 border-primary shadow-sm flex items-start gap-4 relative overflow-hidden group transition-all hover:bg-primary-container/30">
+                    <div class="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
+                        <span class="material-symbols-outlined text-[28px]">campaign</span>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-title-md mb-1">{{ $pengumuman->judul }}</h3>
+                        <p class="text-body-md text-on-surface-variant whitespace-pre-line leading-relaxed">{{ $pengumuman->isi }}</p>
+                        <span class="text-label-sm font-label-sm text-on-surface-variant/70 mt-3 inline-block">Diumumkan pada {{ $pengumuman->created_at->format('d M Y') }}</span>
+                    </div>
+                    <div class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+            @endforeach
+        </div>
+    @endif
     <div class="mb-8">
         <h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">Tinjauan Rekonsiliasi</h2>
         @if($latestTransaksi)

@@ -93,6 +93,9 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('dashboard', compact('latestTransaksi', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated'));
+        // 7. Pengumuman Aktif
+        $pengumumans = \App\Models\Pengumuman::where('is_aktif', true)->orderBy('created_at', 'desc')->get();
+
+        return view('dashboard', compact('latestTransaksi', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans'));
     }
 }

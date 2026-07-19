@@ -108,8 +108,12 @@
                 @if(auth()->user()->role === 'admin')
                 <li>
                     <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('log.index') }}">
-                        <span class="material-symbols-outlined text-[16px]">history</span>
-                        <span class="text-label-sm font-label-sm">Log Aktivitas</span>
+                        <span class="text-label-sm font-label-sm">Jejak Audit</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengumuman.index') }}">
+                        <span class="text-label-sm font-label-sm">Pengumuman</span>
                     </a>
                 </li>
                 @endif
