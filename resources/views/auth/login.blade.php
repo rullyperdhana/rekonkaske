@@ -164,9 +164,11 @@
                     </div>
                     <select class="block w-full pl-10 pr-10 py-2.5 h-[40px] border border-outline-variant rounded-lg bg-surface-bright text-on-surface focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200 outline-none font-body-md text-body-md appearance-none" 
                         id="tahun_login" name="tahun_login" required>
-                        @foreach($tahunAnggarans as $ta)
+                        @forelse($tahunAnggarans as $ta)
                             <option value="{{ $ta->tahun }}" {{ date('Y') == $ta->tahun ? 'selected' : '' }}>{{ $ta->tahun }}</option>
-                        @endforeach
+                        @empty
+                            <option value="{{ date('Y') }}">{{ date('Y') }} (Default)</option>
+                        @endforelse
                     </select>
                     <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                         <span class="material-symbols-outlined text-outline">expand_more</span>
