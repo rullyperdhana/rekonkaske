@@ -41,8 +41,8 @@
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-16">No</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-32 border-l-2 border-outline-variant/30">Kode SKPD</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Nama SKPD</th>
-                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-40 border-l border-outline-variant/30">Singkatan</th>
-                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Alamat</th>
+                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-40 border-l border-outline-variant/30">Nama Bendahara (Opsional)</th>
+                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Status</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-28 text-center border-l border-outline-variant/30">Aksi</th>
                     </tr>
                     </thead>
