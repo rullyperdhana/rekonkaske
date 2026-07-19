@@ -72,6 +72,11 @@ class TransaksiController extends Controller
             });
         }
 
+        // Filter by Month
+        if ($request->has('bulan') && $request->bulan != '') {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
         $transaksis = $query->paginate(10);
         return view('transaksi.index', compact('transaksis'));
     }
