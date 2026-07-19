@@ -43,8 +43,24 @@
             <!-- KOP Surat (Formal Header) -->
             <div class="flex items-center gap-6 border-b-[3px] border-black pb-4 mb-8">
                 <div class="w-24 h-24 shrink-0 flex items-center justify-center">
-                    @php $globalLogo = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null; @endphp
-                    <img class="object-contain h-full w-full" data-alt="Official government logo" src="{{ $globalLogo ?? 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGQglX4a91lGBKJ3x84BjayBzB86CFjav3SqOK5oE63MWbYO2Qcazq0aldyUiq4O4QUHgyHX3dIYsy_YZxQrgNA3gnZu-9IDh5PBQyqlamviMO9EYFfXzj-ZmB1cLlx2nTyOGUzDWwaUmkCW2sxkgnhAFG2520U_AyWNIov7XjxkjfYKcEDsZudVlfdUva_l58gAIdKZlkfCSf_qyyKiJjlMlPtKy6VdEbjqUDxlo92seLSowz38NN' }}"/>
+                    @php 
+                        $globalLogo = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null;
+                        if ($globalLogo && str_starts_with($globalLogo, 'logos/')) {
+                            $logoUrl = asset('storage/' . $globalLogo);
+                        } elseif ($globalLogo && filter_var($globalLogo, FILTER_VALIDATE_URL)) {
+                            $logoUrl = $globalLogo;
+                        } else {
+                            $logoUrl = null;
+                        }
+                    @endphp
+                    @if($logoUrl)
+                        <img class="object-contain h-full w-full" data-alt="Logo" src="{{ $logoUrl }}"/>
+                    @else
+                        <!-- No logo placeholder -->
+                        <div class="w-full h-full flex items-center justify-center border border-dashed border-gray-300 rounded text-gray-400 text-xs text-center p-2">
+                            Belum ada Logo (Atur di Pengaturan Instansi)
+                        </div>
+                    @endif
                 </div>
                 <div class="flex-1 text-center text-black">
                     @php

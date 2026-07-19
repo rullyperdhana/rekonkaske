@@ -97,12 +97,24 @@
         $lines = explode('|', $pengaturan->isi_kop ?? 'PEMERINTAH KABUPATEN TAPIN|BADAN KEUANGAN DAN ASET DAERAH|Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru|RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173');
         
         $logoSrc = \App\Models\Pengaturan::whereNull('skpd_id')->first()->logo ?? null;
-        if(!$logoSrc) {
-            $logoSrc = 'https://lh3.googleusercontent.com/aida-public/AB6AXuAGQglX4a91lGBKJ3x84BjayBzB86CFjav3SqOK5oE63MWbYO2Qcazq0aldyUiq4O4QUHgyHX3dIYsy_YZxQrgNA3gnZu-9IDh5PBQyqlamviMO9EYFfXzj-ZmB1cLlx2nTyOGUzDWwaUmkCW2sxkgnhAFG2520U_AyWNIov7XjxkjfYKcEDsZudVlfdUva_l58gAIdKZlkfCSf_qyyKiJjlMlPtKy6VdEbjqUDxlo92seLSowz38NN';
-        } else {
-            if(str_starts_with($logoSrc, 'logos/')) {
-                $logoSrc = storage_path('app/public/' . $logoSrc);
+        $base64Logo = null;
+        
+        if($logoSrc && str_starts_with($logoSrc, 'logos/')) {
+            $path = storage_path('app/public/' . $logoSrc);
+            if (file_exists($path)) {
+                $type = pathinfo($path, PATHINFO_EXTENSION);
+                $data = file_get_contents($path);
+                $base64Logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
             }
+        } elseif ($logoSrc && filter_var($logoSrc, FILTER_VALIDATE_URL)) {
+            // If it's a URL (like from old config)
+            try {
+                $data = @file_get_contents($logoSrc);
+                if ($data) {
+                    $type = 'png';
+                    $base64Logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
+                }
+            } catch (\Exception $e) {}
         }
     @endphp
 
@@ -110,7 +122,9 @@
     <table class="kop-table" cellpadding="0" cellspacing="0">
         <tr>
             <td class="kop-logo">
-                <img src="{{ $logoSrc }}" alt="Logo">
+                @if($base64Logo)
+                    <img src="{{ $base64Logo }}" alt="Logo">
+                @endif
             </td>
             <td class="kop-text">
                 @foreach($lines as $index => $line)
