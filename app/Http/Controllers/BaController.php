@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $query = Transaksi::with(['skpd', 'rekening'])->orderBy('created_at', 'desc');
         
@@ -20,6 +20,24 @@ class BaController extends Controller
 
         if (Auth::user()->skpd_id) {
             $query->where('skpd_id', Auth::user()->skpd_id);
+        }
+
+        // Search Filter
+        if ($request->has('search') && $request->search != '') {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('skpd', function($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%");
+                })->orWhereHas('rekening', function($q) use ($search) {
+                    $q->where('nomor_rekening', 'like', "%{$search}%")
+                      ->orWhere('nama_bank', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter by Month
+        if ($request->has('bulan') && $request->bulan != '') {
+            $query->where('periode_bulan', $request->bulan);
         }
 
         $transaksis = $query->paginate(10);

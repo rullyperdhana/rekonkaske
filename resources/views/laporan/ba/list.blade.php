@@ -8,6 +8,36 @@
             </div>
         </div>
         
+        <!-- Filters -->
+        <form action="{{ route('ba.index') }}" method="GET" class="bg-surface p-4 rounded border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+                <label class="block font-body-md font-bold text-on-surface mb-1">Cari SKPD / Rekening</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik nama SKPD atau rekening..." class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+            </div>
+            <div class="w-full sm:w-48">
+                <label class="block font-body-md font-bold text-on-surface mb-1">Bulan</label>
+                <select name="bulan" class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+                    <option value="">Semua Bulan</option>
+                    @for($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
+                            {{ date('F', mktime(0, 0, 0, $i, 10)) }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
+            <div class="flex items-end gap-2">
+                <button type="submit" class="h-10 px-4 border border-outline-variant rounded bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-sm text-label-sm flex items-center space-x-2">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                    <span>Cari</span>
+                </button>
+                @if(request('search') || request('bulan'))
+                <a href="{{ route('ba.index') }}" class="h-10 px-4 border border-outline-variant rounded bg-surface hover:bg-surface-container-low transition-colors font-label-sm text-label-sm flex items-center space-x-2 text-on-surface-variant">
+                    <span>Reset</span>
+                </a>
+                @endif
+            </div>
+        </form>
+        
         <!-- Table Data -->
         <div class="bg-surface rounded border border-outline-variant shadow-sm overflow-hidden">
             <div class="overflow-x-auto">
