@@ -26,6 +26,11 @@ Route::middleware('auth')->group(function () {
         Route::resource('master/tahun', \App\Http\Controllers\TahunAnggaranController::class)->except(['create', 'show', 'edit']);
         Route::resource('pengaturan/user', UserController::class);
         Route::get('pengaturan/log', [\App\Http\Controllers\LogController::class, 'index'])->name('log.index');
+        
+        // Maintenance System
+        Route::get('pengaturan/maintenance', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('pengaturan.maintenance.index');
+        Route::post('pengaturan/maintenance/backup', [\App\Http\Controllers\MaintenanceController::class, 'backup'])->name('pengaturan.maintenance.backup');
+        Route::delete('pengaturan/maintenance/reset', [\App\Http\Controllers\MaintenanceController::class, 'reset'])->name('pengaturan.maintenance.reset');
     });
     
     // Master Data (All Users)

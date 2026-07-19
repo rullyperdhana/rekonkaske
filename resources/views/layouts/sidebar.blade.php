@@ -89,6 +89,11 @@
                         <span class="text-label-sm font-label-sm">Pengaturan Pengguna</span>
                     </a>
                 </li>
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengaturan.maintenance.index') }}">
+                        <span class="text-label-sm font-label-sm text-error/90 hover:text-error">Maintenance Sistem</span>
+                    </a>
+                </li>
                 @endif
                 <li>
                     <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengaturan.instansi.edit') }}">
