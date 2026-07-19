@@ -4,8 +4,9 @@ SiReKe adalah platform terpadu untuk rekonsiliasi kas Bendahara Pengeluaran ting
 
 ## Fitur Utama
 - **Dashboard & Landing Page:** Menampilkan rekapitulasi status rekonsiliasi seluruh SKPD secara *real-time*.
+- **Pendaftaran Akun Mandiri:** Operator SKPD dapat mendaftarkan akunnya secara mandiri. Fitur ini menggunakan sistem buka/tutup oleh Admin Pusat dan setiap pendaftar baru membutuhkan verifikasi (Aktivasi Akun) oleh Admin. Dibatasi 1 Operator per SKPD.
 - **Manajemen Transaksi Rekon:** Input data saldo, mutasi kas, dan rekon pajak dengan mudah. Terintegrasi dengan bukti setor/lampiran.
-- **Cetak Berita Acara (BA):** Fitur cetak BA ke format PDF standar ukuran kertas F4 (Folio) secara otomatis.
+- **Cetak Berita Acara (BA):** Fitur cetak BA ke format PDF standar ukuran kertas F4 (Folio) secara otomatis, dilengkapi dengan **QR Code** untuk validasi keaslian dokumen cetak.
 - **Master Data Lengkap:** Pengaturan SKPD, Rekening Koran, Tahun Anggaran, hingga Pengaturan Instansi (Kop Surat & Logo).
 - **Keamanan Lanjut:** Terlindungi oleh sistem Rate Limiting, Audit Trail (Catatan Log Aktivitas IP & User Agent), Auto-Logout, Captcha, dan Kebijakan Password Kuat.
 
