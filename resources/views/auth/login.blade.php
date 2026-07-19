@@ -3,13 +3,13 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Login - SiReKe (Sistem Rekonsiliasi Kas)</title>
+    <title>Login - SiReKa (Sistem Rekonsiliasi Kas)</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #00346f; /* Original SiReKe blue style */
+            background-color: #00346f; /* Original SiReKa blue style */
             margin: 0;
             padding: 0;
             overflow-x: hidden;
@@ -62,7 +62,7 @@
                         </div>
                     @endif
                 </div>
-                <h2 class="text-2xl font-bold text-gray-800 tracking-wide">SiReKe</h2>
+                <h2 class="text-2xl font-bold text-gray-800 tracking-wide">SiReKa</h2>
                 <h6 class="text-sm text-gray-500 italic mb-2">Sistem Rekonsiliasi Kas</h6>
                 <h2 class="text-lg font-bold text-gray-800">Pemerintah Kabupaten Tapin</h2>
             </div>

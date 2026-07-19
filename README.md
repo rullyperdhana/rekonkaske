@@ -1,6 +1,6 @@
-# SiReKe (Sistem Rekonsiliasi Kas)
+# SiReKa (Sistem Rekonsiliasi Kas)
 
-SiReKe adalah platform terpadu untuk rekonsiliasi kas Bendahara Pengeluaran tingkat Satuan Kerja Perangkat Daerah (SKPD) di Kabupaten Tapin. Aplikasi ini menyediakan tingkat presisi dan keamanan tinggi dalam pengelolaan data keuangan daerah, serta mempermudah pencetakan Berita Acara Rekonsiliasi bulanan.
+SiReKa adalah platform terpadu untuk rekonsiliasi kas Bendahara Pengeluaran tingkat Satuan Kerja Perangkat Daerah (SKPD) di Kabupaten Tapin. Aplikasi ini menyediakan tingkat presisi dan keamanan tinggi dalam pengelolaan data keuangan daerah, serta mempermudah pencetakan Berita Acara Rekonsiliasi bulanan.
 
 ## Fitur Utama
 - **Dashboard & Landing Page:** Menampilkan rekapitulasi status rekonsiliasi seluruh SKPD secara *real-time*.
