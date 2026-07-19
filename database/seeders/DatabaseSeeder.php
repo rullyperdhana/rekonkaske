@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::create([
             'name' => 'Administrator BKAD',
             'username' => 'admin',
             'email' => 'admin@bkad.tapinkab.go.id',
