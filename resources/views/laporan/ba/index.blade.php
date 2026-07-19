@@ -241,7 +241,7 @@
                 <div>
                     @if($transaksi->status_verifikasi === 'verified')
                     <div class="flex items-center gap-4 border border-dashed border-gray-300 p-2 rounded-lg bg-gray-50/50 print:border-none print:p-0 print:bg-transparent">
-                        <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(80)->margin(0)->generate(route('ba.pdf', $transaksi->id))) !!}" alt="QR Code" class="w-16 h-16">
+                        <img src="data:image/png;base64, {!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(80)->margin(0)->generate(route('ba.pdf', $transaksi->id))) !!}" alt="QR Code" class="w-16 h-16">
                         <div class="text-[10px] leading-snug text-left">
                             <span class="font-bold text-gray-800 print:text-black">Dokumen Sah</span><br>
                             <span class="text-gray-600 print:text-black">Dicetak secara elektronik dari sistem</span><br>

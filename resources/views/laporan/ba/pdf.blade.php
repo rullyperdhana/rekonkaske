@@ -300,7 +300,7 @@
     @if($transaksi->status_verifikasi === 'verified')
     <div style="margin-top: 20px; text-align: left; display: table;">
         <div style="display: table-cell; vertical-align: middle; padding-right: 15px;">
-            <img src="data:image/png;base64, {!! base64_encode(QrCode::format('png')->size(80)->margin(0)->generate(route('ba.pdf', $transaksi->id))) !!}" alt="QR Code">
+            <img src="data:image/png;base64, {!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(80)->margin(0)->generate(route('ba.pdf', $transaksi->id))) !!}" alt="QR Code">
         </div>
         <div style="display: table-cell; vertical-align: middle; font-size: 10px; line-height: 1.2;">
             <b>Dokumen Sah</b><br>
