@@ -16,7 +16,8 @@ class LandingController extends Controller
         $pengaturan = Pengaturan::whereNull('skpd_id')->first();
 
         $skpdRekonStatus = [];
-        $allSkpds = Skpd::where('status', true)->orderBy('nama')->get();
+        $skpdsPaginated = Skpd::where('status', true)->orderBy('nama')->paginate(10);
+        $allSkpds = $skpdsPaginated->items();
         foreach ($allSkpds as $skpd) {
             $bulanRekon = Transaksi::where('skpd_id', $skpd->id)
                 ->where('periode_tahun', $tahunAktif)
@@ -33,6 +34,6 @@ class LandingController extends Controller
             ];
         }
 
-        return view('landing', compact('skpdRekonStatus', 'tahunAktif', 'pengaturan'));
+        return view('landing', compact('skpdRekonStatus', 'tahunAktif', 'pengaturan', 'skpdsPaginated'));
     }
 }

@@ -75,7 +75,8 @@ class DashboardController extends Controller
         if ($user->skpd_id) {
             $skpdQuery->where('id', $user->skpd_id);
         }
-        $allSkpds = $skpdQuery->orderBy('nama')->get();
+        $skpdsPaginated = $skpdQuery->orderBy('nama')->paginate(10);
+        $allSkpds = $skpdsPaginated->items();
         foreach ($allSkpds as $skpd) {
             $bulanRekon = Transaksi::where('skpd_id', $skpd->id)
                 ->where('periode_tahun', $tahunAktif)
@@ -92,6 +93,6 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('dashboard', compact('latestTransaksi', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus'));
+        return view('dashboard', compact('latestTransaksi', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated'));
     }
 }

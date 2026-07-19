@@ -138,6 +138,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="mt-4">
+            {{ $skpdsPaginated->links() }}
+        </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">

@@ -170,6 +170,10 @@
                 </table>
             </div>
         </div>
+        
+        <div class="mt-4">
+            {{ $skpdsPaginated->links() }}
+        </div>
     </main>
 
     <footer class="bg-surface-container-low py-6 mt-auto">
