@@ -8,9 +8,15 @@ use App\Models\Skpd;
 
 class SkpdController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $skpds = Skpd::orderBy('kode')->paginate(10);
+        $query = Skpd::query();
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('kode', 'like', "%{$search}%")
+                  ->orWhere('nama', 'like', "%{$search}%");
+        }
+        $skpds = $query->orderBy('kode')->paginate(10)->withQueryString();
         return view('master.skpd.index', compact('skpds'));
     }
 

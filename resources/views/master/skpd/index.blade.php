@@ -14,19 +14,24 @@
         
         <!-- Action Bar & Table Container -->
         <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
-            <!-- Toolbar -->
-            <div class="p-4 border-b border-outline-variant bg-surface-bright flex justify-between items-center gap-4">
+            <form action="{{ route('skpd.index') }}" method="GET" class="p-4 border-b border-outline-variant bg-surface-bright flex flex-col sm:flex-row justify-between items-center gap-4">
                 <div class="relative w-full max-w-md">
                     <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
-                    <input class="w-full h-[40px] pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Cari Kode atau Nama SKPD..." type="text">
+                    <input name="search" value="{{ request('search') }}" class="w-full h-[40px] pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-body-md font-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Cari Kode atau Nama SKPD..." type="text">
                 </div>
                 <div class="flex gap-2">
-                    <button class="h-[40px] px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2 text-label-sm font-label-sm">
-                        <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                        Filter
+                    <button type="submit" class="h-[40px] px-4 rounded-lg border border-outline-variant bg-primary text-on-primary hover:bg-primary/90 transition-colors flex items-center gap-2 text-label-sm font-label-sm">
+                        <span class="material-symbols-outlined text-[18px]">search</span>
+                        Cari
                     </button>
+                    @if(request('search'))
+                    <a href="{{ route('skpd.index') }}" class="h-[40px] px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-low transition-colors flex items-center gap-2 text-label-sm font-label-sm">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                        Reset
+                    </a>
+                    @endif
                 </div>
-            </div>
+            </form>
             
             <!-- Table -->
             <div class="overflow-x-auto">
