@@ -63,12 +63,11 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'skpd_id' => $request->skpd_id,
             'role' => 'operator',
+            'status' => 0,
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with('status', 'Pendaftaran berhasil! Akun Anda sedang menunggu persetujuan Admin Pusat untuk diaktifkan.');
     }
 }

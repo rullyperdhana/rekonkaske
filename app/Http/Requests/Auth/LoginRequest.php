@@ -55,6 +55,13 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (Auth::user()->status != 1) {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda belum diaktifkan oleh Admin Pusat. Silakan hubungi admin untuk aktivasi.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
