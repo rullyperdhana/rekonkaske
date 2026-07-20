@@ -78,6 +78,46 @@ class MaintenanceController extends Controller
         }
     }
 
+    public function restore(Request $request)
+    {
+        $request->validate([
+            'backup_file' => 'required|file',
+        ]);
+
+        try {
+            $file = $request->file('backup_file');
+            $driver = DB::connection()->getDriverName();
+
+            if ($driver === 'sqlite') {
+                // Pastikan file yang diupload adalah sqlite
+                if ($file->getClientOriginalExtension() !== 'sqlite') {
+                    return back()->with('error', 'File backup harus berakhiran .sqlite untuk database SQLite.');
+                }
+                
+                $dbPath = DB::connection()->getDatabaseName();
+                // Hapus koneksi sementara agar tidak ada file lock
+                DB::disconnect();
+                // Replace file
+                copy($file->getRealPath(), $dbPath);
+                
+                return back()->with('success', 'Database SQLite berhasil direstore (dipulihkan).');
+            } else {
+                // Untuk MySQL, file yang diupload adalah .sql
+                if ($file->getClientOriginalExtension() !== 'sql') {
+                    return back()->with('error', 'File backup harus berakhiran .sql untuk database MySQL.');
+                }
+
+                $sql = file_get_contents($file->getRealPath());
+                DB::unprepared($sql);
+
+                return back()->with('success', 'Database MySQL berhasil direstore (dipulihkan).');
+            }
+        } catch (\Exception $e) {
+            Log::error('Restore DB Error: ' . $e->getMessage());
+            return back()->with('error', 'Gagal melakukan restore database: ' . $e->getMessage());
+        }
+    }
+
     public function reset(Request $request)
     {
         $request->validate([

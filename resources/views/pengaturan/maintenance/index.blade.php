@@ -7,10 +7,10 @@
         <p class="text-body-md font-body-md text-on-surface-variant">Kelola pencadangan (backup) dan penghapusan data secara permanen.</p>
     </div>
 </div>
-<div class="max-w-[1200px] mx-auto flex flex-col md:flex-row gap-6">
+<div class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
     <!-- Card Backup Database -->
-    <div class="w-full md:w-1/2 flex flex-col">
+    <div class="flex flex-col">
         <div class="bg-surface rounded-xl shadow-sm border border-outline-variant p-6 flex flex-col h-full relative overflow-hidden group">
             <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors pointer-events-none"></div>
             
@@ -44,8 +44,41 @@
         </div>
     </div>
 
+    <!-- Card Restore Database -->
+    <div class="flex flex-col">
+        <div class="bg-surface rounded-xl shadow-sm border border-outline-variant p-6 flex flex-col h-full relative overflow-hidden group">
+            <div class="absolute -right-12 -top-12 w-48 h-48 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors pointer-events-none"></div>
+            
+            <div class="flex items-center gap-4 mb-4">
+                <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-[28px]" data-weight="fill">cloud_upload</span>
+                </div>
+                <div>
+                    <h3 class="text-title-md font-title-md text-on-surface font-semibold">Restore Database</h3>
+                    <p class="text-label-sm text-on-surface-variant">Pulihkan data aplikasi</p>
+                </div>
+            </div>
+            
+            <p class="text-body-md font-body-md text-on-surface-variant mb-6 flex-grow">
+                Unggah file backup <code>.sqlite</code> (untuk SQLite) atau <code>.sql</code> (untuk MySQL) untuk mengembalikan data seperti semula.
+            </p>
+            
+            <form action="{{ route('pengaturan.maintenance.restore') }}" method="POST" enctype="multipart/form-data" onsubmit="return confirm('Apakah Anda yakin ingin me-restore database? Data saat ini akan DITIMPA oleh data dari file backup!');">
+                @csrf
+                <div class="mb-4">
+                    <input type="file" name="backup_file" required class="block w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 transition-colors">
+                    @error('backup_file') <span class="text-error text-[11px]">{{ $message }}</span> @enderror
+                </div>
+                <button type="submit" class="w-full h-11 bg-primary text-on-primary hover:bg-primary/90 rounded-lg flex items-center justify-center gap-2 font-label-md transition-colors shadow-sm">
+                    <span class="material-symbols-outlined" data-weight="fill">upload</span>
+                    Restore Sekarang
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Card Hapus/Reset Data -->
-    <div class="w-full md:w-1/2 flex flex-col">
+    <div class="flex flex-col">
         <div class="bg-surface rounded-xl shadow-sm border border-error/30 p-6 flex flex-col h-full relative overflow-hidden group">
             <div class="absolute -right-12 -top-12 w-48 h-48 bg-error/5 rounded-full blur-2xl group-hover:bg-error/10 transition-colors pointer-events-none"></div>
             
