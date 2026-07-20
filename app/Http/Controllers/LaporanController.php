@@ -177,4 +177,92 @@ class LaporanController extends Controller
 
         return view('laporan.tunggakan', compact('dataSelisih', 'dataTunggakan', 'tahunAktif', 'targetMonth'));
     }
+
+    /**
+     * Menampilkan laporan konsolidasi seluruh SKPD per bulan
+     */
+    public function konsolidasi(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        
+        // Default to active month (previous month usually) or the month selected
+        $currentMonth = (int)date('n');
+        $defaultMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
+        if ($tahunAktif < date('Y')) $defaultMonth = 12;
+
+        $selectedBulan = $request->bulan ?? $defaultMonth;
+
+        $skpds = Skpd::where('status', true)->orderBy('kode')->get();
+        
+        $konsolidasiData = [];
+        $totalBku = 0;
+        $totalBank = 0;
+
+        foreach ($skpds as $skpd) {
+            $trx = Transaksi::where('skpd_id', $skpd->id)
+                ->where('periode_tahun', $tahunAktif)
+                ->where('periode_bulan', $selectedBulan)
+                ->first();
+
+            $konsolidasiData[] = [
+                'skpd' => $skpd,
+                'bku' => $trx ? $trx->bku_saldo_akhir : null,
+                'bank' => $trx ? $trx->bank_saldo_akhir : null,
+                'selisih' => $trx ? abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) : null,
+                'status' => $trx ? $trx->status_verifikasi : null,
+                'is_exist' => $trx ? true : false,
+            ];
+
+            if ($trx) {
+                $totalBku += $trx->bku_saldo_akhir;
+                $totalBank += $trx->bank_saldo_akhir;
+            }
+        }
+
+        return view('laporan.konsolidasi', compact('konsolidasiData', 'tahunAktif', 'selectedBulan', 'totalBku', 'totalBank'));
+    }
+
+    /**
+     * Mencetak PDF Laporan Konsolidasi
+     */
+    public function cetakKonsolidasi(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $selectedBulan = $request->bulan;
+
+        if (!$selectedBulan) {
+            return back()->with('error', 'Pilih bulan terlebih dahulu.');
+        }
+
+        $pengaturan = \App\Models\Pengaturan::first();
+        $skpds = Skpd::where('status', true)->orderBy('kode')->get();
+        
+        $konsolidasiData = [];
+        $totalBku = 0;
+        $totalBank = 0;
+
+        foreach ($skpds as $skpd) {
+            $trx = Transaksi::where('skpd_id', $skpd->id)
+                ->where('periode_tahun', $tahunAktif)
+                ->where('periode_bulan', $selectedBulan)
+                ->first();
+
+            $konsolidasiData[] = [
+                'skpd' => $skpd,
+                'bku' => $trx ? $trx->bku_saldo_akhir : null,
+                'bank' => $trx ? $trx->bank_saldo_akhir : null,
+                'selisih' => $trx ? abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) : null,
+            ];
+
+            if ($trx) {
+                $totalBku += $trx->bku_saldo_akhir;
+                $totalBank += $trx->bank_saldo_akhir;
+            }
+        }
+
+        $pdf = Pdf::loadView('laporan.konsolidasi_pdf', compact('konsolidasiData', 'tahunAktif', 'selectedBulan', 'pengaturan', 'totalBku', 'totalBank'));
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Laporan_Konsolidasi_Bulan_' . $selectedBulan . '_' . $tahunAktif . '.pdf');
+    }
 }

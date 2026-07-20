@@ -30,6 +30,8 @@ Route::middleware('auth')->group(function () {
         
         // Laporan Admin
         Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
+        Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
+        Route::get('/laporan/konsolidasi/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakKonsolidasi'])->name('laporan.konsolidasi.pdf');
         
         // Maintenance System
         Route::get('pengaturan/maintenance', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('pengaturan.maintenance.index');
