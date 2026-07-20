@@ -188,7 +188,7 @@
                 <!-- Explanation Area -->
                 <div class="mb-10 space-y-2">
                     <label class="text-body-md font-bold block text-on-surface">Penjelasan / Keterangan Selisih :</label>
-                    <textarea name="keterangan_selisih" class="w-full h-24 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary p-3 bg-surface-container-lowest text-body-md resize-none" placeholder="Masukkan penjelasan perbedaan transaksi...">{{ old('keterangan_selisih') }}</textarea>
+                    <textarea name="keterangan_selisih" maxlength="255" class="w-full h-24 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary p-3 bg-surface-container-lowest text-body-md resize-none" placeholder="Masukkan penjelasan perbedaan transaksi (maksimal 255 karakter)...">{{ old('keterangan_selisih') }}</textarea>
                     @error('keterangan_selisih')
                         <span class="text-error text-label-sm mt-1 block">{{ $message }}</span>
                     @enderror

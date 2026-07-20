@@ -122,10 +122,11 @@ class TransaksiController extends Controller
             'bank_penerimaan' => 'required|numeric',
             'bank_pengeluaran' => 'required|numeric',
             'bank_saldo_akhir' => 'required|numeric',
-            'keterangan_selisih' => $isSelisih ? 'required|string' : 'nullable|string',
+            'keterangan_selisih' => $isSelisih ? 'required|string|max:255' : 'nullable|string|max:255',
             'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
+            'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
         ]);
 
         if (Auth::user()->role === 'operator') {
@@ -199,12 +200,13 @@ class TransaksiController extends Controller
             'bank_penerimaan' => 'required|numeric',
             'bank_pengeluaran' => 'required|numeric',
             'bank_saldo_akhir' => 'required|numeric',
-            'keterangan_selisih' => $isSelisih ? 'required|string' : 'nullable|string',
+            'keterangan_selisih' => $isSelisih ? 'required|string|max:255' : 'nullable|string|max:255',
             'tanggal_ba' => 'nullable|date',
             'status_verifikasi' => 'nullable|in:draft,verified',
             'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
         ], [
             'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
+            'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
         ]);
 
         if (Auth::user()->role === 'admin') {

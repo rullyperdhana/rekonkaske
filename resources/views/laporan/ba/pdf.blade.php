@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <title>Berita Acara Rekonsiliasi - {{ $transaksi->skpd->nama }}</title>
     <style>
-        @page { margin: 15mm 20mm; }
+        @page { margin: 10mm 15mm; }
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 13px;
+            font-size: 12px;
             color: #000;
-            line-height: 1.4;
+            line-height: 1.3;
             margin: 0;
             padding: 0;
         }
@@ -21,35 +21,35 @@
         .uppercase { text-transform: uppercase; }
         .underline { text-decoration: underline; }
         .mb-1 { margin-bottom: 5px; }
-        .mb-2 { margin-bottom: 10px; }
-        .mb-4 { margin-bottom: 20px; }
-        .mt-2 { margin-top: 10px; }
-        .mt-4 { margin-top: 20px; }
+        .mb-2 { margin-bottom: 8px; }
+        .mb-4 { margin-bottom: 12px; }
+        .mt-2 { margin-top: 8px; }
+        .mt-4 { margin-top: 12px; }
         .indent { text-indent: 40px; }
         
         /* KOP Surat */
-        .kop-table { width: 100%; border-bottom: 3px solid #000; margin-bottom: 15px; padding-bottom: 10px; }
-        .kop-logo { width: 90px; text-align: center; vertical-align: middle; }
-        .kop-logo img { width: 80px; height: auto; }
-        .kop-text { text-align: center; vertical-align: middle; padding-right: 90px; } 
-        .kop-text h2 { margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 1px; }
-        .kop-text h1 { margin: 0; font-size: 22px; font-weight: 900; letter-spacing: 1px; }
-        .kop-text p { margin: 2px 0 0 0; font-size: 12px; }
+        .kop-table { width: 100%; border-bottom: 3px solid #000; margin-bottom: 10px; padding-bottom: 5px; }
+        .kop-logo { width: 80px; text-align: center; vertical-align: middle; }
+        .kop-logo img { width: 70px; height: auto; }
+        .kop-text { text-align: center; vertical-align: middle; padding-right: 80px; } 
+        .kop-text h2 { margin: 0; font-size: 16px; font-weight: bold; letter-spacing: 1px; }
+        .kop-text h1 { margin: 0; font-size: 18px; font-weight: 900; letter-spacing: 1px; }
+        .kop-text p { margin: 2px 0 0 0; font-size: 11px; }
         
         /* Judul */
-        .judul-dokumen h2 { margin: 0; font-size: 18px; font-weight: bold; text-decoration: underline; }
-        .judul-dokumen h3 { margin: 5px 0 0 0; font-size: 16px; font-weight: bold; }
+        .judul-dokumen h2 { margin: 0; font-size: 16px; font-weight: bold; text-decoration: underline; }
+        .judul-dokumen h3 { margin: 5px 0 0 0; font-size: 14px; font-weight: bold; }
 
         /* Tabel Keuangan */
         table.keuangan {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            font-size: 13px;
+            margin-bottom: 10px;
+            font-size: 12px;
             border: 1px solid #000;
         }
         table.keuangan th, table.keuangan td {
-            padding: 4px 6px;
+            padding: 3px 5px;
             border-bottom: 1px solid #000;
             border-right: 1px solid #000;
         }
@@ -59,10 +59,10 @@
         .pl-4 { padding-left: 20px; }
 
         /* Tanda Tangan */
-        .ttd-table { width: 100%; margin-top: 20px; font-size: 13px; page-break-inside: avoid; border: none; }
-        .ttd-table td { border: none; padding: 2px; }
+        .ttd-table { width: 100%; margin-top: 10px; font-size: 12px; page-break-inside: avoid; border: none; }
+        .ttd-table td { border: none; padding: 1px; }
         .ttd-cell { width: 50%; text-align: center; vertical-align: top; }
-        .ttd-space { height: 60px; }
+        .ttd-space { height: 50px; }
         .ttd-name { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
         .ttd-nip { margin-top: 0; }
         
@@ -285,7 +285,7 @@
             </td>
         </tr>
         <tr>
-            <td colspan="2" class="ttd-cell" style="padding-top: 20px;">
+            <td colspan="2" class="ttd-cell" style="padding-top: 10px;">
                 {{ $kotaFallback }}, {{ $tglSumber->locale('id')->isoFormat('D MMMM YYYY') }}<br>
                 <span class="font-bold">Mengetahui,</span><br>
                 <span class="font-bold">{{ $pengaturan->jabatan_kepala ?? 'Pengguna Anggaran / Kuasa Pengguna Anggaran' }}</span>
@@ -298,9 +298,9 @@
     </table>
 
     <!-- Footer Lampiran -->
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 10px;">
         <span class="font-bold italic">Lampiran :</span>
-        <ol class="italic" style="margin-top: 5px; padding-left: 20px; font-size: 13px;">
+        <ol class="italic" style="margin-top: 3px; padding-left: 20px; font-size: 12px; margin-bottom: 0;">
             <li>Buku Kas Pengeluaran</li>
             <li>Buku Pembantu Bank</li>
             <li>Rekening Koran Bank</li>
