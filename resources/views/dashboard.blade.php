@@ -36,7 +36,7 @@
     @endif
     
     <!-- Metric Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-{{ isset($kepatuhanData) ? '4' : '3' }} gap-6 mb-8">
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div>
@@ -98,6 +98,31 @@
                 <div class="{{ $summary['is_matched'] ? 'bg-secondary' : 'bg-error' }} h-full w-full rounded-full"></div>
             </div>
         </div>
+        
+        @if(isset($kepatuhanData))
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Kepatuhan (Bulan {{ $kepatuhanData['target_bulan'] }})</h3>
+                    <div class="flex items-end gap-2">
+                        <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
+                            {{ $kepatuhanData['persentase'] }}%
+                        </p>
+                        <p class="text-body-sm text-on-surface-variant mb-1">({{ $kepatuhanData['patuh'] }}/{{ $kepatuhanData['total_skpd'] }} SKPD)</p>
+                    </div>
+                </div>
+                <div class="p-2 bg-primary-container text-on-primary-container rounded-lg">
+                    <span class="material-symbols-outlined">pie_chart</span>
+                </div>
+            </div>
+            <div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+                Tingkat Kepatuhan Lapor
+            </div>
+            <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden mt-auto">
+                <div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: {{ $kepatuhanData['persentase'] }}%"></div>
+            </div>
+        </div>
+        @endif
     </div>
 
     <!-- Status Rekonsiliasi Per SKPD -->

@@ -130,6 +130,40 @@ class DashboardController extends Controller
         // 7. Pengumuman Aktif
         $pengumumans = \App\Models\Pengumuman::where('is_aktif', true)->orderBy('created_at', 'desc')->get();
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans'));
+        // 8. Persentase Kepatuhan (Hanya untuk Admin)
+        $kepatuhanData = null;
+        if (!$user->skpd_id) {
+            $totalSkpd = Skpd::where('status', true)->count();
+            // Tentukan bulan target (bulan lalu)
+            $currentMonth = (int)date('n');
+            $targetMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
+            $targetYear = $currentMonth > 1 ? $tahunAktif : $tahunAktif - 1;
+            
+            if ($tahunAktif < date('Y')) {
+                $targetMonth = 12;
+                $targetYear = $tahunAktif;
+            }
+            
+            if ($targetYear == $tahunAktif) {
+                $skpdPatuhCount = Transaksi::where('periode_tahun', $tahunAktif)
+                    ->where('periode_bulan', $targetMonth)
+                    ->where('status_verifikasi', 'verified')
+                    ->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) < 0.01')
+                    ->distinct('skpd_id')
+                    ->count('skpd_id');
+            } else {
+                $skpdPatuhCount = 0;
+            }
+
+            $persentase = $totalSkpd > 0 ? round(($skpdPatuhCount / $totalSkpd) * 100) : 0;
+            $kepatuhanData = [
+                'target_bulan' => $targetMonth,
+                'total_skpd' => $totalSkpd,
+                'patuh' => $skpdPatuhCount,
+                'persentase' => $persentase
+            ];
+        }
+
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData'));
     }
 }

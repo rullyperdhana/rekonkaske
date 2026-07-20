@@ -28,6 +28,9 @@ Route::middleware('auth')->group(function () {
         Route::resource('pengaturan/pengumuman', \App\Http\Controllers\PengumumanController::class);
         Route::get('pengaturan/log', [\App\Http\Controllers\LogController::class, 'index'])->name('log.index');
         
+        // Laporan Admin
+        Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
+        
         // Maintenance System
         Route::get('pengaturan/maintenance', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('pengaturan.maintenance.index');
         Route::post('pengaturan/maintenance/backup', [\App\Http\Controllers\MaintenanceController::class, 'backup'])->name('pengaturan.maintenance.backup');
@@ -48,6 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/ba', [BaController::class, 'index'])->name('ba.index');
     Route::get('/laporan/ba/{transaksi}', [BaController::class, 'show'])->name('ba.show');
     Route::get('/laporan/ba/{transaksi}/pdf', [BaController::class, 'pdf'])->name('ba.pdf');
+    Route::get('/laporan/rekap', [\App\Http\Controllers\LaporanController::class, 'rekapTahunan'])->name('laporan.rekap');
+    Route::get('/laporan/rekap/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRekapTahunan'])->name('laporan.rekap.pdf');
 
     // Pengaturan Instansi (All Users)
     Route::get('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'edit'])->name('pengaturan.instansi.edit');

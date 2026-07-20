@@ -68,11 +68,33 @@
                 <span class="text-label-sm font-label-sm">Transaksi</span>
             </a>
         </li>
-        <li>
-            <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" href="{{ route('ba.index') }}">
-                <span class="material-symbols-outlined">assessment</span>
-                <span class="text-label-sm font-label-sm">Laporan</span>
-            </a>
+        <li class="group">
+            <button class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center justify-between px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined">assessment</span>
+                    <span class="text-label-sm font-label-sm">Laporan</span>
+                </div>
+                <span class="material-symbols-outlined text-sm arrow transition-transform duration-200">expand_more</span>
+            </button>
+            <ul class="hidden space-y-1 mt-1 ml-8 mr-4">
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('ba.index') }}">
+                        <span class="text-label-sm font-label-sm">Berita Acara (Bulanan)</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.rekap') }}">
+                        <span class="text-label-sm font-label-sm">Rekapitulasi Tahunan</span>
+                    </a>
+                </li>
+                @if(auth()->user()->role === 'admin')
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.tunggakan') }}">
+                        <span class="text-label-sm font-label-sm">Tunggakan & Selisih</span>
+                    </a>
+                </li>
+                @endif
+            </ul>
         </li>
         <li class="group">
             <button class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center justify-between px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
