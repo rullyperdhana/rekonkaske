@@ -17,9 +17,22 @@ class MaintenanceController extends Controller
     public function backup()
     {
         try {
+            $driver = DB::connection()->getDriverName();
+
+            // Khusus untuk SQLite, cukup salin dan download filenya
+            if ($driver === 'sqlite') {
+                $dbPath = DB::connection()->getDatabaseName();
+                if (file_exists($dbPath)) {
+                    $fileName = 'backup_sqlite_' . date('Y_m_d_His') . '.sqlite';
+                    $copyPath = storage_path('app/' . $fileName);
+                    copy($dbPath, $copyPath);
+                    return response()->download($copyPath)->deleteFileAfterSend(true);
+                }
+                throw new \Exception("File SQLite tidak ditemukan.");
+            }
+
+            // Untuk MySQL / MariaDB
             $dbName = env('DB_DATABASE');
-            // Adjust the property name based on the driver (SQLite vs MySQL)
-            // But since this is MySQL based on .env
             $tables = DB::select('SHOW TABLES');
             $property = 'Tables_in_' . $dbName;
             
