@@ -141,8 +141,8 @@
             <span class="material-symbols-outlined">description</span>
         </div>
         <div>
-            <h3 class="text-title-md font-title-md text-on-surface">SKPD Belum Upload Berita Acara</h3>
-            <p class="text-body-sm text-on-surface-variant">Daftar SKPD yang sudah menginput transaksi namun belum melampirkan file dokumen wajib yaitu Berita Acara (Manual).</p>
+            <h3 class="text-title-md font-title-md text-on-surface">SKPD Belum Upload Dokumen Pendukung Lengkap</h3>
+            <p class="text-body-sm text-on-surface-variant">Daftar SKPD yang sudah menginput transaksi namun belum melampirkan ke-empat file dokumen wajib (Berita Acara, Buku Kas, Buku Pembantu Bank, dan Rekening Koran).</p>
         </div>
     </div>
     
@@ -168,7 +168,18 @@
                             @foreach($item['transaksi'] as $trx)
                                 <div class="bg-surface-container-lowest p-3 border border-outline-variant rounded-lg flex justify-between items-center">
                                     <div>
-                                        <div class="font-bold text-label-md">Bulan {{ $trx->periode_bulan }}</div>
+                                        <div class="font-bold text-label-md flex items-center gap-2">
+                                            Bulan {{ $trx->periode_bulan }}
+                                            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase {{ $trx->status_verifikasi == 'verified' ? 'bg-secondary/10 text-secondary' : 'bg-outline-variant/30 text-on-surface-variant' }}">
+                                                {{ $trx->status_verifikasi }}
+                                            </span>
+                                        </div>
+                                        <div class="text-[11px] text-on-surface-variant mt-1 flex gap-1">
+                                            @if(!$trx->file_ba_manual) <span class="bg-error/10 text-error px-1 rounded">BA</span> @endif
+                                            @if(!$trx->file_buku_kas) <span class="bg-error/10 text-error px-1 rounded">Kas</span> @endif
+                                            @if(!$trx->file_buku_pembantu_bank) <span class="bg-error/10 text-error px-1 rounded">Bank</span> @endif
+                                            @if(!$trx->file_rekening_koran) <span class="bg-error/10 text-error px-1 rounded">Rek.Koran</span> @endif
+                                        </div>
                                     </div>
                                     <div>
                                         <a href="{{ route('transaksi.edit', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
