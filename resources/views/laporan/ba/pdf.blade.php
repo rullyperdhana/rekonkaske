@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <title>Berita Acara Rekonsiliasi - {{ $transaksi->skpd->nama }}</title>
     <style>
-        @page { margin: 10mm 15mm; }
+        @page { margin: 15mm 20mm; }
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 12px;
+            font-size: 11px; /* Even smaller to fit 1 page with larger margins */
             color: #000;
             line-height: 1.3;
             margin: 0;
