@@ -81,6 +81,11 @@ class UserController extends Controller
             return back()->with('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
         }
 
+        $transaksiCount = \App\Models\Transaksi::where('user_id', $user->id)->count();
+        if ($transaksiCount > 0) {
+            return back()->with('error', 'Penghapusan dibatalkan demi keamanan! Pengguna ini memiliki ' . $transaksiCount . ' data transaksi yang saling terikat. Silakan ubah status pengguna menjadi "Non-Aktif" melalui fitur Edit.');
+        }
+
         $user->delete();
         return redirect()->route('user.index')->with('success', 'Pengguna berhasil dihapus.');
     }
