@@ -109,7 +109,7 @@
                                         </div>
                                     </div>
                                     <div>
-                                        <a href="{{ route('transaksi.show', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
+                                        <a href="{{ route('transaksi.edit', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
                                     </div>
                                 </div>
                             @endforeach
@@ -171,7 +171,7 @@
                                         <div class="font-bold text-label-md">Bulan {{ $trx->periode_bulan }}</div>
                                     </div>
                                     <div>
-                                        <a href="{{ route('transaksi.show', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
+                                        <a href="{{ route('transaksi.edit', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
                                     </div>
                                 </div>
                             @endforeach
