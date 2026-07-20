@@ -177,9 +177,9 @@ class LaporanController extends Controller
 
         $perPage = 10;
         
-        // SKPD Tanpa Dokumen Pendukung (file_bukti IS NULL)
+        // SKPD Tanpa Dokumen Pendukung (file_ba_manual IS NULL)
         $skpdTanpaDokIds = Transaksi::where('periode_tahun', $tahunAktif)
-            ->whereNull('file_bukti')
+            ->whereNull('file_ba_manual')
             ->pluck('skpd_id')
             ->unique();
 
@@ -188,7 +188,7 @@ class LaporanController extends Controller
         foreach ($skpdTanpaDokumen as $skpd) {
             $trxTanpaDokumen = Transaksi::where('skpd_id', $skpd->id)
                 ->where('periode_tahun', $tahunAktif)
-                ->whereNull('file_bukti')
+                ->whereNull('file_ba_manual')
                 ->orderBy('periode_bulan', 'asc')
                 ->get();
                 

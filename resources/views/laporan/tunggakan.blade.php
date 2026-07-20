@@ -141,8 +141,8 @@
             <span class="material-symbols-outlined">description</span>
         </div>
         <div>
-            <h3 class="text-title-md font-title-md text-on-surface">SKPD Belum Upload Dokumen Pendukung</h3>
-            <p class="text-body-sm text-on-surface-variant">Daftar SKPD yang sudah menginput transaksi namun belum melampirkan file dokumen (SPJ/Rekening Koran).</p>
+            <h3 class="text-title-md font-title-md text-on-surface">SKPD Belum Upload Berita Acara</h3>
+            <p class="text-body-sm text-on-surface-variant">Daftar SKPD yang sudah menginput transaksi namun belum melampirkan file dokumen wajib yaitu Berita Acara (Manual).</p>
         </div>
     </div>
     
