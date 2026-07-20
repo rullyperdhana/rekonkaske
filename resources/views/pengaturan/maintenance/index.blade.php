@@ -36,6 +36,18 @@
 
             <form action="{{ route('pengaturan.maintenance.backup') }}" method="POST">
                 @csrf
+                <div class="mb-4">
+                    <label class="flex items-start gap-3 cursor-pointer group/cb">
+                        <div class="relative flex items-center mt-0.5">
+                            <input type="checkbox" name="include_dokumen" value="1" class="w-5 h-5 border-2 border-outline-variant rounded bg-surface checked:bg-primary checked:border-primary focus:ring-primary focus:ring-offset-2 transition-colors cursor-pointer appearance-none peer">
+                            <span class="material-symbols-outlined text-[16px] text-on-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" data-weight="bold">check</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-label-md font-label-md text-on-surface group-hover/cb:text-primary transition-colors">Sertakan Dokumen Pendukung</span>
+                            <span class="text-body-sm text-on-surface-variant">File Berita Acara, Buku Kas, dll. Hasil unduhan akan berformat .zip</span>
+                        </div>
+                    </label>
+                </div>
                 <button type="submit" class="w-full h-11 bg-primary text-on-primary hover:bg-primary/90 rounded-lg flex items-center justify-center gap-2 font-label-md transition-colors shadow-sm">
                     <span class="material-symbols-outlined" data-weight="fill">download</span>
                     Download Backup Sekarang

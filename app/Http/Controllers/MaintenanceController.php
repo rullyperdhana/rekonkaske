@@ -14,64 +14,99 @@ class MaintenanceController extends Controller
         return view('pengaturan.maintenance.index');
     }
 
-    public function backup()
+    public function backup(Request $request)
     {
         try {
             $driver = DB::connection()->getDriverName();
+            $dbName = env('DB_DATABASE', 'database');
+            
+            $dbFileName = '';
+            $dbFilePath = '';
 
-            // Khusus untuk SQLite, cukup salin dan download filenya
+            // 1. Siapkan file database terlebih dahulu
             if ($driver === 'sqlite') {
                 $dbPath = DB::connection()->getDatabaseName();
                 if (file_exists($dbPath)) {
-                    $fileName = 'backup_sqlite_' . date('Y_m_d_His') . '.sqlite';
-                    $copyPath = storage_path('app/' . $fileName);
-                    copy($dbPath, $copyPath);
-                    return response()->download($copyPath)->deleteFileAfterSend(true);
+                    $dbFileName = 'backup_sqlite_' . date('Y_m_d_His') . '.sqlite';
+                    $dbFilePath = storage_path('app/' . $dbFileName);
+                    copy($dbPath, $dbFilePath);
+                } else {
+                    throw new \Exception("File SQLite tidak ditemukan.");
                 }
-                throw new \Exception("File SQLite tidak ditemukan.");
-            }
-
-            // Untuk MySQL / MariaDB
-            $dbName = env('DB_DATABASE');
-            $tables = DB::select('SHOW TABLES');
-            $property = 'Tables_in_' . $dbName;
-            
-            $sqlScript = "-- SiReKe Database Backup\n";
-            $sqlScript .= "-- Generated: " . date('Y-m-d H:i:s') . "\n\n";
-            
-            foreach ($tables as $table) {
-                $tableName = $table->$property;
+            } else {
+                $tables = DB::select('SHOW TABLES');
+                $property = 'Tables_in_' . $dbName;
                 
-                // Add Drop Table if exists
-                $sqlScript .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
+                $sqlScript = "-- SiReKe Database Backup\n";
+                $sqlScript .= "-- Generated: " . date('Y-m-d H:i:s') . "\n\n";
                 
-                // Get create table structure
-                $createTable = DB::select("SHOW CREATE TABLE {$tableName}");
-                $sqlScript .= $createTable[0]->{'Create Table'} . ";\n\n";
-                
-                // Get rows
-                $rows = DB::table($tableName)->get();
-                foreach ($rows as $row) {
-                    $rowArray = (array) $row;
-                    $values = array_map(function ($value) {
-                        if (is_null($value)) return "NULL";
-                        $value = addslashes($value);
-                        $value = str_replace("\n", "\\n", $value);
-                        $value = str_replace("\r", "\\r", $value);
-                        return "'" . $value . "'";
-                    }, array_values($rowArray));
+                foreach ($tables as $table) {
+                    $tableName = $table->$property;
+                    $sqlScript .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
                     
-                    $sqlScript .= "INSERT INTO `{$tableName}` (`" . implode("`, `", array_keys($rowArray)) . "`) VALUES (" . implode(", ", $values) . ");\n";
+                    $createTable = DB::select("SHOW CREATE TABLE {$tableName}");
+                    $sqlScript .= $createTable[0]->{'Create Table'} . ";\n\n";
+                    
+                    $rows = DB::table($tableName)->get();
+                    foreach ($rows as $row) {
+                        $rowArray = (array) $row;
+                        $values = array_map(function ($value) {
+                            if (is_null($value)) return "NULL";
+                            $value = addslashes($value);
+                            $value = str_replace("\n", "\\n", $value);
+                            $value = str_replace("\r", "\\r", $value);
+                            return "'" . $value . "'";
+                        }, array_values($rowArray));
+                        
+                        $sqlScript .= "INSERT INTO `{$tableName}` (`" . implode("`, `", array_keys($rowArray)) . "`) VALUES (" . implode(", ", $values) . ");\n";
+                    }
+                    $sqlScript .= "\n";
                 }
-                $sqlScript .= "\n";
+
+                $dbFileName = 'backup_' . $dbName . '_' . date('Y_m_d_His') . '.sql';
+                $dbFilePath = storage_path('app/' . $dbFileName);
+                file_put_contents($dbFilePath, $sqlScript);
             }
 
-            $fileName = 'backup_' . $dbName . '_' . date('Y_m_d_His') . '.sql';
-            $filePath = storage_path('app/' . $fileName);
-            
-            file_put_contents($filePath, $sqlScript);
-            
-            return response()->download($filePath)->deleteFileAfterSend(true);
+            // 2. Cek apakah dokumen pendukung disertakan
+            if ($request->has('include_dokumen') && $request->include_dokumen == 1) {
+                $zipFileName = 'backup_full_sireke_' . date('Y_m_d_His') . '.zip';
+                $zipFilePath = storage_path('app/' . $zipFileName);
+
+                $zip = new \ZipArchive();
+                if ($zip->open($zipFilePath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+                    // Masukkan file DB ke dalam zip
+                    $zip->addFile($dbFilePath, $dbFileName);
+
+                    // Masukkan semua file dokumen dari storage/app/public/dokumen_rekonsiliasi
+                    $dokumenPath = storage_path('app/public/dokumen_rekonsiliasi');
+                    if (is_dir($dokumenPath)) {
+                        $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dokumenPath), \RecursiveIteratorIterator::LEAVES_ONLY);
+                        foreach ($files as $name => $file) {
+                            if (!$file->isDir()) {
+                                $filePath = $file->getRealPath();
+                                $relativePath = 'dokumen_rekonsiliasi/' . substr($filePath, strlen($dokumenPath) + 1);
+                                $zip->addFile($filePath, $relativePath);
+                            }
+                        }
+                    }
+
+                    $zip->close();
+                    
+                    // Hapus file DB temporary karena sudah masuk ke zip
+                    if (file_exists($dbFilePath)) {
+                        unlink($dbFilePath);
+                    }
+
+                    return response()->download($zipFilePath)->deleteFileAfterSend(true);
+                } else {
+                    throw new \Exception("Gagal membuat file ZIP.");
+                }
+            }
+
+            // Jika tidak mencentang dokumen, kirim file DB saja
+            return response()->download($dbFilePath)->deleteFileAfterSend(true);
+
         } catch (\Exception $e) {
             Log::error('Backup DB Error: ' . $e->getMessage());
             return back()->with('error', 'Gagal membuat backup database: ' . $e->getMessage());
