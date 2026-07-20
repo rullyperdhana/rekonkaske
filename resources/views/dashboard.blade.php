@@ -95,7 +95,7 @@
                 </div>
             </div>
             <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                <div class="{{ $isMatched ? 'bg-secondary' : 'bg-error' }} h-full w-full rounded-full"></div>
+                <div class="{{ $summary['is_matched'] ? 'bg-secondary' : 'bg-error' }} h-full w-full rounded-full"></div>
             </div>
         </div>
     </div>
