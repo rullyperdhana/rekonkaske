@@ -83,6 +83,7 @@ class TransaksiController extends Controller
 
     public function create()
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         $skpds = Skpd::where('status', true)->orderBy('nama')->get();
         // Get all active rekenings. If user is operator, filter by their SKPD.
         $rekeningQuery = Rekening::where('status', true);
@@ -95,6 +96,7 @@ class TransaksiController extends Controller
 
     public function store(Request $request)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         $bku = (float) $request->bku_saldo_akhir;
         $bank = (float) $request->bank_saldo_akhir;
         $isSelisih = abs($bku - $bank) > 0;
@@ -157,6 +159,7 @@ class TransaksiController extends Controller
 
     public function edit(Transaksi $transaksi)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah.');
         }
@@ -173,6 +176,7 @@ class TransaksiController extends Controller
 
     public function update(Request $request, Transaksi $transaksi)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         $bku = (float) $request->bku_saldo_akhir;
         $bank = (float) $request->bank_saldo_akhir;
         $isSelisih = abs($bku - $bank) > 0;
@@ -236,6 +240,7 @@ class TransaksiController extends Controller
 
     public function destroy(Transaksi $transaksi)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat dihapus.');
         }
@@ -250,6 +255,7 @@ class TransaksiController extends Controller
 
     public function uploadForm(Transaksi $transaksi)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi !== 'verified') {
             return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
         }
@@ -264,6 +270,7 @@ class TransaksiController extends Controller
 
     public function uploadStore(Request $request, Transaksi $transaksi)
     {
+        if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi !== 'verified') {
             return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
         }

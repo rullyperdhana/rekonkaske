@@ -6,10 +6,12 @@
                 <h1 class="font-headline-lg text-headline-lg text-on-surface">Data Transaksi Rekonsiliasi</h1>
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola data input rekonsiliasi bulanan SKPD.</p>
             </div>
+            @if(Auth::user()->role !== 'konsolidator')
             <a href="{{ route('transaksi.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm self-start md:self-auto font-label-sm text-label-sm">
                 <span class="material-symbols-outlined text-[18px]">add</span>
                 <span>Input Transaksi Baru</span>
             </a>
+            @endif
         </div>
         
         <!-- Filters -->
@@ -96,26 +98,35 @@
                                     if($trx->file_rekening_koran) $docCount++;
                                 @endphp
                                 @if($trx->status_verifikasi === 'verified')
+                                    @if(Auth::user()->role !== 'konsolidator')
                                     <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center gap-1 {{ $docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container' }} transition-colors text-label-sm font-label-sm" title="Kelola Dokumen">
                                         <span class="material-symbols-outlined text-[18px]">folder_open</span>
                                         {{ $docCount > 0 ? $docCount . '/4' : 'Upload' }}
                                     </a>
+                                    @else
+                                    <span class="inline-flex items-center gap-1 {{ $docCount > 0 ? 'text-secondary' : 'text-on-surface-variant/50' }} text-label-sm font-label-sm" title="Dokumen">
+                                        <span class="material-symbols-outlined text-[18px]">{{ $docCount > 0 ? 'folder' : 'folder_off' }}</span>
+                                        {{ $docCount }}/4
+                                    </span>
+                                    @endif
                                 @else
                                     <span class="text-on-surface-variant/50 text-label-sm" title="Verifikasi dulu untuk upload">-</span>
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-center">
-                                @if($trx->status_verifikasi !== 'verified' || Auth::user()->role === 'admin')
-                                <a href="{{ route('transaksi.edit', $trx->id) }}" class="inline-block text-primary hover:text-primary-container p-1 mx-1 transition-colors" title="Edit">
-                                    <span class="material-symbols-outlined text-[20px]">edit</span>
-                                </a>
-                                <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Transaksi ini?');" class="inline-block">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-error hover:text-error-container p-1 mx-1 transition-colors" title="Hapus">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
-                                    </button>
-                                </form>
+                                @if(Auth::user()->role !== 'konsolidator')
+                                    @if($trx->status_verifikasi !== 'verified' || Auth::user()->role === 'admin')
+                                    <a href="{{ route('transaksi.edit', $trx->id) }}" class="inline-block text-primary hover:text-primary-container p-1 mx-1 transition-colors" title="Edit">
+                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                    </a>
+                                    <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Transaksi ini?');" class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-error hover:text-error-container p-1 mx-1 transition-colors" title="Hapus">
+                                            <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        </button>
+                                    </form>
+                                    @endif
                                 @endif
                             </td>
                         </tr>

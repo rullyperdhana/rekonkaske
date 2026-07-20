@@ -29,7 +29,7 @@ class UserController extends Controller
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],
-            'role' => 'required|in:admin,operator',
+            'role' => 'required|in:admin,konsolidator,operator',
             'skpd_id' => 'nullable|exists:skpds,id',
             'status' => 'boolean',
         ]);
@@ -53,7 +53,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,operator',
+            'role' => 'required|in:admin,konsolidator,operator',
             'skpd_id' => 'nullable|exists:skpds,id',
             'status' => 'boolean',
         ];

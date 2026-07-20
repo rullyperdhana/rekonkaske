@@ -20,12 +20,14 @@ class RekeningController extends Controller
 
     public function create()
     {
+        if (auth()->user()->role === 'konsolidator') abort(403);
         $skpds = \App\Models\Skpd::orderBy('nama')->get();
         return view('master.rekening.create', compact('skpds'));
     }
 
     public function store(Request $request)
     {
+        if (auth()->user()->role === 'konsolidator') abort(403);
         $rules = [
             'nama' => 'required|max:255',
             'nomor' => 'required|max:255',
@@ -50,6 +52,7 @@ class RekeningController extends Controller
 
     public function edit(Rekening $rekening)
     {
+        if (auth()->user()->role === 'konsolidator') abort(403);
         if (auth()->user()->role === 'operator' && $rekening->skpd_id !== auth()->user()->skpd_id) {
             abort(403, 'Unauthorized action.');
         }
@@ -59,6 +62,7 @@ class RekeningController extends Controller
 
     public function update(Request $request, Rekening $rekening)
     {
+        if (auth()->user()->role === 'konsolidator') abort(403);
         if (auth()->user()->role === 'operator' && $rekening->skpd_id !== auth()->user()->skpd_id) {
             abort(403, 'Unauthorized action.');
         }
@@ -87,6 +91,7 @@ class RekeningController extends Controller
 
     public function destroy(Rekening $rekening)
     {
+        if (auth()->user()->role === 'konsolidator') abort(403);
         if (auth()->user()->role === 'operator' && $rekening->skpd_id !== auth()->user()->skpd_id) {
             abort(403, 'Unauthorized action.');
         }

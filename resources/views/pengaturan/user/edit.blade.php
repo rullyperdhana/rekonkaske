@@ -55,12 +55,13 @@
                     <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">Peran (Role)</label>
                     <select name="role" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                         <option value="operator" {{ old('role', $user->role) == 'operator' ? 'selected' : '' }}>Operator</option>
+                        <option value="konsolidator" {{ old('role', $user->role) == 'konsolidator' ? 'selected' : '' }}>Konsolidator</option>
                         <option value="admin" {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}>Admin</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">SKPD (Kosongkan jika Admin Pusat)</label>
+                    <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">SKPD (Kosongkan jika Admin Pusat / Konsolidator)</label>
                     <select name="skpd_id" class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                         <option value="">-- Pilih SKPD --</option>
                         @foreach($skpds as $skpd)

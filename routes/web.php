@@ -28,16 +28,18 @@ Route::middleware('auth')->group(function () {
         Route::resource('pengaturan/pengumuman', \App\Http\Controllers\PengumumanController::class);
         Route::get('pengaturan/log', [\App\Http\Controllers\LogController::class, 'index'])->name('log.index');
         
-        // Laporan Admin
-        Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
-        Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
-        Route::get('/laporan/konsolidasi/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakKonsolidasi'])->name('laporan.konsolidasi.pdf');
-        
         // Maintenance System
         Route::get('pengaturan/maintenance', [\App\Http\Controllers\MaintenanceController::class, 'index'])->name('pengaturan.maintenance.index');
         Route::post('pengaturan/maintenance/backup', [\App\Http\Controllers\MaintenanceController::class, 'backup'])->name('pengaturan.maintenance.backup');
         Route::post('pengaturan/maintenance/restore', [\App\Http\Controllers\MaintenanceController::class, 'restore'])->name('pengaturan.maintenance.restore');
         Route::delete('pengaturan/maintenance/reset', [\App\Http\Controllers\MaintenanceController::class, 'reset'])->name('pengaturan.maintenance.reset');
+    });
+
+    // Laporan (Admin & Konsolidator)
+    Route::middleware(['admin.konsolidator'])->group(function () {
+        Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
+        Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
+        Route::get('/laporan/konsolidasi/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakKonsolidasi'])->name('laporan.konsolidasi.pdf');
     });
     
     // Master Data (All Users)
