@@ -177,6 +177,27 @@ class LaporanController extends Controller
 
         $perPage = 10;
         
+        // SKPD Tanpa Dokumen Pendukung (file_bukti IS NULL)
+        $skpdTanpaDokIds = Transaksi::where('periode_tahun', $tahunAktif)
+            ->whereNull('file_bukti')
+            ->pluck('skpd_id')
+            ->unique();
+
+        $skpdTanpaDokumen = Skpd::whereIn('id', $skpdTanpaDokIds)->get();
+        $dataTanpaDokumen = [];
+        foreach ($skpdTanpaDokumen as $skpd) {
+            $trxTanpaDokumen = Transaksi::where('skpd_id', $skpd->id)
+                ->where('periode_tahun', $tahunAktif)
+                ->whereNull('file_bukti')
+                ->orderBy('periode_bulan', 'asc')
+                ->get();
+                
+            $dataTanpaDokumen[] = [
+                'skpd' => $skpd,
+                'transaksi' => $trxTanpaDokumen
+            ];
+        }
+        
         $tunggakanCollection = collect($dataTunggakan);
         $pageTunggakan = $request->get('page_tunggakan', 1);
         $dataTunggakanPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
@@ -197,7 +218,17 @@ class LaporanController extends Controller
             ['path' => $request->url(), 'query' => $request->query(), 'pageName' => 'page_selisih']
         );
 
-        return view('laporan.tunggakan', compact('dataSelisihPaginated', 'dataTunggakanPaginated', 'tahunAktif', 'targetMonth'));
+        $tanpaDokumenCollection = collect($dataTanpaDokumen);
+        $pageTanpaDok = $request->get('page_tanpa_dokumen', 1);
+        $dataTanpaDokumenPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $tanpaDokumenCollection->forPage($pageTanpaDok, $perPage),
+            $tanpaDokumenCollection->count(),
+            $perPage,
+            $pageTanpaDok,
+            ['path' => $request->url(), 'query' => $request->query(), 'pageName' => 'page_tanpa_dokumen']
+        );
+
+        return view('laporan.tunggakan', compact('dataSelisihPaginated', 'dataTunggakanPaginated', 'dataTanpaDokumenPaginated', 'tahunAktif', 'targetMonth'));
     }
 
     /**

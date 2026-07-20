@@ -134,4 +134,66 @@
     @endif
 </div>
 
+<!-- Tabel Tanpa Dokumen -->
+<div class="bg-surface rounded-xl shadow-sm border border-outline-variant overflow-hidden mb-8">
+    <div class="p-6 border-b border-outline-variant bg-tertiary-container/20 flex items-center gap-3">
+        <div class="p-2 bg-tertiary/10 text-tertiary rounded-lg">
+            <span class="material-symbols-outlined">description</span>
+        </div>
+        <div>
+            <h3 class="text-title-md font-title-md text-on-surface">SKPD Belum Upload Dokumen Pendukung</h3>
+            <p class="text-body-sm text-on-surface-variant">Daftar SKPD yang sudah menginput transaksi namun belum melampirkan file dokumen (SPJ/Rekening Koran).</p>
+        </div>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-surface-container-low border-b border-outline-variant">
+                    <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface w-16 text-center">No</th>
+                    <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface">Nama SKPD</th>
+                    <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface">Bulan Tanpa Dokumen</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-outline-variant/50">
+                @forelse($dataTanpaDokumenPaginated as $index => $item)
+                <tr class="hover:bg-surface-container-lowest transition-colors">
+                    <td class="px-6 py-4 text-body-md text-on-surface text-center align-top">{{ ($dataTanpaDokumenPaginated->currentPage() - 1) * $dataTanpaDokumenPaginated->perPage() + $index + 1 }}</td>
+                    <td class="px-6 py-4 text-body-md font-medium text-on-surface align-top">
+                        <div class="font-bold">{{ $item['skpd']->kode }}</div>
+                        <div class="text-sm text-on-surface-variant">{{ $item['skpd']->nama }}</div>
+                    </td>
+                    <td class="px-6 py-4 text-body-md text-on-surface">
+                        <div class="flex flex-col gap-2">
+                            @foreach($item['transaksi'] as $trx)
+                                <div class="bg-surface-container-lowest p-3 border border-outline-variant rounded-lg flex justify-between items-center">
+                                    <div>
+                                        <div class="font-bold text-label-md">Bulan {{ $trx->periode_bulan }}</div>
+                                    </div>
+                                    <div>
+                                        <a href="{{ route('transaksi.show', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="3" class="px-6 py-12 text-center text-on-surface-variant">
+                        <span class="material-symbols-outlined text-5xl mb-2 text-outline">verified</span>
+                        <p class="text-body-lg">Luar biasa! Semua transaksi saat ini memiliki dokumen pendukung.</p>
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+    @if($dataTanpaDokumenPaginated->hasPages())
+    <div class="p-6 border-t border-outline-variant bg-surface-container-low">
+        {{ $dataTanpaDokumenPaginated->links() }}
+    </div>
+    @endif
+</div>
+
 </x-app-layout>
