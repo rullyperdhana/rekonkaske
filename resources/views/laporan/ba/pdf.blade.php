@@ -7,7 +7,7 @@
         @page { margin: 15mm 20mm; }
         body {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 11px; /* Even smaller to fit 1 page with larger margins */
+            font-size: 12px;
             color: #000;
             line-height: 1.3;
             margin: 0;
