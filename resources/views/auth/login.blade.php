@@ -73,11 +73,11 @@
             <form action="{{ route('login') }}" method="POST" autocomplete="off" class="space-y-4">
                 @csrf
 
-                <!-- Email / KDUser -->
+                <!-- Email / Username -->
                 <div>
-                    <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus placeholder="Email Pengguna" 
+                    <input id="login" type="text" name="login" value="{{ old('login') }}" required autofocus placeholder="Email / Username" 
                         class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
-                    <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-blue-600" />
+                    <x-input-error :messages="$errors->get('login')" class="mt-1 text-xs text-blue-600" />
                 </div>
 
                 <!-- Password -->
