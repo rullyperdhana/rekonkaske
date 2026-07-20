@@ -53,7 +53,7 @@
             <tbody class="divide-y divide-outline-variant/50">
                 @foreach($konsolidasiData as $index => $data)
                 <tr class="hover:bg-surface-container-lowest transition-colors">
-                    <td class="px-4 py-3 text-body-md text-on-surface text-center">{{ $index + 1 }}</td>
+                    <td class="px-4 py-3 text-body-md text-on-surface text-center">{{ ($konsolidasiData->currentPage() - 1) * $konsolidasiData->perPage() + $index + 1 }}</td>
                     <td class="px-4 py-3 text-body-md font-medium text-on-surface">{{ $data['skpd']->kode }}</td>
                     <td class="px-4 py-3 text-body-md text-on-surface">{{ $data['skpd']->nama }}</td>
                     
@@ -93,6 +93,12 @@
             </tfoot>
         </table>
     </div>
+    
+    @if($konsolidasiData->hasPages())
+    <div class="p-6 border-t border-outline-variant bg-surface-container-low">
+        {{ $konsolidasiData->links() }}
+    </div>
+    @endif
 </div>
 
 </x-app-layout>

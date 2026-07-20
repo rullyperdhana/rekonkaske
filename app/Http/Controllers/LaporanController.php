@@ -192,19 +192,16 @@ class LaporanController extends Controller
 
         $selectedBulan = $request->bulan ?? $defaultMonth;
 
-        $skpds = Skpd::where('status', true)->orderBy('kode')->get();
+        $skpdsPaginated = Skpd::where('status', true)->orderBy('kode')->paginate(15);
+        $skpdsPaginated->appends($request->all());
         
-        $konsolidasiData = [];
-        $totalBku = 0;
-        $totalBank = 0;
-
-        foreach ($skpds as $skpd) {
+        $skpdsPaginated->getCollection()->transform(function ($skpd) use ($tahunAktif, $selectedBulan) {
             $trx = Transaksi::where('skpd_id', $skpd->id)
                 ->where('periode_tahun', $tahunAktif)
                 ->where('periode_bulan', $selectedBulan)
                 ->first();
 
-            $konsolidasiData[] = [
+            return [
                 'skpd' => $skpd,
                 'bku' => $trx ? $trx->bku_saldo_akhir : null,
                 'bank' => $trx ? $trx->bank_saldo_akhir : null,
@@ -212,12 +209,20 @@ class LaporanController extends Controller
                 'status' => $trx ? $trx->status_verifikasi : null,
                 'is_exist' => $trx ? true : false,
             ];
+        });
 
-            if ($trx) {
-                $totalBku += $trx->bku_saldo_akhir;
-                $totalBank += $trx->bank_saldo_akhir;
-            }
-        }
+        // Hitung Grand Total dari tabel Transaksi
+        $totalBku = Transaksi::where('periode_tahun', $tahunAktif)
+            ->where('periode_bulan', $selectedBulan)
+            ->whereHas('skpd', function($q) { $q->where('status', true); })
+            ->sum('bku_saldo_akhir');
+            
+        $totalBank = Transaksi::where('periode_tahun', $tahunAktif)
+            ->where('periode_bulan', $selectedBulan)
+            ->whereHas('skpd', function($q) { $q->where('status', true); })
+            ->sum('bank_saldo_akhir');
+
+        $konsolidasiData = $skpdsPaginated;
 
         return view('laporan.konsolidasi', compact('konsolidasiData', 'tahunAktif', 'selectedBulan', 'totalBku', 'totalBank'));
     }
