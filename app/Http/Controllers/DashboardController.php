@@ -23,11 +23,45 @@ class DashboardController extends Controller
             $query->where('skpd_id', $user->skpd_id);
         }
 
-        // 1. Get the latest transaction for the main metrics (Current Period)
-        $latestTransaksi = (clone $query)->orderBy('periode_tahun', 'desc')
-                                        ->orderBy('periode_bulan', 'desc')
-                                        ->orderBy('created_at', 'desc')
-                                        ->first();
+        // 1. Get the summary for the main metrics (Current Period)
+        $summary = [
+            'has_data' => false,
+            'bku' => 0,
+            'bank' => 0,
+            'info' => '',
+            'is_matched' => true
+        ];
+
+        // We keep latestTransaksi for backwards compatibility if needed elsewhere
+        $latestTransaksi = null;
+
+        if ($user->skpd_id) {
+            $latestTransaksi = (clone $query)->orderBy('periode_bulan', 'desc')
+                                    ->orderBy('created_at', 'desc')
+                                    ->first();
+            if ($latestTransaksi) {
+                $summary['has_data'] = true;
+                $summary['bku'] = $latestTransaksi->bku_saldo_akhir;
+                $summary['bank'] = $latestTransaksi->bank_saldo_akhir;
+                $summary['info'] = 'Periode aktif: ' . date('F', mktime(0, 0, 0, $latestTransaksi->periode_bulan, 10)) . ' ' . $latestTransaksi->periode_tahun . ' | ' . ($latestTransaksi->skpd->nama ?? '');
+                $summary['is_matched'] = abs($latestTransaksi->bku_saldo_akhir - $latestTransaksi->bank_saldo_akhir) < 0.01;
+            }
+        } else {
+            $allTransactions = (clone $query)->orderBy('periode_bulan', 'asc')->orderBy('created_at', 'asc')->get();
+            $latestPerSkpd = [];
+            foreach ($allTransactions as $trx) {
+                $latestPerSkpd[$trx->skpd_id] = $trx;
+            }
+            if (count($latestPerSkpd) > 0) {
+                $summary['has_data'] = true;
+                $summary['info'] = 'Akumulasi Saldo Terakhir Seluruh SKPD (' . $tahunAktif . ')';
+                foreach ($latestPerSkpd as $trx) {
+                    $summary['bku'] += $trx->bku_saldo_akhir;
+                    $summary['bank'] += $trx->bank_saldo_akhir;
+                }
+                $summary['is_matched'] = abs($summary['bku'] - $summary['bank']) < 0.01;
+            }
+        }
 
         // 2. Ringkasan Selisih Transaksi: Transaksi with discrepancy (not 0) and not verified yet
         // Alternatively, just any recent transaction with a discrepancy
@@ -96,6 +130,6 @@ class DashboardController extends Controller
         // 7. Pengumuman Aktif
         $pengumumans = \App\Models\Pengumuman::where('is_aktif', true)->orderBy('created_at', 'desc')->get();
 
-        return view('dashboard', compact('latestTransaksi', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans'));
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans'));
     }
 }

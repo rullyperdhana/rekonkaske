@@ -18,8 +18,8 @@
     @endif
     <div class="mb-8">
         <h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">Tinjauan Rekonsiliasi</h2>
-        @if($latestTransaksi)
-            <p class="text-body-md font-body-md text-on-surface-variant">Periode aktif: {{ date('F', mktime(0, 0, 0, $latestTransaksi->periode_bulan, 10)) }} {{ $latestTransaksi->periode_tahun }} | {{ $latestTransaksi->skpd->nama ?? 'Semua SKPD' }}</p>
+        @if($summary['has_data'])
+            <p class="text-body-md font-body-md text-on-surface-variant">{{ $summary['info'] }}</p>
         @else
             <p class="text-body-md font-body-md text-on-surface-variant">Belum ada data rekonsiliasi</p>
         @endif
@@ -42,7 +42,7 @@
                 <div>
                     <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total BKU (SIPANDA)</h3>
                     <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
-                        Rp {{ $latestTransaksi ? number_format($latestTransaksi->bku_saldo_akhir, 2, ',', '.') : '0,00' }}
+                        Rp {{ $summary['has_data'] ? number_format($summary['bku'], 2, ',', '.') : '0,00' }}
                     </p>
                 </div>
                 <div class="p-2 bg-primary-fixed rounded-lg text-primary">
@@ -58,7 +58,7 @@
                 <div>
                     <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total Bank Kalsel</h3>
                     <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
-                        Rp {{ $latestTransaksi ? number_format($latestTransaksi->bank_saldo_akhir, 2, ',', '.') : '0,00' }}
+                        Rp {{ $summary['has_data'] ? number_format($summary['bank'], 2, ',', '.') : '0,00' }}
                     </p>
                 </div>
                 <div class="p-2 bg-secondary-fixed rounded-lg text-secondary">
@@ -74,14 +74,11 @@
                 <div>
                     <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Status Rekonsiliasi</h3>
                     <div class="flex items-center gap-2">
-                        @php
-                            $isMatched = $latestTransaksi && abs($latestTransaksi->bku_saldo_akhir - $latestTransaksi->bank_saldo_akhir) < 0.01;
-                        @endphp
                         <p class="text-headline-md font-headline-md text-on-surface">
-                            {{ $latestTransaksi ? ($isMatched ? '100%' : 'Selisih') : '-' }}
+                            {{ $summary['has_data'] ? ($summary['is_matched'] ? '100%' : 'Selisih') : '-' }}
                         </p>
-                        @if($latestTransaksi)
-                            @if($isMatched)
+                        @if($summary['has_data'])
+                            @if($summary['is_matched'])
                                 <span class="bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded text-label-sm font-label-sm flex items-center gap-1">
                                     <span class="material-symbols-outlined text-sm">check_circle</span> Matched
                                 </span>
