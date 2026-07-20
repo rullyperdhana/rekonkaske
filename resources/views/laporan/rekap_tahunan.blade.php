@@ -1,5 +1,6 @@
 <x-app-layout>
 @section('title', 'Laporan Rekapitulasi Tahunan')
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
 
 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-8">
     <div>
@@ -103,5 +104,20 @@
     </div>
 </div>
 @endif
+
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById('skpd_id')) {
+            new TomSelect("#skpd_id",{
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
+        }
+    });
+</script>
 
 </x-app-layout>
