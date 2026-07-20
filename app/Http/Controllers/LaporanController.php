@@ -175,7 +175,29 @@ class LaporanController extends Controller
             return $b['tunggakan_bulan'] <=> $a['tunggakan_bulan'];
         });
 
-        return view('laporan.tunggakan', compact('dataSelisih', 'dataTunggakan', 'tahunAktif', 'targetMonth'));
+        $perPage = 10;
+        
+        $tunggakanCollection = collect($dataTunggakan);
+        $pageTunggakan = $request->get('page_tunggakan', 1);
+        $dataTunggakanPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $tunggakanCollection->forPage($pageTunggakan, $perPage),
+            $tunggakanCollection->count(),
+            $perPage,
+            $pageTunggakan,
+            ['path' => $request->url(), 'query' => $request->query(), 'pageName' => 'page_tunggakan']
+        );
+        
+        $selisihCollection = collect($dataSelisih);
+        $pageSelisih = $request->get('page_selisih', 1);
+        $dataSelisihPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+            $selisihCollection->forPage($pageSelisih, $perPage),
+            $selisihCollection->count(),
+            $perPage,
+            $pageSelisih,
+            ['path' => $request->url(), 'query' => $request->query(), 'pageName' => 'page_selisih']
+        );
+
+        return view('laporan.tunggakan', compact('dataSelisihPaginated', 'dataTunggakanPaginated', 'tahunAktif', 'targetMonth'));
     }
 
     /**

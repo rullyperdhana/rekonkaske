@@ -31,9 +31,9 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline-variant/50">
-                @forelse($dataTunggakan as $index => $item)
+                @forelse($dataTunggakanPaginated as $index => $item)
                 <tr class="hover:bg-surface-container-lowest transition-colors">
-                    <td class="px-6 py-4 text-body-md text-on-surface text-center">{{ $index + 1 }}</td>
+                    <td class="px-6 py-4 text-body-md text-on-surface text-center">{{ ($dataTunggakanPaginated->currentPage() - 1) * $dataTunggakanPaginated->perPage() + $index + 1 }}</td>
                     <td class="px-6 py-4 text-body-md font-medium text-on-surface">
                         <div class="font-bold">{{ $item['skpd']->kode }}</div>
                         <div class="text-sm text-on-surface-variant">{{ $item['skpd']->nama }}</div>
@@ -62,6 +62,11 @@
             </tbody>
         </table>
     </div>
+    @if($dataTunggakanPaginated->hasPages())
+    <div class="p-6 border-t border-outline-variant bg-surface-container-low">
+        {{ $dataTunggakanPaginated->links() }}
+    </div>
+    @endif
 </div>
 
 <!-- Tabel Selisih -->
@@ -86,9 +91,9 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline-variant/50">
-                @forelse($dataSelisih as $index => $item)
+                @forelse($dataSelisihPaginated as $index => $item)
                 <tr class="hover:bg-surface-container-lowest transition-colors">
-                    <td class="px-6 py-4 text-body-md text-on-surface text-center align-top">{{ $index + 1 }}</td>
+                    <td class="px-6 py-4 text-body-md text-on-surface text-center align-top">{{ ($dataSelisihPaginated->currentPage() - 1) * $dataSelisihPaginated->perPage() + $index + 1 }}</td>
                     <td class="px-6 py-4 text-body-md font-medium text-on-surface align-top">
                         <div class="font-bold">{{ $item['skpd']->kode }}</div>
                         <div class="text-sm text-on-surface-variant">{{ $item['skpd']->nama }}</div>
@@ -122,6 +127,11 @@
             </tbody>
         </table>
     </div>
+    @if($dataSelisihPaginated->hasPages())
+    <div class="p-6 border-t border-outline-variant bg-surface-container-low">
+        {{ $dataSelisihPaginated->links() }}
+    </div>
+    @endif
 </div>
 
 </x-app-layout>
