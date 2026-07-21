@@ -49,6 +49,7 @@ class RegisteredUserController extends Controller
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'skpd_id' => ['required', 'exists:skpds,id'],
+            'no_whatsapp' => ['required', 'string', 'max:50'],
         ]);
 
         $existingUser = User::where('skpd_id', $request->skpd_id)->first();
@@ -65,6 +66,14 @@ class RegisteredUserController extends Controller
             'role' => 'operator',
             'status' => 0,
         ]);
+
+        // Simpan/update nomor WA ke master SKPD
+        $skpd = Skpd::find($request->skpd_id);
+        if ($skpd) {
+            $skpd->update([
+                'no_whatsapp' => $request->no_whatsapp
+            ]);
+        }
 
         event(new Registered($user));
 
