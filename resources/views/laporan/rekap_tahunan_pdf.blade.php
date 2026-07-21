@@ -136,7 +136,7 @@
             @foreach($rekapData as $data)
             <tr>
                 <td class="text-center">{{ $loop->iteration }}</td>
-                <td>{{ date('F', mktime(0, 0, 0, $data['bulan'], 10)) }}</td>
+                <td>{{ $namaBulan[$data['bulan'] - 1] }}</td>
                 @if(isset($data['bku']))
                     <td>
                         <table class="curr-table"><tr><td class="curr-symbol">Rp</td><td class="curr-val">{{ number_format($data['bku'], 2, ',', '.') }}</td></tr></table>

@@ -112,7 +112,7 @@
 
     <div class="text-center judul-dokumen">
         <h2>LAPORAN KONSOLIDASI REKONSILIASI KAS DAERAH</h2>
-        <h3>Bulan {{ date('F', mktime(0, 0, 0, $selectedBulan, 10)) }} Tahun {{ $tahunAktif }}</h3>
+        <h3>Bulan {{ $namaBulan[$selectedBulan - 1] }} Tahun {{ $tahunAktif }}</h3>
     </div>
 
     <table class="keuangan">

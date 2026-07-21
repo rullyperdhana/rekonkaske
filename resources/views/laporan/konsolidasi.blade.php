@@ -4,7 +4,7 @@
 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-8">
     <div>
         <h2 class="text-headline-sm font-headline-sm text-on-surface">Laporan Konsolidasi Kas Daerah</h2>
-        <p class="text-body-md font-body-md text-on-surface-variant">Rangkuman Saldo BKU dan Bank seluruh SKPD pada Bulan {{ date('F', mktime(0, 0, 0, $selectedBulan, 10)) }} Tahun {{ $tahunAktif }}.</p>
+        <p class="text-body-md font-body-md text-on-surface-variant">Rangkuman Saldo BKU dan Bank seluruh SKPD pada Bulan {{ $namaBulan[$selectedBulan - 1] }} Tahun {{ $tahunAktif }}.</p>
     </div>
 </div>
 
@@ -14,7 +14,7 @@
             <label for="bulan" class="block text-label-md font-label-md text-on-surface mb-1">Pilih Bulan</label>
             <select name="bulan" id="bulan" class="w-full h-11 px-3 rounded-lg border border-outline bg-surface text-body-md focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
                 @for($i = 1; $i <= 12; $i++)
-                    <option value="{{ $i }}" {{ $selectedBulan == $i ? 'selected' : '' }}>{{ date('F', mktime(0, 0, 0, $i, 10)) }}</option>
+                    <option value="{{ $i }}" {{ $selectedBulan == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
                 @endfor
             </select>
         </div>

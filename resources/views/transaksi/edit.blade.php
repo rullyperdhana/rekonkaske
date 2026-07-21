@@ -61,7 +61,7 @@
                         <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Periode Bulan</label>
                         <select name="periode_bulan" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                             @for($i=1; $i<=12; $i++)
-                                <option value="{{ $i }}" {{ old('periode_bulan', $transaksi->periode_bulan) == $i ? 'selected' : '' }}>{{ date('F', mktime(0, 0, 0, $i, 10)) }}</option>
+                                <option value="{{ $i }}" {{ old('periode_bulan', $transaksi->periode_bulan) == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
                             @endfor
                         </select>
                     </div>

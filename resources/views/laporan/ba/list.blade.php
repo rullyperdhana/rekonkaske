@@ -20,7 +20,7 @@
                     <option value="">Semua Bulan</option>
                     @for($i = 1; $i <= 12; $i++)
                         <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
-                            {{ date('F', mktime(0, 0, 0, $i, 10)) }}
+                            {{ $namaBulan[$i - 1] }}
                         </option>
                     @endfor
                 </select>
@@ -56,7 +56,7 @@
                         @forelse($transaksis as $trx)
                         <tr class="hover:bg-surface-container-lowest transition-colors">
                             <td class="py-3 px-4 font-body-md text-on-surface">
-                                {{ date('F', mktime(0, 0, 0, $trx->periode_bulan, 10)) }} {{ $trx->periode_tahun }}
+                                {{ $namaBulan[$trx->periode_bulan - 1] }} {{ $trx->periode_tahun }}
                             </td>
                             <td class="py-3 px-4 font-body-md text-on-surface">
                                 {{ $trx->skpd->nama ?? '-' }}

@@ -9,7 +9,7 @@
                 <h2 class="text-headline-md font-headline-md font-bold text-on-surface mb-1">Upload Dokumen Rekonsiliasi</h2>
                 <p class="text-body-md text-on-surface-variant">
                     {{ $transaksi->skpd->nama ?? '-' }} — 
-                    {{ date('F', mktime(0, 0, 0, $transaksi->periode_bulan, 10)) }} {{ $transaksi->periode_tahun }}
+                    {{ $namaBulan[$transaksi->periode_bulan - 1] }} {{ $transaksi->periode_tahun }}
                 </p>
             </div>
         </div>

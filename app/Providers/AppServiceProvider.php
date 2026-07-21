@@ -32,5 +32,9 @@ class AppServiceProvider extends ServiceProvider
 
             return app()->isProduction() ? $rule->uncompromised() : $rule;
         });
+
+        // Share namaBulan globally for all views
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        \Illuminate\Support\Facades\View::share('namaBulan', $namaBulan);
     }
 }

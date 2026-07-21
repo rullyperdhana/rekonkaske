@@ -83,7 +83,7 @@
             <!-- Document Title -->
             <div class="text-center mb-8">
                 <h2 class="text-xl font-bold uppercase underline underline-offset-4 decoration-2 text-black">BERITA ACARA REKONSILIASI</h2>
-                <h3 class="text-lg font-bold mt-2 text-black">Bulan : {{ strtoupper(date('F', mktime(0, 0, 0, $transaksi->periode_bulan, 10))) }} {{ $transaksi->periode_tahun }}</h3>
+                <h3 class="text-lg font-bold mt-2 text-black">Bulan : {{ strtoupper($namaBulan[$transaksi->periode_bulan - 1]) }} {{ $transaksi->periode_tahun }}</h3>
             </div>
             
             <!-- Introductory Text -->

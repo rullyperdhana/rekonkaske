@@ -145,7 +145,7 @@
     <!-- Judul -->
     <div class="text-center judul-dokumen mb-4">
         <h2 class="uppercase">BERITA ACARA REKONSILIASI</h2>
-        <h3 class="uppercase">Bulan : {{ date('F', mktime(0, 0, 0, $transaksi->periode_bulan, 10)) }} {{ $transaksi->periode_tahun }}</h3>
+        <h3 class="uppercase">Bulan : {{ $namaBulan[$transaksi->periode_bulan - 1] }} {{ $transaksi->periode_tahun }}</h3>
     </div>
 
     <!-- Intro Text -->

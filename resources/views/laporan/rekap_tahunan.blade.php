@@ -68,7 +68,7 @@
                 @foreach($rekapData as $data)
                 <tr class="hover:bg-surface-container-lowest transition-colors {{ !$data['is_exist'] ? 'opacity-60 bg-surface-container-lowest' : '' }}">
                     <td class="px-6 py-4 text-body-md font-medium text-on-surface whitespace-nowrap">
-                        {{ date('F', mktime(0, 0, 0, $data['bulan'], 10)) }}
+                        {{ $namaBulan[$data['bulan'] - 1] }}
                     </td>
                     
                     @if($data['is_exist'])
