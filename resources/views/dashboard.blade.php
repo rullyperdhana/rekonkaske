@@ -101,28 +101,27 @@
         
         @if(isset($kepatuhanData))
         <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Kepatuhan (Bulan {{ $kepatuhanData['target_bulan'] }})</h3>
-                    <div class="flex items-end gap-2">
-                        <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
-                            {{ $kepatuhanData['persentase'] }}%
-                        </p>
-                        <p class="text-body-sm text-on-surface-variant mb-1">({{ $kepatuhanData['patuh'] }}/{{ $kepatuhanData['total_skpd'] }} SKPD)</p>
-                    </div>
-                </div>
-                <div class="p-2 bg-primary-container text-on-primary-container rounded-lg">
-                    <span class="material-symbols-outlined">pie_chart</span>
-                </div>
+            <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Kepatuhan (Bulan {{ $kepatuhanData['target_bulan'] }})</h3>
+            <div class="flex-grow flex flex-col items-center justify-center relative w-full h-32">
+                <canvas id="kepatuhanChart"></canvas>
             </div>
-            <div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
-                Tingkat Kepatuhan Lapor
-            </div>
-            <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden mt-auto">
-                <div class="bg-primary h-full rounded-full transition-all duration-1000" style="width: {{ $kepatuhanData['persentase'] }}%"></div>
+            <div class="text-center mt-2">
+                <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
+                    {{ $kepatuhanData['persentase'] }}%
+                </p>
+                <p class="text-label-sm text-on-surface-variant">({{ $kepatuhanData['patuh'] }}/{{ $kepatuhanData['total_skpd'] }} Lapor)</p>
             </div>
         </div>
         @endif
+    </div>
+
+    <!-- Chart Analytics Full Width -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
+        <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Saldo Kas Daerah ({{ $tahunAktif }})</h3>
+        <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan Total Saldo Buku Kas Umum vs Rekening Koran Bank seluruh SKPD.</p>
+        <div class="w-full relative h-72">
+            <canvas id="rekonChart"></canvas>
+        </div>
     </div>
 
     <!-- Status Rekonsiliasi Per SKPD -->
@@ -260,14 +259,29 @@
         </div>
         <!-- Side Panel -->
         <div class="space-y-8">
-            <!-- Chart Preview -->
+            <!-- Leaderboard -->
+            @if(isset($topSkpds) && count($topSkpds) > 0)
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Tren Rekonsiliasi {{ $tahunAktif }}</h3>
-                <p class="text-body-md font-body-md text-on-surface-variant mb-4">Total Saldo BKU vs Bank.</p>
-                <div class="w-full relative">
-                    <canvas id="rekonChart" height="200"></canvas>
+                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">🏆 Papan Peringkat SKPD</h3>
+                <p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Top 5 Paling Rajin Rekonsiliasi</p>
+                <div class="space-y-4">
+                    @foreach($topSkpds as $index => $topSkpd)
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                            {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : 
+                               ($index == 1 ? 'bg-gray-200 text-gray-700' : 
+                               ($index == 2 ? 'bg-orange-100 text-orange-700' : 'bg-surface-container-high text-on-surface-variant')) }}">
+                            {{ $index + 1 }}
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <p class="text-label-md font-label-md text-on-surface truncate">{{ $topSkpd->nama }}</p>
+                            <p class="text-body-sm text-on-surface-variant truncate">{{ $topSkpd->transaksis_count }} bulan selesai</p>
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
             </div>
+            @endif
             <!-- Recent Activity -->
             <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
                 <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Aktivitas Terakhir</h3>
@@ -300,58 +314,102 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const ctx = document.getElementById('rekonChart').getContext('2d');
+            // Data for Bar Chart
             const chartData = @json($chartData);
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: chartData.labels,
-                    datasets: [
-                        {
-                            label: 'Saldo Akhir BKU',
-                            data: chartData.bku,
-                            borderColor: '#006B5E', // Primary color
-                            backgroundColor: 'rgba(0, 107, 94, 0.1)',
-                            borderWidth: 2,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Saldo Akhir Bank',
-                            data: chartData.bank,
-                            borderColor: '#4A635F', // Secondary color
-                            backgroundColor: 'transparent',
-                            borderWidth: 2,
-                            borderDash: [5, 5],
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                font: { family: "'Inter', sans-serif", size: 12 }
+            const ctxRekon = document.getElementById('rekonChart');
+            if (ctxRekon) {
+                new Chart(ctxRekon.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: chartData.labels,
+                        datasets: [
+                            {
+                                label: 'Total Saldo BKU',
+                                data: chartData.bku,
+                                backgroundColor: '#006B5E', // Primary color
+                                borderRadius: 4,
+                            },
+                            {
+                                label: 'Total Saldo Bank',
+                                data: chartData.bank,
+                                backgroundColor: '#4A635F', // Secondary color
+                                borderRadius: 4,
                             }
-                        }
+                        ]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    if(value >= 1000000) return 'Rp ' + (value/1000000).toFixed(0) + 'Jt';
-                                    return value;
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: { font: { family: "'Inter', sans-serif", size: 12 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        if(value >= 1000000000) return 'Rp ' + (value/1000000000).toFixed(1) + 'M';
+                                        if(value >= 1000000) return 'Rp ' + (value/1000000).toFixed(0) + 'Jt';
+                                        return value;
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
+                });
+            }
+
+            // Data for Doughnut Chart (Kepatuhan)
+            @if(isset($kepatuhanData))
+            const ctxKepatuhan = document.getElementById('kepatuhanChart');
+            if (ctxKepatuhan) {
+                const patuh = {{ $kepatuhanData['patuh'] }};
+                const belum = {{ $kepatuhanData['total_skpd'] - $kepatuhanData['patuh'] }};
+                
+                new Chart(ctxKepatuhan.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Sudah Lapor', 'Belum Lapor'],
+                        datasets: [{
+                            data: [patuh, belum],
+                            backgroundColor: ['#006B5E', '#E0E3E1'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '75%',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return ' ' + context.label + ': ' + context.parsed + ' SKPD';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            @endif
         });
     </script>
 </x-app-layout>

@@ -164,6 +164,19 @@ class DashboardController extends Controller
             ];
         }
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData'));
+        // 9. Leaderboard (Top 5 SKPD Paling Disiplin - Hanya untuk Admin)
+        $topSkpds = collect();
+        if (!$user->skpd_id) {
+            $topSkpds = Skpd::where('status', true)
+                ->withCount(['transaksis' => function ($query) use ($tahunAktif) {
+                    $query->where('periode_tahun', $tahunAktif)
+                          ->where('status_verifikasi', 'verified');
+                }])
+                ->orderByDesc('transaksis_count')
+                ->take(5)
+                ->get();
+        }
+
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds'));
     }
 }
