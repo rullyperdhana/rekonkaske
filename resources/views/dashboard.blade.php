@@ -296,7 +296,7 @@
                             @endif
                         </div>
                         <div>
-                            <p class="text-body-md font-body-md text-on-surface">Data BKU {{ date('F', mktime(0, 0, 0, $activity->periode_bulan, 10)) }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
+                            <p class="text-body-md font-body-md text-on-surface">Data BKU {{ $namaBulan[$activity->periode_bulan - 1] }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
                             <p class="text-label-sm font-label-sm text-on-surface-variant">Oleh: {{ $activity->user->name ?? 'Sistem' }} • {{ $activity->updated_at->diffForHumans() }}</p>
                         </div>
                     </div>

@@ -16,6 +16,8 @@ class DashboardController extends Controller
         // Retrieve active year from login session
         $tahunAktif = session('tahun_login') ?? date('Y');
 
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
         // Base query for transactions visible to the user
         $query = Transaksi::with(['skpd', 'user'])->where('periode_tahun', $tahunAktif);
         
@@ -43,7 +45,7 @@ class DashboardController extends Controller
                 $summary['has_data'] = true;
                 $summary['bku'] = $latestTransaksi->bku_saldo_akhir;
                 $summary['bank'] = $latestTransaksi->bank_saldo_akhir;
-                $summary['info'] = 'Periode aktif: ' . date('F', mktime(0, 0, 0, $latestTransaksi->periode_bulan, 10)) . ' ' . $latestTransaksi->periode_tahun . ' | ' . ($latestTransaksi->skpd->nama ?? '');
+                $summary['info'] = 'Periode aktif: ' . $namaBulan[$latestTransaksi->periode_bulan - 1] . ' ' . $latestTransaksi->periode_tahun . ' | ' . ($latestTransaksi->skpd->nama ?? '');
                 $summary['is_matched'] = abs($latestTransaksi->bku_saldo_akhir - $latestTransaksi->bank_saldo_akhir) < 0.01;
             }
         } else {
@@ -98,7 +100,7 @@ class DashboardController extends Controller
             if ($prevMonth > 0) {
                 $hasPrevMonth = (clone $query)->where('periode_bulan', $prevMonth)->exists();
                 if (!$hasPrevMonth) {
-                    $missingMonth = date('F', mktime(0, 0, 0, $prevMonth, 10));
+                    $missingMonth = $namaBulan[$prevMonth - 1];
                 }
             }
         }
@@ -177,6 +179,6 @@ class DashboardController extends Controller
                 ->get();
         }
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds'));
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'namaBulan'));
     }
 }
