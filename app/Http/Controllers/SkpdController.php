@@ -30,6 +30,7 @@ class SkpdController extends Controller
         $validated = $request->validate([
             'kode' => 'required|unique:skpds,kode|max:255',
             'nama' => 'required|max:255',
+            'no_whatsapp' => 'nullable|string|max:50',
             'nama_bendahara' => 'nullable|max:255',
             'status' => 'boolean',
         ]);
@@ -49,6 +50,7 @@ class SkpdController extends Controller
         $validated = $request->validate([
             'kode' => 'required|max:255|unique:skpds,kode,' . $skpd->id,
             'nama' => 'required|max:255',
+            'no_whatsapp' => 'nullable|string|max:50',
             'nama_bendahara' => 'nullable|max:255',
             'status' => 'boolean',
         ]);

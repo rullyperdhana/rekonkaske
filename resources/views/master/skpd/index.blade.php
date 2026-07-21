@@ -41,7 +41,8 @@
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-16">No</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-32 border-l-2 border-outline-variant/30">Kode SKPD</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Nama SKPD</th>
-                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-40 border-l border-outline-variant/30">Nama Bendahara</th>
+                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Nama Bendahara</th>
+                        <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">No WhatsApp</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant border-l border-outline-variant/30">Status</th>
                         <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant w-28 text-center border-l border-outline-variant/30">Aksi</th>
                     </tr>
@@ -53,6 +54,7 @@
                         <td class="py-3 px-4 text-data-tabular font-data-tabular text-on-surface border-l-2 border-outline-variant/10">{{ $skpd->kode }}</td>
                         <td class="py-3 px-4 text-body-md font-body-md text-on-surface font-semibold border-l border-outline-variant/10">{{ $skpd->nama }}</td>
                         <td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">{{ $skpd->nama_bendahara ?? '-' }}</td>
+                        <td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">{{ $skpd->no_whatsapp ?? '-' }}</td>
                         <td class="py-3 px-4 text-body-md font-body-md text-on-surface-variant border-l border-outline-variant/10">
                             @if($skpd->status)
                                 <span class="px-2 py-1 bg-primary/10 text-primary rounded text-xs">Aktif</span>
@@ -77,7 +79,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="6" class="py-4 text-center text-on-surface-variant">Belum ada data SKPD.</td>
+                        <td colspan="7" class="py-4 text-center text-on-surface-variant">Belum ada data SKPD.</td>
                     </tr>
                     @endforelse
                     </tbody>

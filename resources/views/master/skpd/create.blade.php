@@ -40,6 +40,11 @@
                 </div>
 
                 <div>
+                    <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Nomor WhatsApp (Opsional)</label>
+                    <input type="text" name="no_whatsapp" value="{{ old('no_whatsapp') }}" class="w-full h-[40px] px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" placeholder="Misal: 081234567890">
+                </div>
+
+                <div>
                     <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Status</label>
                     <select name="status" class="w-full h-[40px] px-3 rounded-lg border border-outline-variant bg-surface-container-lowest text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                         <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Aktif</option>

@@ -20,9 +20,27 @@ class Skpd extends Model
     protected $fillable = [
         'kode',
         'nama',
+        'no_whatsapp',
         'nama_bendahara',
         'status',
     ];
+
+    public function getWhatsappUrl($message = '')
+    {
+        if (!$this->no_whatsapp) {
+            return '#';
+        }
+
+        // Format nomor dari 08... ke 628...
+        $number = $this->no_whatsapp;
+        $number = preg_replace('/[^0-9]/', '', $number); // buang karakter non-angka
+        
+        if (str_starts_with($number, '08')) {
+            $number = '628' . substr($number, 2);
+        }
+
+        return 'https://wa.me/' . $number . '?text=' . urlencode($message);
+    }
 
     public function transaksis()
     {
