@@ -65,7 +65,7 @@
         <li>
             <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" href="{{ route('transaksi.index') }}">
                 <span class="material-symbols-outlined">swap_horiz</span>
-                <span class="text-label-sm font-label-sm">Transaksi</span>
+                <span class="text-label-sm font-label-sm">Data Entri</span>
             </a>
         </li>
         <li class="group">

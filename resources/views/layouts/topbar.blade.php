@@ -3,7 +3,7 @@
         <button onclick="toggleSidebar()" class="text-on-surface-variant hover:text-primary p-1 rounded-full hover:bg-surface-container-high transition-colors">
             <span class="material-symbols-outlined">menu</span>
         </button>
-        <span class="text-headline-sm font-headline-sm font-black text-primary dark:text-primary-fixed hidden sm:inline">Sistem Rekonsiliasi SIPANDA</span>
+        <span class="text-headline-sm font-headline-sm font-black text-primary dark:text-primary-fixed hidden sm:inline">Sistem Rekonsiliasi Kas</span>
         <span class="text-headline-sm font-headline-sm font-black text-primary dark:text-primary-fixed sm:hidden">SIPANDA</span>
     </div>
     <div class="flex items-center gap-4">
