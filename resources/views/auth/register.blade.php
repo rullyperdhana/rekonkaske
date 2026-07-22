@@ -92,7 +92,7 @@
 
                 <!-- Nama Lengkap -->
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap</label>
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
                     <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus placeholder="Masukkan Nama Anda" 
                         class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
                     <x-input-error :messages="$errors->get('name')" class="mt-1 text-xs text-red-600" />
@@ -100,7 +100,7 @@
 
                 <!-- Email -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Pengguna</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Pengguna <span class="text-red-500">*</span></label>
                     <input id="email" type="email" name="email" value="{{ old('email') }}" required placeholder="Contoh: op.skpd@tapinkab.go.id" 
                         class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
                     <x-input-error :messages="$errors->get('email')" class="mt-1 text-xs text-red-600" />
@@ -108,7 +108,7 @@
 
                 <!-- SKPD -->
                 <div>
-                    <label for="skpd_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih SKPD (Instansi)</label>
+                    <label for="skpd_id" class="block text-sm font-medium text-gray-700 mb-1">Pilih SKPD (Instansi) <span class="text-red-500">*</span></label>
                     <select id="skpd_id" name="skpd_id" required>
                         <option value="">-- Pilih SKPD Anda --</option>
                         @foreach($skpds as $skpd)
@@ -123,7 +123,7 @@
 
                 <!-- WhatsApp -->
                 <div>
-                    <label for="no_whatsapp" class="block text-sm font-medium text-gray-700 mb-1">Nomor WhatsApp SKPD</label>
+                    <label for="no_whatsapp" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon / WhatsApp <span class="text-red-500">*</span></label>
                     <input id="no_whatsapp" type="text" name="no_whatsapp" value="{{ old('no_whatsapp') }}" required placeholder="Contoh: 081234567890" 
                         class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
                     <p class="text-xs text-gray-500 mt-1">*Nomor ini akan digunakan sebagai kontak resmi instansi Anda untuk menerima notifikasi otomatis.</p>
@@ -133,13 +133,13 @@
                 <!-- Password -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
                         <input id="password" type="password" name="password" required placeholder="Minimal 8 karakter" 
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
                         <x-input-error :messages="$errors->get('password')" class="mt-1 text-xs text-red-600" />
                     </div>
                     <div>
-                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Ulangi Password</label>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Ulangi Password <span class="text-red-500">*</span></label>
                         <input id="password_confirmation" type="password" name="password_confirmation" required placeholder="Konfirmasi password" 
                             class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-[#00346f] focus:border-[#00346f] text-gray-700">
                         <x-input-error :messages="$errors->get('password_confirmation')" class="mt-1 text-xs text-red-600" />
