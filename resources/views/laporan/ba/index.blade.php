@@ -249,7 +249,7 @@
                 @if($transaksi->status_verifikasi === 'verified')
                 <div class="flex flex-col items-center justify-center">
                     <div class="p-1 border border-black inline-block bg-white">
-                        <img src="data:image/png;base64, {!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(80)->generate(route('verifikasi.show', $transaksi->id))) !!} ">
+                        <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(80)->generate(route('verifikasi.show', $transaksi->id))) !!}">
                     </div>
                     <span class="text-[10px] mt-1 italic font-bold">Dokumen Terverifikasi</span>
                 </div>
