@@ -12,11 +12,21 @@
     </style>
 </head>
 <body class="min-h-screen flex items-center justify-center p-4">
+    @php
+        $selisih = abs($transaksi->bku_saldo_akhir - $transaksi->bank_saldo_akhir);
+        $hasSelisih = $selisih > 0;
+        
+        $bannerClass = $hasSelisih ? 'bg-red-600' : 'bg-green-600';
+        $iconClass = $hasSelisih ? 'warning' : 'verified_user';
+        $titleText = $hasSelisih ? 'Valid (Terdapat Selisih)' : 'Dokumen Valid';
+        $subTextColor = $hasSelisih ? 'text-red-100' : 'text-green-100';
+        $btnClass = $hasSelisih ? 'border-red-600 text-red-600 hover:bg-red-50' : 'border-green-600 text-green-600 hover:bg-green-50';
+    @endphp
     <div class="bg-white max-w-md w-full rounded-2xl shadow-xl overflow-hidden">
-        <div class="bg-green-600 p-6 text-center text-white">
-            <span class="material-symbols-outlined text-6xl mb-2">verified_user</span>
-            <h1 class="text-2xl font-bold">Dokumen Valid</h1>
-            <p class="text-green-100 text-sm mt-1">Dokumen Berita Acara Rekonsiliasi ini SAH dan tercatat pada sistem SiReKa.</p>
+        <div class="{{ $bannerClass }} p-6 text-center text-white">
+            <span class="material-symbols-outlined text-6xl mb-2">{{ $iconClass }}</span>
+            <h1 class="text-2xl font-bold">{{ $titleText }}</h1>
+            <p class="{{ $subTextColor }} text-sm mt-1">Dokumen Berita Acara Rekonsiliasi ini SAH dan tercatat pada sistem SiReKa.</p>
         </div>
         
         <div class="p-6 space-y-4">
@@ -46,10 +56,16 @@
                     <span class="text-gray-700">Rekening Bank:</span>
                     <span class="font-bold text-gray-900">Rp {{ number_format($transaksi->bank_saldo_akhir, 2, ',', '.') }}</span>
                 </div>
+                @if($hasSelisih)
+                <div class="flex justify-between items-center bg-red-50 p-2 rounded mt-2 border border-red-200">
+                    <span class="text-red-700 font-semibold">Selisih:</span>
+                    <span class="font-bold text-red-700">Rp {{ number_format($selisih, 2, ',', '.') }}</span>
+                </div>
+                @endif
             </div>
             
             <div class="pt-6 text-center">
-                <a href="{{ route('landing') }}" class="inline-block border border-green-600 text-green-600 font-medium hover:bg-green-50 transition-colors rounded-full px-6 py-2 text-sm">
+                <a href="{{ route('landing') }}" class="inline-block border {{ $btnClass }} font-medium transition-colors rounded-full px-6 py-2 text-sm">
                     Kembali ke Beranda
                 </a>
             </div>
