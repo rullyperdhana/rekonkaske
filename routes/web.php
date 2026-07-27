@@ -14,6 +14,10 @@ use App\Http\Controllers\RekeningController;
 use App\Http\Controllers\BaController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifikasiController;
+
+// Public Routes
+Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
