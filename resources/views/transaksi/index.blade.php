@@ -98,17 +98,10 @@
                                     if($trx->file_rekening_koran) $docCount++;
                                 @endphp
                                 @if($trx->status_verifikasi === 'verified')
-                                    @if(Auth::user()->role !== 'konsolidator')
-                                    <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center gap-1 {{ $docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container' }} transition-colors text-label-sm font-label-sm" title="Kelola Dokumen">
+                                    <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center gap-1 {{ $docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container' }} transition-colors text-label-sm font-label-sm" title="Lihat/Kelola Dokumen">
                                         <span class="material-symbols-outlined text-[18px]">folder_open</span>
-                                        {{ $docCount > 0 ? $docCount . '/4' : 'Upload' }}
+                                        {{ $docCount > 0 ? $docCount . '/4' : (Auth::user()->role === 'konsolidator' ? '0/4' : 'Upload') }}
                                     </a>
-                                    @else
-                                    <span class="inline-flex items-center gap-1 {{ $docCount > 0 ? 'text-secondary' : 'text-on-surface-variant/50' }} text-label-sm font-label-sm" title="Dokumen">
-                                        <span class="material-symbols-outlined text-[18px]">{{ $docCount > 0 ? 'folder' : 'folder_off' }}</span>
-                                        {{ $docCount }}/4
-                                    </span>
-                                    @endif
                                 @else
                                     <span class="text-on-surface-variant/50 text-label-sm" title="Verifikasi dulu untuk upload">-</span>
                                 @endif

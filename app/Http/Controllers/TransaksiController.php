@@ -255,7 +255,6 @@ class TransaksiController extends Controller
 
     public function uploadForm(Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi !== 'verified') {
             return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
         }

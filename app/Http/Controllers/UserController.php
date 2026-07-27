@@ -10,10 +10,21 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('skpd')->orderBy('name')->paginate(10);
-        return view('pengaturan.user.index', compact('users'));
+        $query = User::with('skpd')->orderBy('name');
+
+        if ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+        
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
+
+        $users = $query->paginate(10)->appends($request->query());
+        $skpds = Skpd::where('status', true)->orderBy('nama')->get();
+        return view('pengaturan.user.index', compact('users', 'skpds'));
     }
 
     public function create()
