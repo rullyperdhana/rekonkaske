@@ -311,14 +311,15 @@
             @if($transaksi->status_verifikasi === 'verified')
             <td style="vertical-align: bottom; text-align: center; width: 100px; border: none;">
                 @php
-                    $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode(route('verifikasi.show', $transaksi->id));
+                    $signedUrl = \Illuminate\Support\Facades\URL::signedRoute('verifikasi.show', $transaksi->id);
+                    $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($signedUrl);
                     $qrData = @file_get_contents($qrUrl);
                     $qrBase64 = $qrData ? base64_encode($qrData) : '';
                 @endphp
                 @if($qrBase64)
                     <img src="data:image/png;base64,{{ $qrBase64 }}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
                 @else
-                    <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate(route('verifikasi.show', $transaksi->id))) !!}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
+                    <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($signedUrl)) !!}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
                 @endif
                 <div style="font-size: 9px; font-style: italic; font-weight: bold; margin-top: 2px;">Dokumen Terverifikasi</div>
             </td>

@@ -17,7 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 
 // Public Routes
-Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show');
+Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show')->middleware('signed');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
