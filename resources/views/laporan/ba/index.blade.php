@@ -250,16 +250,15 @@
                 <div class="flex flex-col items-center justify-center">
                     <div class="p-1 border border-black inline-block bg-white">
                         @php
-                            // Gunakan API eksternal untuk mendapatkan PNG murni agar 100% kompatibel dengan DomPDF tanpa butuh ekstensi Imagick
-                            $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode(route('verifikasi.show', $transaksi->id));
-                            $qrData = @file_get_contents($qrUrl);
-                            $qrBase64 = $qrData ? base64_encode($qrData) : '';
+                            $qrOptions = new \chillerlan\QRCode\QROptions([
+                                'outputType' => \chillerlan\QRCode\QRCode::OUTPUT_IMAGE_PNG,
+                                'eccLevel'   => \chillerlan\QRCode\QRCode::ECC_L,
+                                'scale'      => 4,
+                                'imageBase64' => true,
+                            ]);
+                            $qrImage = (new \chillerlan\QRCode\QRCode($qrOptions))->render(route('verifikasi.show', $transaksi->id));
                         @endphp
-                        @if($qrBase64)
-                            <img src="data:image/png;base64,{{ $qrBase64 }}" width="80" height="80">
-                        @else
-                            <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(80)->generate(route('verifikasi.show', $transaksi->id))) !!}" width="80" height="80">
-                        @endif
+                        <img src="{{ $qrImage }}" width="80" height="80">
                     </div>
                     <span class="text-[10px] mt-1 italic font-bold">Dokumen Terverifikasi</span>
                 </div>
