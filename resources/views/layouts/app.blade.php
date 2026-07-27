@@ -155,6 +155,33 @@
                 main.classList.toggle('lg:ml-0');
             }
         }
+
+        // Prevent double submit on all forms with POST/PUT/DELETE method
+        document.addEventListener('DOMContentLoaded', function() {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    const method = form.getAttribute('method') ? form.getAttribute('method').toUpperCase() : 'GET';
+                    // Kita biarkan form GET (seperti pencarian) tetap normal, hanya disable untuk form penyimpanan/perubahan
+                    if (method !== 'GET') {
+                        const submitBtns = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+                        submitBtns.forEach(btn => {
+                            // Mencegah double click
+                            btn.disabled = true;
+                            btn.classList.add('opacity-75', 'cursor-not-allowed');
+                            
+                            // Ubah teks tombol menjadi loading (jika berupa button)
+                            if (btn.tagName === 'BUTTON') {
+                                if(!btn.dataset.originalText) {
+                                    btn.dataset.originalText = btn.innerHTML;
+                                }
+                                btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm align-middle mr-1" style="animation: spin 1s linear infinite;">autorenew</span> Menyimpan...';
+                            }
+                        });
+                    }
+                });
+            });
+        });
     </script>
 </body>
 </html>
