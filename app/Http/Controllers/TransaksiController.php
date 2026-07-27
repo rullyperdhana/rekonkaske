@@ -224,6 +224,11 @@ class TransaksiController extends Controller
         
         foreach ($fields as $field) {
             if ($request->hasFile($field)) {
+                // Prevent operator from overwriting existing files
+                if (Auth::user()->role === 'operator' && $transaksi->$field) {
+                    continue;
+                }
+
                 // Delete old file
                 if ($transaksi->$field) {
                     \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->$field);

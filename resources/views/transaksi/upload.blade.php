@@ -56,7 +56,7 @@
                             <a href="{{ Storage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role !== 'konsolidator')
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_ba_manual))
                     <input type="file" name="file_ba_manual" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-error/10 file:text-error hover:file:bg-error/20 cursor-pointer">
                     @endif
                 </div>
@@ -82,7 +82,7 @@
                             <a href="{{ Storage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role !== 'konsolidator')
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_kas))
                     <input type="file" name="file_buku_kas" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
                     @endif
                 </div>
@@ -108,7 +108,7 @@
                             <a href="{{ Storage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role !== 'konsolidator')
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_pembantu_bank))
                     <input type="file" name="file_buku_pembantu_bank" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-tertiary/10 file:text-tertiary hover:file:bg-tertiary/20 cursor-pointer">
                     @endif
                 </div>
@@ -134,7 +134,7 @@
                             <a href="{{ Storage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role !== 'konsolidator')
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_rekening_koran))
                     <input type="file" name="file_rekening_koran" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary/10 file:text-secondary hover:file:bg-secondary/20 cursor-pointer">
                     @endif
                 </div>
@@ -145,7 +145,12 @@
                 <a href="{{ route('transaksi.index') }}" class="px-6 py-2 border border-outline rounded-lg text-on-surface-variant font-label-sm hover:bg-surface-container transition-colors">
                     Kembali
                 </a>
-                @if(Auth::user()->role !== 'konsolidator')
+                @php
+                    $canUpload = Auth::user()->role === 'admin' || 
+                                 (Auth::user()->role === 'operator' && 
+                                  (!$transaksi->file_ba_manual || !$transaksi->file_buku_kas || !$transaksi->file_buku_pembantu_bank || !$transaksi->file_rekening_koran));
+                @endphp
+                @if($canUpload)
                 <button type="submit" class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-sm font-bold shadow hover:bg-primary/90 transition-colors flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">cloud_upload</span>
                     Simpan Dokumen
