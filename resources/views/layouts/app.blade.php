@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -158,7 +159,7 @@
 
         // Prevent double submit on all forms with POST/PUT/DELETE method
         document.addEventListener('DOMContentLoaded', function() {
-            const forms = document.querySelectorAll('form');
+            const forms = document.querySelectorAll('form:not(.form-delete)');
             forms.forEach(form => {
                 form.addEventListener('submit', function(e) {
                     const method = form.getAttribute('method') ? form.getAttribute('method').toUpperCase() : 'GET';
@@ -179,6 +180,28 @@
                             }
                         });
                     }
+                });
+            });
+
+            // SweetAlert for delete forms
+            const deleteForms = document.querySelectorAll('.form-delete');
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Apakah Anda Yakin?',
+                        text: "Data dan file dokumen terkait akan dihapus secara permanen!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#ba1a1a', // error color
+                        cancelButtonColor: '#737783', // outline color
+                        confirmButtonText: 'Ya, Hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    })
                 });
             });
         });

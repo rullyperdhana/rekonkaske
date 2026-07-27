@@ -112,7 +112,7 @@
                                     <a href="{{ route('transaksi.edit', $trx->id) }}" class="inline-block text-primary hover:text-primary-container p-1 mx-1 transition-colors" title="Edit">
                                         <span class="material-symbols-outlined text-[20px]">edit</span>
                                     </a>
-                                    <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Transaksi ini?');" class="inline-block">
+                                    <form action="{{ route('transaksi.destroy', $trx->id) }}" method="POST" class="inline-block form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-error hover:text-error-container p-1 mx-1 transition-colors" title="Hapus">

@@ -151,12 +151,12 @@ class LaporanController extends Controller
         }
 
         if ($targetYear == $tahunAktif) {
-            $skpds = Skpd::where('status', true)->get();
+            $skpds = Skpd::with(['transaksis' => function($q) use ($tahunAktif) {
+                $q->where('periode_tahun', $tahunAktif)->orderBy('periode_bulan', 'desc');
+            }])->where('status', true)->get();
+            
             foreach ($skpds as $skpd) {
-                $lastTrx = Transaksi::where('skpd_id', $skpd->id)
-                    ->where('periode_tahun', $tahunAktif)
-                    ->orderBy('periode_bulan', 'desc')
-                    ->first();
+                $lastTrx = $skpd->transaksis->first();
                 
                 $lastMonthReported = $lastTrx ? $lastTrx->periode_bulan : 0;
                 
@@ -188,19 +188,19 @@ class LaporanController extends Controller
             ->pluck('skpd_id')
             ->unique();
 
-        $skpdTanpaDokumen = Skpd::whereIn('id', $skpdTanpaDokIds)->get();
+        $skpdTanpaDokumen = Skpd::with(['transaksis' => function($q) use ($tahunAktif) {
+            $q->where('periode_tahun', $tahunAktif)
+              ->where(function($q) {
+                  $q->whereNull('file_ba_manual')
+                    ->orWhereNull('file_buku_kas')
+                    ->orWhereNull('file_buku_pembantu_bank')
+                    ->orWhereNull('file_rekening_koran');
+              })->orderBy('periode_bulan', 'asc');
+        }])->whereIn('id', $skpdTanpaDokIds)->get();
+        
         $dataTanpaDokumen = [];
         foreach ($skpdTanpaDokumen as $skpd) {
-            $trxTanpaDokumen = Transaksi::where('skpd_id', $skpd->id)
-                ->where('periode_tahun', $tahunAktif)
-                ->where(function($q) {
-                    $q->whereNull('file_ba_manual')
-                      ->orWhereNull('file_buku_kas')
-                      ->orWhereNull('file_buku_pembantu_bank')
-                      ->orWhereNull('file_rekening_koran');
-                })
-                ->orderBy('periode_bulan', 'asc')
-                ->get();
+            $trxTanpaDokumen = $skpd->transaksis;
                 
             $dataTanpaDokumen[] = [
                 'skpd' => $skpd,
@@ -255,14 +255,14 @@ class LaporanController extends Controller
 
         $selectedBulan = $request->bulan ?? $defaultMonth;
 
-        $skpdsPaginated = Skpd::where('status', true)->orderBy('kode')->paginate(15);
+        $skpdsPaginated = Skpd::with(['transaksis' => function($q) use ($tahunAktif, $selectedBulan) {
+            $q->where('periode_tahun', $tahunAktif)
+              ->where('periode_bulan', $selectedBulan);
+        }])->where('status', true)->orderBy('kode')->paginate(15);
         $skpdsPaginated->appends($request->all());
         
-        $skpdsPaginated->getCollection()->transform(function ($skpd) use ($tahunAktif, $selectedBulan) {
-            $trx = Transaksi::where('skpd_id', $skpd->id)
-                ->where('periode_tahun', $tahunAktif)
-                ->where('periode_bulan', $selectedBulan)
-                ->first();
+        $skpdsPaginated->getCollection()->transform(function ($skpd) {
+            $trx = $skpd->transaksis->first();
 
             return [
                 'skpd' => $skpd,

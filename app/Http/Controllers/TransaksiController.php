@@ -184,13 +184,17 @@ class TransaksiController extends Controller
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat dihapus.');
         }
-        
-        if ($transaksi->file_bukti) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->file_bukti);
+
+        // Hapus file fisik dari storage
+        $fields = ['file_bukti', 'file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
+        foreach ($fields as $field) {
+            if ($transaksi->$field) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->$field);
+            }
         }
 
         $transaksi->delete();
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
+        return redirect()->route('transaksi.index')->with('success', 'Transaksi beserta dokumennya berhasil dihapus.');
     }
 
     public function uploadForm(Transaksi $transaksi)
