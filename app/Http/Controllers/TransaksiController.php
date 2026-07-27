@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\Transaksi\StoreTransaksiRequest;
+use App\Http\Requests\Transaksi\UpdateTransaksiRequest;
+use App\Http\Requests\Transaksi\UploadTransaksiRequest;
 
 use App\Models\Transaksi;
 use App\Models\Skpd;
@@ -94,42 +97,11 @@ class TransaksiController extends Controller
         return view('transaksi.create', compact('skpds', 'rekenings'));
     }
 
-    public function store(Request $request)
+    public function store(StoreTransaksiRequest $request)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
-        $bku = (float) $request->bku_saldo_akhir;
-        $bank = (float) $request->bank_saldo_akhir;
-        $isSelisih = abs($bku - $bank) > 0;
 
-        $validated = $request->validate([
-            'skpd_id' => 'required|exists:skpds,id',
-            'rekening_id' => 'required|exists:rekenings,id',
-            'periode_bulan' => [
-                'required',
-                'integer',
-                'min:1',
-                'max:12',
-                \Illuminate\Validation\Rule::unique('transaksis')->where(function ($query) use ($request) {
-                    return $query->where('skpd_id', $request->skpd_id)
-                                 ->where('rekening_id', $request->rekening_id)
-                                 ->where('periode_tahun', $request->periode_tahun);
-                }),
-            ],
-            'periode_tahun' => 'required|integer|min:2000|max:2099',
-            'bku_saldo_awal' => 'nullable|numeric',
-            'bku_penerimaan' => 'nullable|numeric',
-            'bku_pengeluaran' => 'nullable|numeric',
-            'bku_saldo_akhir' => 'required|numeric',
-            'bank_saldo_awal' => 'required|numeric',
-            'bank_penerimaan' => 'required|numeric',
-            'bank_pengeluaran' => 'required|numeric',
-            'bank_saldo_akhir' => 'required|numeric',
-            'keterangan_selisih' => $isSelisih ? 'required|string|max:255' : 'nullable|string|max:255',
-            'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ], [
-            'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
-            'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
-        ]);
+        $validated = $request->validated();
 
         if (Auth::user()->role === 'operator') {
             $validated['status_verifikasi'] = 'draft';
@@ -174,44 +146,11 @@ class TransaksiController extends Controller
         return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings'));
     }
 
-    public function update(Request $request, Transaksi $transaksi)
+    public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
-        $bku = (float) $request->bku_saldo_akhir;
-        $bank = (float) $request->bank_saldo_akhir;
-        $isSelisih = abs($bku - $bank) > 0;
 
-        $validated = $request->validate([
-            'skpd_id' => 'required|exists:skpds,id',
-            'rekening_id' => 'required|exists:rekenings,id',
-            'periode_bulan' => [
-                'required',
-                'integer',
-                'min:1',
-                'max:12',
-                \Illuminate\Validation\Rule::unique('transaksis')->where(function ($query) use ($request) {
-                    return $query->where('skpd_id', $request->skpd_id)
-                                 ->where('rekening_id', $request->rekening_id)
-                                 ->where('periode_tahun', $request->periode_tahun);
-                })->ignore($transaksi->id),
-            ],
-            'periode_tahun' => 'required|integer|min:2000|max:2099',
-            'bku_saldo_awal' => 'nullable|numeric',
-            'bku_penerimaan' => 'nullable|numeric',
-            'bku_pengeluaran' => 'nullable|numeric',
-            'bku_saldo_akhir' => 'required|numeric',
-            'bank_saldo_awal' => 'required|numeric',
-            'bank_penerimaan' => 'required|numeric',
-            'bank_pengeluaran' => 'required|numeric',
-            'bank_saldo_akhir' => 'required|numeric',
-            'keterangan_selisih' => $isSelisih ? 'required|string|max:255' : 'nullable|string|max:255',
-            'tanggal_ba' => 'nullable|date',
-            'status_verifikasi' => 'nullable|in:draft,verified',
-            'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ], [
-            'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
-            'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
-        ]);
+        $validated = $request->validated();
 
         if (Auth::user()->role === 'admin') {
             $validated['status_verifikasi'] = $request->status_verifikasi ?? 'draft';
@@ -267,19 +206,14 @@ class TransaksiController extends Controller
         return view('transaksi.upload', compact('transaksi'));
     }
 
-    public function uploadStore(Request $request, Transaksi $transaksi)
+    public function uploadStore(UploadTransaksiRequest $request, Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi !== 'verified') {
             return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
         }
 
-        $request->validate([
-            'file_ba_manual' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_buku_kas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_buku_pembantu_bank' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_rekening_koran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-        ]);
+        $validated = $request->validated();
 
         $fields = ['file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
         

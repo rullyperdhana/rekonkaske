@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\User\StoreUserRequest;
+use App\Http\Requests\User\UpdateUserRequest;
 
 use App\Models\User;
 use App\Models\Skpd;
@@ -33,17 +35,9 @@ class UserController extends Controller
         return view('pengaturan.user.create', compact('skpds'));
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],
-            'role' => 'required|in:admin,konsolidator,operator',
-            'skpd_id' => 'nullable|exists:skpds,id',
-            'status' => 'boolean',
-        ]);
+        $validated = $request->validated();
 
         $validated['password'] = Hash::make($validated['password']);
 
@@ -58,22 +52,9 @@ class UserController extends Controller
         return view('pengaturan.user.edit', compact('user', 'skpds'));
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $rules = [
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'role' => 'required|in:admin,konsolidator,operator',
-            'skpd_id' => 'nullable|exists:skpds,id',
-            'status' => 'boolean',
-        ];
-
-        if ($request->filled('password')) {
-            $rules['password'] = ['required', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'];
-        }
-
-        $validated = $request->validate($rules);
+        $validated = $request->validated();
 
         if ($request->filled('password')) {
             $validated['password'] = Hash::make($validated['password']);
