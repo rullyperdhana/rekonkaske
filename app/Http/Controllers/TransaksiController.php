@@ -69,8 +69,9 @@ class TransaksiController extends Controller
                 $q->whereHas('skpd', function($q) use ($search) {
                     $q->where('nama', 'like', "%{$search}%");
                 })->orWhereHas('rekening', function($q) use ($search) {
-                    $q->where('nomor_rekening', 'like', "%{$search}%")
-                      ->orWhere('nama_bank', 'like', "%{$search}%");
+                    $q->where('nama', 'like', "%{$search}%")
+                      ->orWhere('nomor', 'like', "%{$search}%")
+                      ->orWhere('bank', 'like', "%{$search}%");
                 });
             });
         }
