@@ -63,6 +63,7 @@
                     <th class="px-4 py-4 text-label-md font-label-md font-semibold text-on-surface text-right">Saldo BKU</th>
                     <th class="px-4 py-4 text-label-md font-label-md font-semibold text-on-surface text-right">Saldo Bank</th>
                     <th class="px-4 py-4 text-label-md font-label-md font-semibold text-on-surface text-right">Nilai Selisih</th>
+                    <th class="px-4 py-4 text-label-md font-label-md font-semibold text-on-surface">Keterangan</th>
                     <th class="px-4 py-4 text-label-md font-label-md font-semibold text-on-surface text-center">Status</th>
                 </tr>
             </thead>
@@ -76,6 +77,9 @@
                     <td class="px-4 py-3 text-body-md text-on-surface text-right font-data-tabular">Rp {{ number_format($trx->bank_saldo_akhir, 2, ',', '.') }}</td>
                     <td class="px-4 py-3 text-body-md text-error font-bold text-right font-data-tabular">
                         Rp {{ number_format(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2, ',', '.') }}
+                    </td>
+                    <td class="px-4 py-3 text-body-sm text-on-surface-variant max-w-[200px] truncate" title="{{ $trx->keterangan_selisih }}">
+                        {{ $trx->keterangan_selisih ?: '-' }}
                     </td>
                     <td class="px-4 py-3 text-body-md text-on-surface text-center">
                         @if($trx->status_verifikasi == 'draft')
@@ -91,7 +95,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="px-4 py-8 text-center text-on-surface-variant font-body-md">Tidak ada data transaksi yang memiliki selisih.</td>
+                    <td colspan="8" class="px-4 py-8 text-center text-on-surface-variant font-body-md">Tidak ada data transaksi yang memiliki selisih.</td>
                 </tr>
                 @endforelse
             </tbody>

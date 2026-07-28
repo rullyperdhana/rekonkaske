@@ -139,12 +139,13 @@
         <thead>
             <tr>
                 <th style="width: 4%;">No</th>
-                <th style="width: 25%;">Instansi (SKPD)</th>
+                <th style="width: 20%;">Instansi (SKPD)</th>
                 <th style="width: 8%;">Bulan</th>
                 <th style="width: 15%;">Saldo BKU</th>
                 <th style="width: 15%;">Saldo Bank</th>
                 <th style="width: 15%;">Nilai Selisih</th>
-                <th style="width: 10%;">Status</th>
+                <th style="width: 15%;">Keterangan</th>
+                <th style="width: 8%;">Status</th>
             </tr>
         </thead>
         <tbody>
@@ -177,6 +178,7 @@
                         </tr>
                     </table>
                 </td>
+                <td>{{ $trx->keterangan_selisih ?: '-' }}</td>
                 <td class="text-center">
                     @if($trx->status_verifikasi == 'draft')
                         <span class="badge bg-warning">Pending</span>
@@ -187,7 +189,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" class="text-center" style="padding: 15px;">Tidak ada data transaksi yang memiliki selisih.</td>
+                <td colspan="8" class="text-center" style="padding: 15px;">Tidak ada data transaksi yang memiliki selisih.</td>
             </tr>
             @endforelse
         </tbody>
