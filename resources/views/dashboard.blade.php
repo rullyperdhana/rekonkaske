@@ -174,68 +174,12 @@
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Main Content Area -->
-        <div class="lg:col-span-2 space-y-8">
-            <!-- Chart Analytics -->
-            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Saldo Kas Daerah ({{ $tahunAktif }})</h3>
-                <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan Total Saldo Buku Kas Umum vs Rekening Koran Bank seluruh SKPD.</p>
-                <div class="w-full relative h-72">
-                    <canvas id="rekonChart"></canvas>
-                </div>
-            </div>
-        </div>
-        <!-- Side Panel -->
-        <div class="space-y-8">
-            <!-- Leaderboard -->
-            @if(isset($topSkpds) && count($topSkpds) > 0)
-            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">🏆 Papan Peringkat SKPD</h3>
-                <p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Top 5 Paling Rajin Rekonsiliasi</p>
-                <div class="space-y-4">
-                    @foreach($topSkpds as $index => $topSkpd)
-                    <div class="flex items-center gap-3">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                            {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : 
-                               ($index == 1 ? 'bg-gray-200 text-gray-700' : 
-                               ($index == 2 ? 'bg-orange-100 text-orange-700' : 'bg-surface-container-high text-on-surface-variant')) }}">
-                            {{ $index + 1 }}
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <p class="text-label-md font-label-md text-on-surface truncate">{{ $topSkpd->nama }}</p>
-                            <p class="text-body-sm text-on-surface-variant truncate">{{ $topSkpd->transaksis_count }} bulan selesai</p>
-                        </div>
-                    </div>
-                    @endforeach
-                </div>
-            </div>
-            @endif
-            <!-- Recent Activity -->
-            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Aktivitas Terakhir</h3>
-                <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-outline-variant/30">
-                    @forelse($recentActivities as $activity)
-                    <div class="relative flex items-start gap-4">
-                        <div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10 ring-4 ring-surface-container-lowest mt-1">
-                            @if($activity->status_verifikasi == 'verified')
-                                <span class="material-symbols-outlined text-[12px]">check</span>
-                            @else
-                                <span class="w-2 h-2 bg-on-primary rounded-full"></span>
-                            @endif
-                        </div>
-                        <div>
-                            <p class="text-body-md font-body-md text-on-surface">Data BKU {{ $namaBulan[$activity->periode_bulan - 1] }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
-                            <p class="text-label-sm font-label-sm text-on-surface-variant">Oleh: {{ $activity->user->name ?? 'Sistem' }} • {{ $activity->updated_at->diffForHumans() }}</p>
-                        </div>
-                    </div>
-                    @empty
-                    <div class="text-center text-on-surface-variant text-sm">
-                        Belum ada aktivitas.
-                    </div>
-                    @endforelse
-                </div>
-            </div>
+    <!-- Chart Analytics -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
+        <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Saldo Kas Daerah ({{ $tahunAktif }})</h3>
+        <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan Total Saldo Buku Kas Umum vs Rekening Koran Bank seluruh SKPD.</p>
+        <div class="w-full relative h-72">
+            <canvas id="rekonChart"></canvas>
         </div>
     </div>
     
@@ -288,6 +232,62 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="mt-4">
+            {{ $selisihTransaksis->appends(request()->except('selisih_page'))->links() }}
+        </div>
+    </div>
+
+    <!-- Leaderboard and Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        <!-- Leaderboard -->
+        @if(isset($topSkpds) && count($topSkpds) > 0)
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+            <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">🏆 Papan Peringkat SKPD</h3>
+            <p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Top 5 Paling Rajin Rekonsiliasi</p>
+            <div class="space-y-4">
+                @foreach($topSkpds as $index => $topSkpd)
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
+                        {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : 
+                           ($index == 1 ? 'bg-gray-200 text-gray-700' : 
+                           ($index == 2 ? 'bg-orange-100 text-orange-700' : 'bg-surface-container-high text-on-surface-variant')) }}">
+                        {{ $index + 1 }}
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <p class="text-label-md font-label-md text-on-surface truncate">{{ $topSkpd->nama }}</p>
+                        <p class="text-body-sm text-on-surface-variant truncate">{{ $topSkpd->transaksis_count }} bulan selesai</p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+        @endif
+
+        <!-- Recent Activity -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+            <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Aktivitas Terakhir</h3>
+            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-outline-variant/30">
+                @forelse($recentActivities as $activity)
+                <div class="relative flex items-start gap-4">
+                    <div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10 ring-4 ring-surface-container-lowest mt-1">
+                        @if($activity->status_verifikasi == 'verified')
+                            <span class="material-symbols-outlined text-[12px]">check</span>
+                        @else
+                            <span class="w-2 h-2 bg-on-primary rounded-full"></span>
+                        @endif
+                    </div>
+                    <div>
+                        <p class="text-body-md font-body-md text-on-surface">Data BKU {{ $namaBulan[$activity->periode_bulan - 1] }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
+                        <p class="text-label-sm font-label-sm text-on-surface-variant">Oleh: {{ $activity->user->name ?? 'Sistem' }} • {{ $activity->updated_at->diffForHumans() }}</p>
+                    </div>
+                </div>
+                @empty
+                <div class="text-center text-on-surface-variant text-sm">
+                    Belum ada aktivitas.
+                </div>
+                @endforelse
+            </div>
         </div>
     </div>
     

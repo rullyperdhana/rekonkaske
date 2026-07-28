@@ -69,8 +69,7 @@ class DashboardController extends Controller
         // Alternatively, just any recent transaction with a discrepancy
         $selisihTransaksis = (clone $query)->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) > 0')
                                            ->orderBy('created_at', 'desc')
-                                           ->take(5)
-                                           ->get();
+                                           ->paginate(10, ['*'], 'selisih_page');
 
         // 3. Aktivitas Terakhir
         $recentActivities = (clone $query)->orderBy('updated_at', 'desc')
