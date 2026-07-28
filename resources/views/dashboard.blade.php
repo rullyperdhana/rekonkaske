@@ -209,7 +209,7 @@
                             </td>
                             <td class="py-3 px-4">{{ $selisih->updated_at->format('d M Y') }}</td>
                             <td class="py-3 px-4 text-on-surface-variant truncate max-w-xs">{{ $selisih->keterangan_selisih ?: 'Tidak ada keterangan' }}</td>
-                            <td class="py-3 px-4 font-data-tabular text-right text-error">
+                            <td class="py-3 px-4 font-data-tabular text-right text-error text-lg font-bold whitespace-nowrap">
                                 Rp {{ number_format(abs($selisih->bku_saldo_akhir - $selisih->bank_saldo_akhir), 2, ',', '.') }}
                             </td>
                             <td class="py-3 px-4 text-center">
