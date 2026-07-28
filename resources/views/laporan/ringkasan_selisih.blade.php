@@ -78,7 +78,7 @@
                     <td class="px-4 py-3 text-body-md text-error font-bold text-right font-data-tabular">
                         Rp {{ number_format(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2, ',', '.') }}
                     </td>
-                    <td class="px-4 py-3 text-body-sm text-on-surface-variant max-w-[200px] truncate" title="{{ $trx->keterangan_selisih }}">
+                    <td class="px-4 py-3 text-body-sm text-on-surface-variant">
                         {{ $trx->keterangan_selisih ?: '-' }}
                     </td>
                     <td class="px-4 py-3 text-body-md text-on-surface text-center">
