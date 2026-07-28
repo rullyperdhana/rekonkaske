@@ -1,4 +1,5 @@
 <x-app-layout>
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
     <div class="max-w-[1200px] mx-auto space-y-6">
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[3px] border-primary pb-4">
@@ -16,7 +17,7 @@
         <form method="GET" action="{{ route('user.index') }}" class="bg-surface p-4 rounded border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4">
             <div class="flex-1">
                 <label class="block font-body-md font-bold text-on-surface mb-1">Filter by SKPD</label>
-                <select name="skpd_id" class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+                <select id="skpd_id" name="skpd_id" class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
                     <option value="">Semua SKPD</option>
                     @foreach($skpds as $skpd)
                     <option value="{{ $skpd->id }}" {{ request('skpd_id') == $skpd->id ? 'selected' : '' }}>{{ $skpd->nama }}</option>
@@ -103,4 +104,19 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('skpd_id')) {
+                new TomSelect("#skpd_id", {
+                    create: false,
+                    sortField: {
+                        field: "text",
+                        direction: "asc"
+                    }
+                });
+            }
+        });
+    </script>
 </x-app-layout>
