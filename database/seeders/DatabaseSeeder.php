@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Administrator BKAD',
             'username' => 'admin',
             'email' => 'admin@bkad.tapinkab.go.id',
-            'password' => bcrypt('password'),
+            'password' => 'password',
             'role' => 'admin',
         ]);
     }
