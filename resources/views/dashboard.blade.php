@@ -273,6 +273,7 @@
                 <tr class="bg-surface-container-low border-b border-outline-variant">
                     <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">No. Bukti</th>
                     <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Tanggal</th>
+                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Instansi (SKPD)</th>
                     <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Keterangan</th>
                     <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Nilai Selisih</th>
                     <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase text-center">Status</th>
@@ -285,6 +286,7 @@
                         {{ str_pad($selisih->periode_bulan, 2, '0', STR_PAD_LEFT) }}/{{ $selisih->periode_tahun }}
                     </td>
                     <td class="py-3 px-4 whitespace-nowrap">{{ $selisih->updated_at->format('d M Y') }}</td>
+                    <td class="py-3 px-4 font-bold">{{ $selisih->skpd->nama ?? '-' }}</td>
                     <td class="py-3 px-4 text-on-surface-variant">{{ $selisih->keterangan_selisih ?: 'Tidak ada keterangan' }}</td>
                     <td class="py-3 px-4 font-data-tabular text-right text-error text-lg font-bold whitespace-nowrap">
                         Rp {{ number_format(abs($selisih->bku_saldo_akhir - $selisih->bank_saldo_akhir), 2, ',', '.') }}
@@ -303,7 +305,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="py-4 text-center text-on-surface-variant">Tidak ada transaksi dengan selisih yang mencolok.</td>
+                    <td colspan="6" class="py-4 text-center text-on-surface-variant">Tidak ada transaksi dengan selisih yang mencolok.</td>
                 </tr>
                 @endforelse
                 </tbody>
