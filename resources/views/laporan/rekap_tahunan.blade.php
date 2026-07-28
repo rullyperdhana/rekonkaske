@@ -1,6 +1,9 @@
 <x-app-layout>
 @section('title', 'Laporan Rekapitulasi Tahunan')
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
+<style>
+    #appMain { max-width: 100% !important; }
+</style>
 
 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-8">
     <div>

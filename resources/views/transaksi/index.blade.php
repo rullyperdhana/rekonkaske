@@ -1,5 +1,8 @@
 <x-app-layout>
-    <div class="max-w-[1200px] mx-auto space-y-6">
+<style>
+    #appMain { max-width: 100% !important; }
+</style>
+    <div class="space-y-6">
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[3px] border-primary pb-4">
             <div>

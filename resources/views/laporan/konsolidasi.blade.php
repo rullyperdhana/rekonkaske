@@ -1,5 +1,8 @@
 <x-app-layout>
 @section('title', 'Laporan Konsolidasi Daerah')
+<style>
+    #appMain { max-width: 100% !important; }
+</style>
 
 <div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-8">
     <div>
