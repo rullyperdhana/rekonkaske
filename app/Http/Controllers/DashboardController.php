@@ -84,11 +84,34 @@ class DashboardController extends Controller
         ];
 
         $chartTransactions = (clone $query)->orderBy('periode_bulan', 'asc')->get();
-        foreach ($chartTransactions as $trx) {
-            $monthIndex = $trx->periode_bulan - 1;
-            // For admin, it will sum across all SKPDs. For operator, only their SKPD.
-            $chartData['bku'][$monthIndex] += $trx->bku_saldo_akhir;
-            $chartData['bank'][$monthIndex] += $trx->bank_saldo_akhir;
+        $rekeningBalances = [];
+        $currentMonth = (int)date('n');
+        
+        for ($m = 1; $m <= 12; $m++) {
+            // Update the latest balance for each rekening up to month $m
+            foreach ($chartTransactions as $trx) {
+                if ($trx->periode_bulan == $m) {
+                    $rekeningBalances[$trx->rekening_id] = [
+                        'bku' => $trx->bku_saldo_akhir,
+                        'bank' => $trx->bank_saldo_akhir,
+                    ];
+                }
+            }
+            
+            // Only calculate sum if we haven't passed the current month (don't chart future months)
+            if ($m <= $currentMonth) {
+                $sumBku = 0;
+                $sumBank = 0;
+                foreach ($rekeningBalances as $balance) {
+                    $sumBku += $balance['bku'];
+                    $sumBank += $balance['bank'];
+                }
+                $chartData['bku'][$m - 1] = $sumBku;
+                $chartData['bank'][$m - 1] = $sumBank;
+            } else {
+                $chartData['bku'][$m - 1] = 0;
+                $chartData['bank'][$m - 1] = 0;
+            }
         }
 
         // 5. Reminder (Notifikasi Peringatan)
