@@ -333,4 +333,74 @@ class LaporanController extends Controller
 
         return $pdf->stream('Laporan_Konsolidasi_Bulan_' . $selectedBulan . '_' . $tahunAktif . '.pdf');
     }
+    /**
+     * Menampilkan daftar transaksi yang memiliki selisih saldo.
+     */
+    public function ringkasanSelisih(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $user = Auth::user();
+
+        $query = Transaksi::with(['skpd', 'rekening'])
+            ->where('periode_tahun', $tahunAktif)
+            ->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) > 0');
+
+        if ($user->skpd_id) {
+            $query->where('skpd_id', $user->skpd_id);
+        } elseif ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $skpds = [];
+        if (!$user->skpd_id) {
+            $skpds = Skpd::orderBy('nama')->get();
+        }
+
+        return view('laporan.ringkasan_selisih', compact('transaksis', 'tahunAktif', 'skpds'));
+    }
+
+    /**
+     * Mencetak PDF Laporan Ringkasan Selisih.
+     */
+    public function cetakRingkasanSelisih(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $user = Auth::user();
+
+        $query = Transaksi::with(['skpd', 'rekening'])
+            ->where('periode_tahun', $tahunAktif)
+            ->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) > 0');
+
+        $skpd = null;
+        if ($user->skpd_id) {
+            $query->where('skpd_id', $user->skpd_id);
+            $skpd = Skpd::find($user->skpd_id);
+        } elseif ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+            $skpd = Skpd::find($request->skpd_id);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $pengaturan = $skpd->pengaturan ?? \App\Models\Pengaturan::whereNull('skpd_id')->first();
+
+        $pdf = Pdf::loadView('laporan.ringkasan_selisih_pdf', compact('transaksis', 'tahunAktif', 'skpd', 'pengaturan', 'request'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->stream('Laporan_Ringkasan_Selisih_Transaksi_' . $tahunAktif . '.pdf');
+    }
 }

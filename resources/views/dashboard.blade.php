@@ -187,7 +187,7 @@
     <div class="mt-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
         <div class="flex justify-between items-center mb-6">
             <h3 class="text-headline-sm font-headline-sm text-on-surface">Ringkasan Selisih Transaksi</h3>
-            <a class="text-primary text-label-sm font-label-sm hover:underline" href="#">Lihat Detail</a>
+            <a class="text-primary text-label-sm font-label-sm hover:underline" href="{{ route('laporan.ringkasan-selisih') }}">Lihat Detail</a>
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">

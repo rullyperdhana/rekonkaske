@@ -61,6 +61,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/ba/{transaksi}/pdf', [BaController::class, 'pdf'])->name('ba.pdf');
     Route::get('/laporan/rekap', [\App\Http\Controllers\LaporanController::class, 'rekapTahunan'])->name('laporan.rekap');
     Route::get('/laporan/rekap/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRekapTahunan'])->name('laporan.rekap.pdf');
+    Route::get('/laporan/ringkasan-selisih', [\App\Http\Controllers\LaporanController::class, 'ringkasanSelisih'])->name('laporan.ringkasan-selisih');
+    Route::get('/laporan/ringkasan-selisih/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRingkasanSelisih'])->name('laporan.ringkasan-selisih.pdf');
 
     // Pengaturan Instansi (All Users)
     Route::get('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'edit'])->name('pengaturan.instansi.edit');
