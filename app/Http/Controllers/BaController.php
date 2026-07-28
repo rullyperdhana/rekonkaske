@@ -29,8 +29,8 @@ class BaController extends Controller
                 $q->whereHas('skpd', function($q) use ($search) {
                     $q->where('nama', 'like', "%{$search}%");
                 })->orWhereHas('rekening', function($q) use ($search) {
-                    $q->where('nomor_rekening', 'like', "%{$search}%")
-                      ->orWhere('nama_bank', 'like', "%{$search}%");
+                    $q->where('nomor', 'like', "%{$search}%")
+                      ->orWhere('nama', 'like', "%{$search}%");
                 });
             });
         }
