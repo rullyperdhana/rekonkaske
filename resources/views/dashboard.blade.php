@@ -115,14 +115,7 @@
         @endif
     </div>
 
-    <!-- Chart Analytics Full Width -->
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
-        <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Saldo Kas Daerah ({{ $tahunAktif }})</h3>
-        <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan Total Saldo Buku Kas Umum vs Rekening Koran Bank seluruh SKPD.</p>
-        <div class="w-full relative h-72">
-            <canvas id="rekonChart"></canvas>
-        </div>
-    </div>
+    <!-- Removed Chart Analytics from here, moved to Main Content Area -->
 
     <!-- Status Rekonsiliasi Per SKPD -->
     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
@@ -184,28 +177,13 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Main Content Area -->
         <div class="lg:col-span-2 space-y-8">
-            <!-- Quick Actions Bento Grid -->
-            <div class="grid grid-cols-2 gap-4">
-                <a class="group relative overflow-hidden bg-primary-fixed rounded-xl p-6 border border-primary-fixed-dim shadow-sm hover:shadow-md transition-shadow" href="{{ route('transaksi.create') }}">
-                    <div class="relative z-10 flex flex-col h-full justify-between">
-                        <span class="material-symbols-outlined text-primary text-3xl mb-4" style="font-variation-settings: 'FILL' 1;">upload_file</span>
-                        <div>
-                            <h4 class="text-headline-sm font-headline-sm text-on-primary-container mb-1">Input Data Kas</h4>
-                            <p class="text-body-md font-body-md text-on-primary-container/80">Buat Transaksi Rekonsiliasi Baru</p>
-                        </div>
-                    </div>
-                    <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-primary/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-                </a>
-                <a class="group relative overflow-hidden bg-surface-container-lowest rounded-xl p-6 border border-outline-variant shadow-sm hover:shadow-md transition-shadow" href="{{ route('ba.index') }}">
-                    <div class="relative z-10 flex flex-col h-full justify-between">
-                        <span class="material-symbols-outlined text-on-surface-variant text-3xl mb-4">description</span>
-                        <div>
-                            <h4 class="text-headline-sm font-headline-sm text-on-surface mb-1">Laporan BA</h4>
-                            <p class="text-body-md font-body-md text-on-surface-variant">Cetak Berita Acara Rekonsiliasi</p>
-                        </div>
-                    </div>
-                    <div class="absolute -bottom-8 -right-8 w-32 h-32 bg-surface-container-high/50 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-                </a>
+            <!-- Chart Analytics -->
+            <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
+                <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Saldo Kas Daerah ({{ $tahunAktif }})</h3>
+                <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan Total Saldo Buku Kas Umum vs Rekening Koran Bank seluruh SKPD.</p>
+                <div class="w-full relative h-72">
+                    <canvas id="rekonChart"></canvas>
+                </div>
             </div>
         </div>
         <!-- Side Panel -->
