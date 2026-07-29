@@ -321,9 +321,7 @@
                 @else
                     <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($signedUrl)) !!}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
                 @endif
-                <div style="font-size: 8px; font-style: italic; font-weight: bold; margin-top: 2px; text-align: center; line-height: 1.1;">
-                    Dokumen ini sah<br>Ditandatangani secara<br>elektronik
-                </div>
+                <div style="font-size: 9px; font-style: italic; font-weight: bold; margin-top: 2px;">Dokumen Terverifikasi</div>
             </td>
             @endif
         </tr>
