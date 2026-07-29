@@ -33,12 +33,16 @@
         @endif
         
         <div class="flex gap-2">
-            <button type="submit" class="h-11 px-6 bg-primary text-on-primary hover:bg-primary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
+            <button type="submit" class="h-11 px-6 bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm whitespace-nowrap">
                 <span class="material-symbols-outlined" data-weight="fill">search</span>
                 Tampilkan
             </button>
             @if($selectedSkpdId)
-            <a href="{{ route('laporan.rekap.pdf', ['skpd_id' => $selectedSkpdId]) }}" target="_blank" class="h-11 px-6 bg-tertiary text-on-tertiary hover:bg-tertiary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
+            <a href="{{ route('laporan.rekap.excel', request()->all()) }}" target="_blank" class="h-11 px-6 bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm whitespace-nowrap">
+                <span class="material-symbols-outlined" data-weight="fill">table_view</span>
+                Ekspor Excel
+            </a>
+            <a href="{{ route('laporan.rekap.pdf', request()->all()) }}" target="_blank" class="h-11 px-6 bg-tertiary text-on-tertiary hover:bg-tertiary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm whitespace-nowrap">
                 <span class="material-symbols-outlined" data-weight="fill">print</span>
                 Cetak PDF
             </a>

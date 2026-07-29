@@ -27,6 +27,10 @@
                 <span class="material-symbols-outlined" data-weight="fill">search</span>
                 Tampilkan
             </button>
+            <a href="{{ route('laporan.konsolidasi.excel', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-6 bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
+                <span class="material-symbols-outlined" data-weight="fill">table_view</span>
+                Ekspor Excel
+            </a>
             <a href="{{ route('laporan.konsolidasi.pdf', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-6 bg-tertiary text-on-tertiary hover:bg-tertiary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
                 <span class="material-symbols-outlined" data-weight="fill">print</span>
                 Cetak PDF

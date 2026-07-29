@@ -42,8 +42,10 @@ Route::middleware('auth')->group(function () {
     // Laporan (Admin & Konsolidator)
     Route::middleware(['admin.konsolidator'])->group(function () {
         Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
+        Route::get('/laporan/tunggakan/excel', [\App\Http\Controllers\LaporanController::class, 'eksporTunggakan'])->name('laporan.tunggakan.excel');
         Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
         Route::get('/laporan/konsolidasi/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakKonsolidasi'])->name('laporan.konsolidasi.pdf');
+        Route::get('/laporan/konsolidasi/excel', [\App\Http\Controllers\LaporanController::class, 'eksporKonsolidasi'])->name('laporan.konsolidasi.excel');
     });
     
     // Master Data (All Users)
@@ -61,8 +63,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/laporan/ba/{transaksi}/pdf', [BaController::class, 'pdf'])->name('ba.pdf');
     Route::get('/laporan/rekap', [\App\Http\Controllers\LaporanController::class, 'rekapTahunan'])->name('laporan.rekap');
     Route::get('/laporan/rekap/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRekapTahunan'])->name('laporan.rekap.pdf');
+    Route::get('/laporan/rekap/excel', [\App\Http\Controllers\LaporanController::class, 'eksporRekapTahunan'])->name('laporan.rekap.excel');
     Route::get('/laporan/ringkasan-selisih', [\App\Http\Controllers\LaporanController::class, 'ringkasanSelisih'])->name('laporan.ringkasan-selisih');
     Route::get('/laporan/ringkasan-selisih/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakRingkasanSelisih'])->name('laporan.ringkasan-selisih.pdf');
+    Route::get('/laporan/ringkasan-selisih/excel', [\App\Http\Controllers\LaporanController::class, 'eksporRingkasanSelisih'])->name('laporan.ringkasan-selisih.excel');
 
     // Pengaturan Instansi (All Users)
     Route::get('pengaturan/instansi', [\App\Http\Controllers\PengaturanController::class, 'edit'])->name('pengaturan.instansi.edit');

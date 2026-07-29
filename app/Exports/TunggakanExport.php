@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Exports;
+
+use Illuminate\Contracts\View\View;
+use Maatwebsite\Excel\Concerns\FromView;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+
+class TunggakanExport implements FromView, ShouldAutoSize, WithStyles
+{
+    protected $tunggakanList;
+    protected $selectedBulan;
+    protected $tahunAktif;
+    protected $namaBulan;
+
+    public function __construct($tunggakanList, $selectedBulan, $tahunAktif)
+    {
+        $this->tunggakanList = $tunggakanList;
+        $this->selectedBulan = $selectedBulan;
+        $this->tahunAktif = $tahunAktif;
+        $this->namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    }
+
+    public function view(): View
+    {
+        return view('laporan.excel.tunggakan', [
+            'tunggakanList' => $this->tunggakanList,
+            'selectedBulan' => $this->selectedBulan,
+            'tahunAktif' => $this->tahunAktif,
+            'namaBulan' => $this->namaBulan
+        ]);
+    }
+
+    public function styles(Worksheet $sheet)
+    {
+        return [
+            1    => ['font' => ['bold' => true, 'size' => 14]],
+            3    => ['font' => ['bold' => true]],
+        ];
+    }
+}

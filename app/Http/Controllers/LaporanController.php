@@ -7,6 +7,11 @@ use App\Models\Transaksi;
 use App\Models\Skpd;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\KonsolidasiExport;
+use App\Exports\RekapTahunanExport;
+use App\Exports\TunggakanExport;
+use App\Exports\RingkasanSelisihExport;
 
 class LaporanController extends Controller
 {
@@ -402,5 +407,92 @@ class LaporanController extends Controller
             ->setPaper('a4', 'landscape');
 
         return $pdf->stream('Laporan_Ringkasan_Selisih_Transaksi_' . $tahunAktif . '.pdf');
+    }
+
+    public function eksporRekapTahunan(Request $request)
+    {
+        $user = Auth::user();
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $selectedSkpdId = $request->skpd_id;
+
+        if ($user->skpd_id) { $selectedSkpdId = $user->skpd_id; }
+        if (!$selectedSkpdId) { return back()->with('error', 'Pilih SKPD terlebih dahulu.'); }
+
+        $skpd = Skpd::findOrFail($selectedSkpdId);
+        $transaksis = Transaksi::where('skpd_id', $selectedSkpdId)->where('periode_tahun', $tahunAktif)
+                ->orderBy('periode_bulan', 'asc')->get()->keyBy('periode_bulan');
+
+        $rekapData = [];
+        $totalBku = 0; $totalBank = 0;
+        for ($i = 1; $i <= 12; $i++) {
+            $trx = $transaksis->get($i);
+            $rekapData[$i] = [
+                'bulan' => $i, 'bku' => $trx ? $trx->bku_saldo_akhir : null, 'bank' => $trx ? $trx->bank_saldo_akhir : null,
+                'selisih' => $trx ? abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) : null,
+                'status' => $trx ? $trx->status_verifikasi : null
+            ];
+            if ($trx) { $totalBku = $trx->bku_saldo_akhir; $totalBank = $trx->bank_saldo_akhir; }
+        }
+
+        return Excel::download(new RekapTahunanExport($skpd, $tahunAktif, $rekapData, $totalBku, $totalBank), 'Rekap_Tahunan_'.$skpd->kode.'_'.$tahunAktif.'.xlsx');
+    }
+
+    public function eksporTunggakan(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $currentMonth = (int)date('n');
+        $targetMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
+        $targetYear = $currentMonth > 1 ? $tahunAktif : $tahunAktif - 1;
+        if ($tahunAktif < date('Y')) { $targetMonth = 12; $targetYear = $tahunAktif; }
+        
+        $dataTunggakan = [];
+        if ($targetYear == $tahunAktif) {
+            $skpds = Skpd::with(['transaksis' => function($q) use ($tahunAktif) {
+                $q->where('periode_tahun', $tahunAktif)->orderBy('periode_bulan', 'desc');
+            }])->where('status', true)->get();
+            foreach ($skpds as $skpd) {
+                $lastTrx = $skpd->transaksis->first();
+                $lastMonthReported = $lastTrx ? $lastTrx->periode_bulan : 0;
+                if ($lastMonthReported < $targetMonth) { $dataTunggakan[] = $skpd; }
+            }
+        }
+        return Excel::download(new TunggakanExport($dataTunggakan, $targetMonth, $tahunAktif), 'Laporan_Tunggakan_'.$tahunAktif.'.xlsx');
+    }
+
+    public function eksporKonsolidasi(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $selectedBulan = $request->bulan;
+        if (!$selectedBulan) { return back()->with('error', 'Pilih bulan terlebih dahulu.'); }
+        
+        $skpds = Skpd::where('status', true)->orderBy('kode')->get();
+        $konsolidasiData = [];
+        $totalBku = 0; $totalBank = 0;
+        foreach ($skpds as $skpd) {
+            $trx = Transaksi::where('skpd_id', $skpd->id)->where('periode_tahun', $tahunAktif)->where('periode_bulan', $selectedBulan)->first();
+            $konsolidasiData[] = [
+                'skpd_nama' => $skpd->nama, 'bulan' => $selectedBulan,
+                'bku' => $trx ? $trx->bku_saldo_akhir : null, 'bank' => $trx ? $trx->bank_saldo_akhir : null,
+                'selisih' => $trx ? abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) : null,
+                'status' => $trx ? $trx->status_verifikasi : '-'
+            ];
+            if ($trx) { $totalBku += $trx->bku_saldo_akhir; $totalBank += $trx->bank_saldo_akhir; }
+        }
+        $totalSelisih = abs($totalBku - $totalBank);
+        
+        return Excel::download(new KonsolidasiExport($konsolidasiData, $selectedBulan, $tahunAktif, $totalBku, $totalBank, $totalSelisih), 'Konsolidasi_Bulan_'.$selectedBulan.'_'.$tahunAktif.'.xlsx');
+    }
+
+    public function eksporRingkasanSelisih(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $user = Auth::user();
+        $query = Transaksi::with(['skpd', 'rekening'])->where('periode_tahun', $tahunAktif)->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) > 0');
+        if ($user->skpd_id) { $query->where('skpd_id', $user->skpd_id); }
+        elseif ($request->filled('skpd_id')) { $query->where('skpd_id', $request->skpd_id); }
+        if ($request->filled('bulan')) { $query->where('periode_bulan', $request->bulan); }
+        $transaksis = $query->orderBy('periode_bulan', 'desc')->orderBy('created_at', 'desc')->get();
+        
+        return Excel::download(new RingkasanSelisihExport($transaksis, $request->bulan), 'Ringkasan_Selisih_'.$tahunAktif.'.xlsx');
     }
 }
