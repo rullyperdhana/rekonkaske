@@ -12,6 +12,13 @@
                 <span class="text-body-md font-body-md">{{ session('success') }}</span>
             </div>
         @endif
+        
+        @if(session('error'))
+            <div class="bg-error/10 text-error border border-error/20 p-4 rounded-lg mb-6 flex items-center gap-3">
+                <span class="material-symbols-outlined">warning</span>
+                <span class="text-body-md font-body-md">{{ session('error') }}</span>
+            </div>
+        @endif
 
         @if ($errors->any())
             <div class="bg-error/10 text-error p-4 rounded-lg mb-6">
