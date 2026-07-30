@@ -89,6 +89,11 @@
                 </li>
                 @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
                 <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('dokumen.tree') }}">
+                        <span class="text-label-sm font-label-sm">Arsip Dokumen (Tree)</span>
+                    </a>
+                </li>
+                <li>
                     <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.konsolidasi') }}">
                         <span class="text-label-sm font-label-sm">Konsolidasi Daerah</span>
                     </a>

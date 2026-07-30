@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
         Route::get('/laporan/konsolidasi/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakKonsolidasi'])->name('laporan.konsolidasi.pdf');
         Route::get('/laporan/konsolidasi/excel', [\App\Http\Controllers\LaporanController::class, 'eksporKonsolidasi'])->name('laporan.konsolidasi.excel');
+        Route::get('/dokumen/tree', [\App\Http\Controllers\DokumenController::class, 'tree'])->name('dokumen.tree');
+        Route::get('/dokumen/tree/{transaksi}/zip', [\App\Http\Controllers\DokumenController::class, 'downloadZip'])->name('dokumen.zip');
     });
     
     // Master Data (All Users)
@@ -55,7 +57,12 @@ Route::middleware('auth')->group(function () {
     Route::get('transaksi/get-saldo-awal', [TransaksiController::class, 'getSaldoAwal'])->name('transaksi.getSaldoAwal');
     Route::get('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadForm'])->name('transaksi.upload');
     Route::post('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadStore'])->name('transaksi.upload.store');
-    Route::resource('transaksi', TransaksiController::class);
+    Route::resource('transaksi', TransaksiController::class)->where(['transaksi' => '[0-9]+'])->except(['show']);
+    
+    // Catch-all untuk transaksi yang tidak valid (misal: /transaksi/upload tanpa ID)
+    Route::any('transaksi/{any}', function () {
+        return redirect()->route('transaksi.index');
+    })->where('any', '.*');
     
     // Laporan (All Users)
     Route::get('/laporan/ba', [BaController::class, 'index'])->name('ba.index');
