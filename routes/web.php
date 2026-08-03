@@ -38,6 +38,11 @@ Route::middleware('auth')->group(function () {
         Route::post('pengaturan/maintenance/backup', [\App\Http\Controllers\MaintenanceController::class, 'backup'])->name('pengaturan.maintenance.backup');
         Route::post('pengaturan/maintenance/restore', [\App\Http\Controllers\MaintenanceController::class, 'restore'])->name('pengaturan.maintenance.restore');
         Route::delete('pengaturan/maintenance/reset', [\App\Http\Controllers\MaintenanceController::class, 'reset'])->name('pengaturan.maintenance.reset');
+
+        // Storage & NAS Management
+        Route::get('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'index'])->name('pengaturan.storage.index');
+        Route::post('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'update'])->name('pengaturan.storage.update');
+        Route::post('pengaturan/storage/test', [\App\Http\Controllers\StorageConfigController::class, 'testConnection'])->name('pengaturan.storage.test');
     });
 
     // Laporan (Admin & Konsolidator)

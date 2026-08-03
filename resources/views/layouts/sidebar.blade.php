@@ -131,6 +131,13 @@
                         <span class="text-label-sm font-label-sm text-error/90 hover:text-error">Maintenance Sistem</span>
                     </a>
                 </li>
+                <li>
+                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200 {{ request()->routeIs('pengaturan.storage.*') ? 'bg-primary-container/30 text-on-primary font-bold' : '' }}" href="{{ route('pengaturan.storage.index') }}">
+                        <span class="text-label-sm font-label-sm text-emerald-300 font-medium flex items-center gap-1.5">
+                            <span>Manajemen Storage & NAS</span>
+                        </span>
+                    </a>
+                </li>
                 @endif
                 <li>
                     <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengaturan.instansi.edit') }}">
