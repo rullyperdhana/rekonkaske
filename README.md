@@ -27,9 +27,10 @@
   - ☁️ **MinIO / Object Storage (S3 Enterprise)** - Dukungan cloud lokal bergaya S3 yang terlindungi secara enkripsi.
 * **Uji Koneksi (Test Connection):** Alat pengujian otomatis izin tulis (writable) dan ping koneksi sebelum memindahkan mode aktif.
 
-### 5. 🔒 Mode Pemeliharaan & Penguncian Akses SKPD (Lockdown System)
-* **Perlindungan Data Saat Update Server:** Saat Admin ingin memperbarui kode, dokumen, atau memulihkan database, Admin dapat mengaktifkan **Lockdown Mode**.
-* **Proteksi Multi-Layer Middleware:** Operator SKPD ditahan dan dialihkan secara otomatis ke layar notifikasi khusus (*Under Maintenance*) berpenampilan modern lengkap dengan alasan pengerjaan dan estimasi selesai (WITA), mencegah kesalahan input atau data ganda selama masa perawatan sistem. Admin dan Konsolidator tetap dapat beraktivitas secara penuh di dalam sistem!
+### 5. 🔒 Mode Pemeliharaan & Penguncian Akses SKPD (Animated Lockdown System)
+* **Perlindungan Data Saat Update Server:** Saat Admin ingin memperbarui kode, dokumen, atau memulihkan database, Admin dapat mengaktifkan **Lockdown Mode** dari menu `/pengaturan/maintenance`.
+* **Proteksi Multi-Layer Middleware:** Operator SKPD ditahan dan dialihkan secara otomatis ke layar notifikasi khusus, mencegah kesalahan input atau data ganda selama masa perawatan sistem. Admin dan Konsolidator tetap dapat beraktivitas secara penuh di dalam sistem!
+* **Layar Maintenance Sinematik (Animated Dark Mode):** Meninggalkan layar putih kaku, SiReKa kini mengadopsi tampilan maintenance berdesain premium dengan animasi ganda roda gigi putar interaktif (*Dual Rotating SVG Gears*), efek partikel melayang (*Ambient Floating Orbs*), mikro-animasi pada tombol aksi, serta jam digital real-time Waktu Indonesia Tengah (**Live WITA Clock**) yang menunjukkan kredibilitas sistem berskala pemerintah daerah.
 
 ### 6. 🔐 Manajemen Core, Registrasi Mandiri & Keamanan Standar (SiReKa Core Engine)
 * **Pendaftaran Akun Mandiri & Kontrol Buka-Tutup:** Operator SKPD dapat mendaftarkan akun secara mandiri (maksimal 1 Operator per SKPD). Admin memiliki tuas kontrol untuk **Membuka/Menutup Pendaftaran** dari dasbor pengaturan, serta mewajibkan aktivasi verifikasi Admin sebelum akun baru dapat digunakan.
