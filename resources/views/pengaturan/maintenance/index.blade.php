@@ -1,12 +1,90 @@
 <x-app-layout>
 @section('title', 'Maintenance Sistem')
 
-<div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-8">
+<div class="flex flex-col gap-1 md:flex-row md:items-center md:justify-between mb-6">
     <div>
-        <h2 class="text-headline-sm font-headline-sm text-on-surface">Maintenance Sistem</h2>
-        <p class="text-body-md font-body-md text-on-surface-variant">Kelola pencadangan (backup) dan penghapusan data secara permanen.</p>
+        <h2 class="text-headline-sm font-headline-sm text-on-surface">Maintenance & Pengamanan Sistem</h2>
+        <p class="text-body-md font-body-md text-on-surface-variant">Kelola penguncian akses saat update server, pencadangan (backup), serta pemeliharaan data.</p>
     </div>
 </div>
+
+@if(session('success'))
+<div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl flex items-center gap-3 shadow-sm font-body-md text-sm font-semibold">
+    <span class="material-symbols-outlined text-emerald-600 text-2xl shrink-0" data-weight="fill">check_circle</span>
+    <div class="flex-grow">{{ session('success') }}</div>
+</div>
+@endif
+@if(session('error'))
+<div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-900 rounded-xl flex items-center gap-3 shadow-sm font-body-md text-sm font-semibold">
+    <span class="material-symbols-outlined text-rose-600 text-2xl shrink-0" data-weight="fill">error</span>
+    <div class="flex-grow">{{ session('error') }}</div>
+</div>
+@endif
+
+<!-- Panel Mode Pemeliharaan (Lockdown SKPD) -->
+<div class="mb-8 bg-gradient-to-r {{ !empty($lockStatus['active']) ? 'from-rose-950 via-slate-900 to-amber-950 border-rose-600/80 shadow-rose-950/20' : 'from-slate-900 via-indigo-950 to-slate-900 border-slate-700' }} text-white p-6 rounded-2xl border-2 shadow-xl relative overflow-hidden transition-all">
+    <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+        <div class="space-y-2 max-w-xl">
+            <div class="flex items-center gap-2.5">
+                <span class="material-symbols-outlined {{ !empty($lockStatus['active']) ? 'text-rose-400 animate-bounce' : 'text-amber-400' }} text-3xl" data-weight="fill">
+                    {{ !empty($lockStatus['active']) ? 'lock' : 'admin_panel_settings' }}
+                </span>
+                <h3 class="text-xl font-black tracking-tight">Mode Pemeliharaan & Penguncian Akses SKPD</h3>
+                @if(!empty($lockStatus['active']))
+                    <span class="px-3 py-0.5 bg-rose-500 text-white font-extrabold text-xs rounded-full shadow animate-pulse">🔴 LOCKDOWN AKTIF</span>
+                @else
+                    <span class="px-3 py-0.5 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold text-xs rounded-full">🟢 NORMA / BERJALAN</span>
+                @endif
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Gunakan fitur ini apabila Anda (Admin) sedang melakukan pembaruan dokumen, sinkronisasi file server, atau restore database. Saat aktif, <strong class="text-white underline">seluruh operator SKPD tidak akan dapat masuk atau menginput data</strong> guna mencegah duplikasi atau konflik data selama masa pengerjaan Admin.
+            </p>
+        </div>
+
+        <div class="shrink-0 bg-slate-800/90 backdrop-blur border border-slate-700 p-5 rounded-2xl min-w-[320px] shadow-inner">
+            @if(!empty($lockStatus['active']))
+                <div class="space-y-3">
+                    <div class="text-xs text-rose-300 font-semibold flex items-start gap-2">
+                        <span class="material-symbols-outlined text-rose-400 text-base shrink-0" data-weight="fill">warning</span>
+                        <span>Operator SKPD saat ini sedang dicegah mengakses aplikasi dan diarahkan ke layar pemeliharaan.</span>
+                    </div>
+                    <div class="p-2.5 bg-slate-900 rounded-lg text-[11px] text-slate-300 space-y-1">
+                        <div><strong class="text-slate-400">Alasan Aktif:</strong> {{ $lockStatus['reason'] ?? '-' }}</div>
+                        <div><strong class="text-slate-400">Target Selesai:</strong> {{ $lockStatus['estimated_end'] ?? '-' }}</div>
+                    </div>
+                    <form action="{{ route('pengaturan.maintenance.lockdown') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="action" value="disable">
+                        <button type="submit" class="w-full py-2.5 px-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                            <span class="material-symbols-outlined text-base" data-weight="fill">lock_open</span>
+                            <span>Buka Kembali Akses SKPD (Normal)</span>
+                        </button>
+                    </form>
+                </div>
+            @else
+                <form action="{{ route('pengaturan.maintenance.lockdown') }}" method="POST" class="space-y-3">
+                    @csrf
+                    <input type="hidden" name="action" value="enable">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Pesan / Alasan Untuk SKPD:</label>
+                        <input type="text" name="reason" value="Sinkronisasi, pemeliharaan server & pemutakhiran data arsip SiReKa." class="w-full h-9 bg-slate-900 border border-slate-700 rounded-lg px-3 text-xs text-white focus:ring-1 focus:ring-amber-400 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-300 mb-1">Perkiraan Waktu Selesai:</label>
+                        <input type="text" name="estimated_end" placeholder="Contoh: 14:30 WITA / 30 Menit" value="30 Menit (Dalam Proses Admin)" class="w-full h-9 bg-slate-900 border border-slate-700 rounded-lg px-3 text-xs text-white focus:ring-1 focus:ring-amber-400 outline-none">
+                    </div>
+                    <button type="submit" onclick="return confirm('Anda yakin ingin menutup sementara akses input seluruh SKPD? Hanya Admin dan Konsolidator yang bisa tetap beroperasi dalam sistem.')" class="w-full py-2.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-xl text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center justify-center gap-1.5 active:scale-95 mt-2">
+                        <span class="material-symbols-outlined text-base" data-weight="fill">lock</span>
+                        <span>Aktifkan Lockdown Akses SKPD</span>
+                    </button>
+                </form>
+            @endif
+        </div>
+    </div>
+</div>
+
 <div class="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
 
     <!-- Card Backup Database -->

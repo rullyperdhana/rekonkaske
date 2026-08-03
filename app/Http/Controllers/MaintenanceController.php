@@ -11,7 +11,13 @@ class MaintenanceController extends Controller
 {
     public function index()
     {
-        return view('pengaturan.maintenance.index');
+        $lockPath = storage_path('app/maintenance_lock.json');
+        $lockStatus = ['active' => false];
+        if (file_exists($lockPath)) {
+            $lockStatus = json_decode(file_get_contents($lockPath), true) ?: ['active' => false];
+        }
+
+        return view('pengaturan.maintenance.index', compact('lockStatus'));
     }
 
     public function backup(Request $request)
@@ -198,4 +204,63 @@ class MaintenanceController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menghapus data: ' . $e->getMessage());
         }
     }
+
+    /**
+     * Aktifkan atau non-aktifkan Mode Pemeliharaan (Lockdown SKPD)
+     */
+    public function toggleLockdown(Request $request)
+    {
+        if (auth()->user()->role !== 'admin') {
+            abort(403, 'Hanya Administrator yang diperbolehkan mengubah status mode pemeliharaan.');
+        }
+
+        $lockPath = storage_path('app/maintenance_lock.json');
+        $action = $request->input('action', 'enable');
+
+        if ($action === 'enable') {
+            $data = [
+                'active' => true,
+                'reason' => $request->input('reason', 'Sinkronisasi, pemeliharaan server & pemutakhiran data arsip SiReKa.'),
+                'estimated_end' => $request->input('estimated_end', 'Sesaat Lagi (Dalam Proses)'),
+                'enabled_by' => auth()->user()->name ?? 'Administrator',
+                'timestamp' => now()->toDateTimeString()
+            ];
+            file_put_contents($lockPath, json_encode($data, JSON_PRETTY_PRINT));
+
+            activity('maintenance')
+                ->causedBy(auth()->user())
+                ->log('Admin MENGAKTIFKAN Mode Pemeliharaan Sistem (Lockdown SKPD)');
+
+            return back()->with('success', '🔒 Mode Pemeliharaan (Lockdown SKPD) BERHASIL DIAKTIFKAN. Seluruh pengguna SKPD kini dicegah masuk/menginput data untuk menjaga integritas sistem.');
+        } else {
+            if (file_exists($lockPath)) {
+                @unlink($lockPath);
+            }
+
+            activity('maintenance')
+                ->causedBy(auth()->user())
+                ->log('Admin MEMATIKAN Mode Pemeliharaan Sistem (Normal Kembali)');
+
+            return back()->with('success', '🟢 Mode Pemeliharaan DIMATIKAN (Normal). Seluruh operator SKPD kini dapat kembali mengakses dasbor dan mengunggah dokumen transaksi.');
+        }
+    }
+
+    /**
+     * Halaman notifikasi saat maintenance aktif untuk operator SKPD
+     */
+    public function notice()
+    {
+        $lockPath = storage_path('app/maintenance_lock.json');
+        if (!file_exists($lockPath)) {
+            return redirect()->route('dashboard');
+        }
+
+        $status = json_decode(file_get_contents($lockPath), true) ?: ['active' => false];
+        if (empty($status['active'])) {
+            return redirect()->route('dashboard');
+        }
+
+        return view('errors.maintenance_notice', compact('status'));
+    }
 }
+

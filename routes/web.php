@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 
 // Public Routes
+Route::get('/maintenance-notice', [\App\Http\Controllers\MaintenanceController::class, 'notice'])->name('maintenance.notice');
 Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show')->middleware('signed');
 
 Route::middleware('auth')->group(function () {
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
         Route::post('pengaturan/maintenance/backup', [\App\Http\Controllers\MaintenanceController::class, 'backup'])->name('pengaturan.maintenance.backup');
         Route::post('pengaturan/maintenance/restore', [\App\Http\Controllers\MaintenanceController::class, 'restore'])->name('pengaturan.maintenance.restore');
         Route::delete('pengaturan/maintenance/reset', [\App\Http\Controllers\MaintenanceController::class, 'reset'])->name('pengaturan.maintenance.reset');
+        Route::post('pengaturan/maintenance/lockdown', [\App\Http\Controllers\MaintenanceController::class, 'toggleLockdown'])->name('pengaturan.maintenance.lockdown');
 
         // Storage & NAS Management
         Route::get('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'index'])->name('pengaturan.storage.index');
