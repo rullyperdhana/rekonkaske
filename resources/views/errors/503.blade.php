@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SiReKa - Pemeliharaan & Sinkronisasi Sistem (Under Maintenance)</title>
+    <title>SiReKa - Pemeliharaan Sistem (503 Service Unavailable)</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -57,39 +57,31 @@
 
         <!-- LIVE ANIMATED GEARS ICON -->
         <div class="relative w-36 h-36 mx-auto mb-8 flex items-center justify-center">
-            <!-- Glow Aura -->
             <div class="absolute inset-0 bg-gradient-to-r from-amber-500 to-indigo-500 rounded-full opacity-30 blur-2xl animate-pulse"></div>
-            
-            <!-- Outer Ring -->
             <div class="absolute inset-2 border-2 border-dashed border-amber-500/40 rounded-full animate-spin-slow"></div>
 
-            <!-- Big Gear (Clockwise) -->
             <div class="absolute text-amber-400 drop-shadow-[0_0_15px_rgba(251,191,36,0.4)] animate-spin-slow flex items-center justify-center">
                 <svg class="w-24 h-24 fill-current" viewBox="0 0 24 24">
                     <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
                 </svg>
             </div>
 
-            <!-- Interlocking Smaller Gear (Counter-Clockwise) -->
             <div class="absolute text-indigo-400 translate-x-7 translate-y-7 drop-shadow-[0_0_10px_rgba(129,140,248,0.5)] animate-spin-reverse flex items-center justify-center">
                 <svg class="w-14 h-14 fill-current" viewBox="0 0 24 24">
                     <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
                 </svg>
             </div>
 
-            <!-- Center Shield / Lock Badge -->
             <div class="absolute w-12 h-12 bg-slate-950 rounded-full border-2 border-amber-400/80 flex items-center justify-center shadow-inner z-10">
                 <span class="material-symbols-outlined text-amber-400 text-xl" data-weight="fill">security</span>
             </div>
         </div>
 
-        <!-- Status Badge -->
         <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full mb-6 shadow-[0_0_20px_-5px_rgba(245,158,11,0.3)]">
             <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
             <span class="text-amber-300 font-extrabold text-xs tracking-wider uppercase">Mode Pengamanan Akses & Sinkronisasi</span>
         </div>
 
-        <!-- Headline -->
         <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4 leading-tight">
             SiReKa Sedang Melakukan <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-indigo-400 bg-clip-text text-transparent">Pemeliharaan Sistem</span>
         </h1>
@@ -102,7 +94,6 @@
         <div class="bg-slate-950/90 border border-slate-800/80 rounded-2xl p-6 text-left space-y-4 mb-8 shadow-inner relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none"></div>
 
-            <!-- Activity progress indicator -->
             <div class="flex items-center justify-between text-xs font-mono text-slate-400 pb-2 border-b border-slate-800">
                 <div class="flex items-center gap-2">
                     <span class="inline-block w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
@@ -117,7 +108,7 @@
                 </div>
                 <div class="flex-grow space-y-1">
                     <span class="text-[11px] font-extrabold uppercase tracking-widest text-slate-400 block">Informasi dari Administrator:</span>
-                    <p class="text-sm sm:text-base font-semibold text-white leading-snug">{{ $status['reason'] ?? 'Sinkronisasi berkala, pengarsipan dokumen ZIP, & pemeliharaan server SiReKa.' }}</p>
+                    <p class="text-sm sm:text-base font-semibold text-white leading-snug">{{ $exception->getMessage() ?: 'Sinkronisasi berkala, pengarsipan dokumen ZIP, & pemeliharaan server SiReKa.' }}</p>
                 </div>
             </div>
 
@@ -127,30 +118,18 @@
                     <span>Target Waktu Selesai:</span>
                 </span>
                 <span class="font-mono font-bold text-indigo-300 bg-indigo-950/80 border border-indigo-700/60 px-3 py-1 rounded-lg shadow-sm">
-                    ⏳ {{ $status['estimated_end'] ?? 'Dalam Pengerjaan Cepat Admin' }}
+                    ⏳ Sesaat Lagi / Dalam Pengerjaan Admin
                 </span>
             </div>
         </div>
 
-        <!-- Action Buttons with Hover Animations -->
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="{{ route('dashboard') }}" class="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold rounded-xl shadow-[0_0_25px_-5px_rgba(245,158,11,0.5)] transition-all flex items-center justify-center gap-2 text-sm sm:text-base hover:scale-[1.02] active:scale-95 group">
+        <div class="flex items-center justify-center">
+            <button onclick="window.location.reload()" class="px-8 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-extrabold rounded-xl shadow-[0_0_25px_-5px_rgba(245,158,11,0.5)] transition-all flex items-center justify-center gap-2 text-sm sm:text-base hover:scale-[1.02] active:scale-95 group">
                 <span class="material-symbols-outlined text-xl transition-transform duration-500 group-hover:rotate-180">sync</span>
-                <span>Cek Kembali Akses Saya</span>
-            </a>
-
-            @auth
-            <form method="POST" action="{{ route('logout') }}" class="w-full sm:w-auto">
-                @csrf
-                <button type="submit" class="w-full sm:w-auto px-7 py-3.5 bg-slate-800/80 hover:bg-slate-700/80 text-slate-200 border border-slate-700/80 hover:border-slate-600 font-bold rounded-xl transition-all flex items-center justify-center gap-2 text-sm sm:text-base hover:scale-[1.02] active:scale-95 shadow-lg">
-                    <span class="material-symbols-outlined text-xl">logout</span>
-                    <span>Keluar (Logout)</span>
-                </button>
-            </form>
-            @endauth
+                <span>Muat Ulang Halaman (Cek Status)</span>
+            </button>
         </div>
 
-        <!-- Footer -->
         <div class="mt-10 pt-6 border-t border-slate-800/60 text-xs text-slate-400 font-medium flex flex-wrap items-center justify-center gap-2">
             <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>
             <span>Badan Keuangan dan Aset Daerah (BKAD) Kabupaten Tapin</span>
@@ -163,7 +142,6 @@
     <script>
         function updateClock() {
             const now = new Date();
-            // Convert to WITA (UTC+8)
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const witaDate = new Date(utc + (3600000 * 8));
             const hours = String(witaDate.getHours()).padStart(2, '0');
