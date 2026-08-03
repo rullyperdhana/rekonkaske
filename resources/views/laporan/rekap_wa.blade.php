@@ -246,39 +246,43 @@
             let useStatus = toggleStatus.checked;
             let usePeringatan = togglePeringatan.checked;
 
-            let text = `Rekap Rekonsiliasi Keuangan\n`;
-            text += `Bulan : ${bulanText} ${tahunText}\n`;
-            text += `==========\n`;
-            text += `Sudah Rekonsialasi ${sudahRekonData.length} SKPD\n`;
+            let text = `📊 *REKAP REKONSILIASI KEUANGAN* 📊\n`;
+            text += `🏢 *BKAD KABUPATEN TAPIN*\n`;
+            text += `🗓️ *Bulan : ${bulanText} ${tahunText}*\n`;
+            text += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            
+            text += `✅ *Sudah Rekonsiliasi (${sudahRekonData.length} SKPD)* :\n`;
 
             if (sudahRekonData.length === 0) {
-                text += `(Belum ada)\n`;
+                text += `_ (Belum ada SKPD yang melaporkan)_\n`;
             } else {
                 sudahRekonData.forEach((item, index) => {
-                    let prefix = useNomor ? `${index + 1}. ` : `- `;
+                    let prefix = useNomor ? `${index + 1}. ` : `🔸 `;
                     let statusSuffix = "";
                     if (useStatus) {
-                        statusSuffix = item.status === 'verified' ? ` (Verified)` : ` (Draft)`;
+                        statusSuffix = item.status === 'verified' ? ` 🟢 [Verified]` : ` 🟡 [Draft]`;
                     }
                     text += `${prefix}${item.nama}${statusSuffix}\n`;
                 });
             }
 
-            text += `==========\n`;
-            text += `Belum Rekonsiliasi ${belumRekonData.length} SKPD\n`;
+            text += `\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+            text += `❌ *Belum Rekonsiliasi (${belumRekonData.length} SKPD)* :\n`;
 
             if (belumRekonData.length === 0) {
-                text += `(Nihil / Semua SKPD sudah rekonsiliasi)\n`;
+                text += `🎉 _ (Nihil / Semua SKPD sudah rekonsiliasi!)_\n`;
             } else {
                 belumRekonData.forEach((item, index) => {
-                    let prefix = useNomor ? `${index + 1}. ` : `- `;
+                    let prefix = useNomor ? `${index + 1}. ` : `▪️ `;
                     text += `${prefix}${item.nama}\n`;
                 });
             }
 
             if (usePeringatan) {
-                text += `==========\n`;
-                text += `Mohon bagi SKPD yang Belum Rekonsiliasi agar segera mengirimkan laporan dan melengkapi dokumen pendukung pada aplikasi SIREKE. Terima kasih.`;
+                text += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
+                text += `⚠️ *INFORMASI & IMBAUAN* ⚠️\n`;
+                text += `Mohon kepada Bapak/Ibu Admin & Operator SKPD yang *Belum Rekonsiliasi* agar segera menyelesaikan pelaporan dan melengkapi dokumen pendukung pada aplikasi *SIREKE*.\n\n`;
+                text += `🙏 _Terima kasih atas kerja sama dan keterbataswaktuan Anda._ ✨`;
             }
 
             waTextarea.value = text;
