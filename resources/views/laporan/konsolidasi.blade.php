@@ -22,16 +22,20 @@
             </select>
         </div>
         
-        <div class="flex gap-2">
+        <div class="flex flex-wrap gap-2">
             <button type="submit" class="h-11 px-6 bg-primary text-on-primary hover:bg-primary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
                 <span class="material-symbols-outlined" data-weight="fill">search</span>
                 Tampilkan
             </button>
-            <a href="{{ route('laporan.konsolidasi.excel', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-6 bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
+            <a href="{{ route('laporan.rekap-wa', ['bulan' => $selectedBulan]) }}" class="h-11 px-5 bg-[#25D366] text-white hover:bg-[#1fbe5a] rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm font-bold">
+                <span class="material-symbols-outlined" data-weight="fill">campaign</span>
+                Broadcast WA Group
+            </a>
+            <a href="{{ route('laporan.konsolidasi.excel', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-5 bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
                 <span class="material-symbols-outlined" data-weight="fill">table_view</span>
                 Ekspor Excel
             </a>
-            <a href="{{ route('laporan.konsolidasi.pdf', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-6 bg-tertiary text-on-tertiary hover:bg-tertiary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
+            <a href="{{ route('laporan.konsolidasi.pdf', ['bulan' => $selectedBulan]) }}" target="_blank" class="h-11 px-5 bg-tertiary text-on-tertiary hover:bg-tertiary/90 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
                 <span class="material-symbols-outlined" data-weight="fill">print</span>
                 Cetak PDF
             </a>

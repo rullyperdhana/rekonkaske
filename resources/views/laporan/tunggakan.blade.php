@@ -9,7 +9,11 @@
         <h2 class="text-headline-sm font-headline-sm text-on-surface">Daftar Tunggakan & Selisih SKPD</h2>
         <p class="text-body-md font-body-md text-on-surface-variant">Pemantauan SKPD yang belum melaporkan rekonsiliasi atau memiliki selisih saldo di Tahun Anggaran {{ $tahunAktif }}.</p>
     </div>
-    <div class="mt-4 md:mt-0 flex gap-2">
+    <div class="mt-4 md:mt-0 flex flex-wrap gap-2">
+        <a href="{{ route('laporan.rekap-wa', ['bulan' => $targetMonth]) }}" class="h-11 px-5 bg-[#25D366] text-white hover:bg-[#1fbe5a] rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm font-bold">
+            <span class="material-symbols-outlined" data-weight="fill">campaign</span>
+            Broadcast WA Group
+        </a>
         <a href="{{ route('laporan.tunggakan.excel') }}" target="_blank" class="h-11 px-6 bg-green-600 text-white hover:bg-green-700 rounded-lg flex items-center gap-2 font-label-md transition-colors shadow-sm">
             <span class="material-symbols-outlined" data-weight="fill">table_view</span>
             Ekspor Excel

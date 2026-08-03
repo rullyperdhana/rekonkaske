@@ -495,4 +495,63 @@ class LaporanController extends Controller
         
         return Excel::download(new RingkasanSelisihExport($transaksis, $request->bulan), 'Ringkasan_Selisih_'.$tahunAktif.'.xlsx');
     }
+
+    /**
+     * Menampilkan halaman generator rekap dan broadcast WhatsApp Group (Khusus Admin/Konsolidator)
+     */
+    public function rekapWa(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $currentMonth = (int)date('n');
+        $defaultMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;
+        if ($tahunAktif < date('Y')) $defaultMonth = 12;
+
+        $selectedBulan = (int) ($request->bulan ?? $defaultMonth);
+        $kriteria = $request->kriteria ?? 'all'; // 'all' (Draft+Verified) atau 'verified' (Hanya Verified)
+
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $namaBulanTerpilih = $namaBulan[$selectedBulan - 1] ?? '';
+
+        $skpds = Skpd::where('status', true)->orderBy('nama', 'asc')->get();
+
+        $transaksis = Transaksi::where('periode_tahun', $tahunAktif)
+            ->where('periode_bulan', $selectedBulan)
+            ->get()
+            ->keyBy('skpd_id');
+
+        $sudahRekon = [];
+        $belumRekon = [];
+
+        foreach ($skpds as $skpd) {
+            $trx = $transaksis->get($skpd->id);
+            $isSudah = false;
+
+            if ($trx) {
+                if ($kriteria === 'verified') {
+                    $isSudah = ($trx->status_verifikasi === 'verified');
+                } else {
+                    $isSudah = true;
+                }
+            }
+
+            if ($isSudah) {
+                $sudahRekon[] = [
+                    'skpd' => $skpd,
+                    'nama' => $skpd->nama,
+                    'kode' => $skpd->kode,
+                    'status' => $trx->status_verifikasi ?? 'draft',
+                    'no_wa' => $skpd->no_whatsapp,
+                ];
+            } else {
+                $belumRekon[] = [
+                    'skpd' => $skpd,
+                    'nama' => $skpd->nama,
+                    'kode' => $skpd->kode,
+                    'no_wa' => $skpd->no_whatsapp,
+                ];
+            }
+        }
+
+        return view('laporan.rekap_wa', compact('sudahRekon', 'belumRekon', 'selectedBulan', 'tahunAktif', 'namaBulan', 'namaBulanTerpilih', 'kriteria', 'skpds'));
+    }
 }

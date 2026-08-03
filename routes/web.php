@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
     // Laporan (Admin & Konsolidator)
     Route::middleware(['admin.konsolidator'])->group(function () {
+        Route::get('/laporan/rekap-wa', [\App\Http\Controllers\LaporanController::class, 'rekapWa'])->name('laporan.rekap-wa');
         Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
         Route::get('/laporan/tunggakan/excel', [\App\Http\Controllers\LaporanController::class, 'eksporTunggakan'])->name('laporan.tunggakan.excel');
         Route::get('/laporan/konsolidasi', [\App\Http\Controllers\LaporanController::class, 'konsolidasi'])->name('laporan.konsolidasi');
