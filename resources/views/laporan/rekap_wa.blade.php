@@ -112,7 +112,7 @@
                     </div>
                     @if($item['no_wa'])
                         @php
-                            $pesanWa = "Yth. Admin SKPD {$item['nama']}.\nMohon segera menyelesaikan dan mengirimkan laporan rekonsiliasi kas untuk Bulan {$namaBulanTerpilih} {$tahunAktif} di aplikasi SIREKE. Terima kasih.";
+                            $pesanWa = "Yth. Admin SKPD {$item['nama']}.\nMohon segera menyelesaikan dan mengirimkan laporan rekonsiliasi kas untuk Bulan {$namaBulanTerpilih} {$tahunAktif} di aplikasi SiReKa. Terima kasih.";
                         @endphp
                         <a href="{{ $item['skpd']->getWhatsappUrl($pesanWa) }}" target="_blank" class="p-1.5 rounded bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors text-xs flex items-center gap-1 shrink-0" title="Chat Individual">
                             <span class="material-symbols-outlined text-sm" data-weight="fill">send</span>
@@ -281,7 +281,7 @@
             if (usePeringatan) {
                 text += `\n━━━━━━━━━━━━━━━━━━━━━\n`;
                 text += `⚠️ *INFORMASI & IMBAUAN* ⚠️\n`;
-                text += `Mohon kepada Bapak/Ibu Admin & Operator SKPD yang *Belum Rekonsiliasi* agar segera menyelesaikan pelaporan dan melengkapi dokumen pendukung pada aplikasi *SIREKE*.\n\n`;
+                text += `Mohon kepada Bapak/Ibu Admin & Operator SKPD yang *Belum Rekonsiliasi* agar segera menyelesaikan pelaporan dan melengkapi dokumen pendukung pada aplikasi *SiReKa*.\n\n`;
                 text += `🙏 _Terima kasih atas kerja sama dan keterbataswaktuan Anda._ ✨`;
             }
 

@@ -120,7 +120,7 @@
 
     <div class="text-center judul-dokumen">
         <h2>LAPORAN REKAPITULASI & AUDIT KEPEMILIKAN AKUN SKPD</h2>
-        <h3>Pengecekan Internal Status Pengguna SIREKE (Sistem Rekonsiliasi Keuangan Daerah)</h3>
+        <h3>Pengecekan Internal Status Pengguna SiReKa (Sistem Rekonsiliasi Keuangan Daerah)</h3>
     </div>
 
     <!-- Kotak Metadata Pengecekan Internal Admin -->
@@ -241,7 +241,7 @@
                 <td style="width: 65%; border: none;"></td>
                 <td style="width: 35%; text-align: center; border: none;">
                     Rantau, {{ \Carbon\Carbon::now()->format('d-m-Y') }}<br>
-                    <strong>Administrator Sistem SIREKE</strong><br><br><br><br>
+                    <strong>Administrator Sistem SiReKa</strong><br><br><br><br>
                     <span style="text-decoration: underline; font-weight: bold;">{{ auth()->user()->name }}</span><br>
                     <span>NIP / Username: {{ auth()->user()->username }}</span>
                 </td>
