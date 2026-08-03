@@ -31,6 +31,12 @@
 * **Perlindungan Data Saat Update Server:** Saat Admin ingin memperbarui kode, dokumen, atau memulihkan database, Admin dapat mengaktifkan **Lockdown Mode**.
 * **Proteksi Multi-Layer Middleware:** Operator SKPD ditahan dan dialihkan secara otomatis ke layar notifikasi khusus (*Under Maintenance*) berpenampilan modern lengkap dengan alasan pengerjaan dan estimasi selesai (WITA), mencegah kesalahan input atau data ganda selama masa perawatan sistem. Admin dan Konsolidator tetap dapat beraktivitas secara penuh di dalam sistem!
 
+### 6. 🔐 Manajemen Core, Registrasi Mandiri & Keamanan Standar (SiReKa Core Engine)
+* **Pendaftaran Akun Mandiri & Kontrol Buka-Tutup:** Operator SKPD dapat mendaftarkan akun secara mandiri (maksimal 1 Operator per SKPD). Admin memiliki tuas kontrol untuk **Membuka/Menutup Pendaftaran** dari dasbor pengaturan, serta mewajibkan aktivasi verifikasi Admin sebelum akun baru dapat digunakan.
+* **Laporan Internal Daftar Pengguna & Status Cetak:** Pada menu `/pengaturan/user`, Administrator dapat memantau langsung tanggal cetak dan mengidentifikasi instansi SKPD mana saja yang sudah memiliki user maupun yang belum terdaftar.
+* **Cetak Berita Acara (BA) Ber-QR Code:** Pembentukan otomatis Berita Acara Rekonsiliasi bulanan ke format PDF ukuran F4 (Folio) yang sah, dilengkapi tanda tangan digital elektronik dan **QR Code** untuk validasi keaslian dokumen cetak (anti pemalsuan).
+* **Audit Trail & Keamanan Ekstra:** Dilengkapi catatan log aktivitas lengkap (Alamat IP, User-Agent browser, waktu eksekusi), pembatasan percobaan login (*Rate Limiting*), proteksi Captcha, Auto-Logout karena tidak ada aktivitas (*Session Timeout*), dan kebijakan password yang ketat.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
