@@ -238,55 +238,147 @@
         </div>
     </div>
 
-    <!-- Leaderboard and Activity -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-        <!-- Leaderboard -->
+    <!-- Executive Analytics & Leaderboard Section -->
+    @if(isset($topSkpds) && count($topSkpds) > 0)
+    <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-xl shadow-md border border-outline-variant relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="z-10">
+            <h2 class="text-lg font-bold flex flex-wrap items-center gap-2">
+                <span class="material-symbols-outlined text-amber-400" data-weight="fill">analytics</span>
+                <span>Rapor Kepatuhan & Analisis Kedisiplinan Waktu (Timeliness Score)</span>
+                <span class="text-[11px] px-2.5 py-0.5 bg-amber-400/20 text-amber-300 rounded-full font-mono border border-amber-400/30">Executive EWS</span>
+            </h2>
+            <p class="text-body-sm text-slate-300 mt-1 leading-relaxed">Evaluasi kedisiplinan pelaporan rekon, bobot ketepatan waktu lapor bulanan, serta deteksi dini tunggakan & selisih SKPD di sistem SiReKa.</p>
+        </div>
+        <a href="{{ route('dashboard.cetak-rapor-kepatuhan') }}" target="_blank" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center gap-2 shadow-lg transition-all active:scale-95 text-body-sm shrink-0 z-10">
+            <span class="material-symbols-outlined text-lg" data-weight="fill">print</span>
+            <span>Cetak Rapor Eksekutif (PDF)</span>
+        </a>
+    </div>
+    @endif
+
+    <div class="grid grid-cols-1 {{ isset($topSkpds) && count($topSkpds) > 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-1' }} gap-6 mt-6">
+        <!-- Top 5 Leaderboard -->
         @if(isset($topSkpds) && count($topSkpds) > 0)
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-            <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">🏆 Papan Peringkat SKPD</h3>
-            <p class="text-label-sm font-label-sm text-on-surface-variant mb-4">Top 5 Paling Rajin Rekonsiliasi</p>
-            <div class="space-y-4">
-                @foreach($topSkpds as $index => $topSkpd)
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm
-                        {{ $index == 0 ? 'bg-yellow-100 text-yellow-700' : 
-                           ($index == 1 ? 'bg-gray-200 text-gray-700' : 
-                           ($index == 2 ? 'bg-orange-100 text-orange-700' : 'bg-surface-container-high text-on-surface-variant')) }}">
-                        {{ $index + 1 }}
-                    </div>
-                    <div class="flex-grow min-w-0">
-                        <p class="text-label-md font-label-md text-on-surface truncate">{{ $topSkpd->nama }}</p>
-                        <p class="text-body-sm text-on-surface-variant truncate">{{ $topSkpd->transaksis_count }} bulan selesai</p>
-                    </div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between border-b border-outline-variant/60 pb-3 mb-4">
+                    <h3 class="font-bold text-base text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-500" data-weight="fill">workspace_premium</span>
+                        <span>Top 5 Disiplin Rekon</span>
+                    </h3>
+                    <span class="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Teratas</span>
                 </div>
-                @endforeach
+                <div class="space-y-3.5">
+                    @foreach($topSkpds as $index => $topSkpd)
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-lg hover:bg-surface-container-low transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-7 h-7 rounded-full flex items-center justify-center font-extrabold text-xs shrink-0
+                                {{ $index == 0 ? 'bg-amber-100 text-amber-800 border border-amber-300' : 
+                                   ($index == 1 ? 'bg-slate-200 text-slate-800 border border-slate-300' : 
+                                   ($index == 2 ? 'bg-orange-100 text-orange-800 border border-orange-300' : 'bg-surface-container-high text-on-surface-variant')) }}">
+                                {{ $index + 1 }}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-body-sm font-bold text-on-surface truncate" title="{{ $topSkpd->nama }}">{{ $topSkpd->nama }}</p>
+                                <p class="text-[11px] text-emerald-600 font-semibold">{{ $topSkpd->verified_count ?? $topSkpd->transaksis_count }} bulan verified • Nihil selisih</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            <span class="text-xs font-black px-2 py-1 bg-emerald-100 text-emerald-800 rounded-md shadow-sm" title="Timeliness Score">
+                                {{ $topSkpd->timeliness_score ?? 100 }} pt
+                            </span>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/40 text-[11px] text-on-surface-variant text-center italic">
+                Skor tinggi berdasarkan kecepatan kirim & keakuratan rekon
+            </div>
+        </div>
+
+        <!-- Bottom 5 Early Warning System (EWS) -->
+        <div class="bg-surface-container-lowest border border-rose-200 rounded-xl p-5 shadow-sm flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-rose-500/5 rounded-bl-full pointer-events-none"></div>
+            <div>
+                <div class="flex items-center justify-between border-b border-rose-100 pb-3 mb-4">
+                    <h3 class="font-bold text-base text-rose-700 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-rose-500" data-weight="fill">warning_amber</span>
+                        <span>Perlu Perhatian (EWS)</span>
+                    </h3>
+                    <span class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">Rawan / Tertinggal</span>
+                </div>
+                <div class="space-y-3.5">
+                    @forelse($bottomSkpds ?? [] as $bIdx => $bottomSkpd)
+                    <div class="flex items-center justify-between gap-2 p-2 rounded-lg bg-rose-50/40 hover:bg-rose-50 transition-colors">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-7 h-7 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-extrabold text-xs shrink-0 border border-rose-200">
+                                !
+                            </div>
+                            <div class="min-w-0">
+                                <p class="text-body-sm font-bold text-rose-950 truncate" title="{{ $bottomSkpd->nama }}">{{ $bottomSkpd->nama }}</p>
+                                <p class="text-[11px] text-rose-600 font-medium">
+                                    @if(($bottomSkpd->selisih_count ?? 0) > 0)
+                                        ⚠️ Ada {{ $bottomSkpd->selisih_count }} selisih kas
+                                    @else
+                                        Baru {{ $bottomSkpd->verified_count ?? 0 }} dari 12 bulan verified
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+                        <div class="shrink-0 text-right">
+                            <span class="text-xs font-bold px-2 py-1 bg-rose-200/80 text-rose-900 rounded-md shadow-sm" title="Timeliness Score Rendah">
+                                {{ $bottomSkpd->timeliness_score ?? 30 }} pt
+                            </span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-on-surface-variant text-sm py-4">Semua SKPD terpantau aman dan berperingkat baik!</div>
+                    @endforelse
+                </div>
+            </div>
+            <div class="mt-4 pt-3 border-t border-rose-100 text-[11px] text-rose-600 text-center font-medium">
+                👉 Disarankan untuk melakukan supervisi & teguran WA
             </div>
         </div>
         @endif
 
         <!-- Recent Activity -->
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-            <h3 class="text-headline-sm font-headline-sm text-on-surface mb-4">Aktivitas Terakhir</h3>
-            <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-outline-variant/30">
-                @forelse($recentActivities as $activity)
-                <div class="relative flex items-start gap-4">
-                    <div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10 ring-4 ring-surface-container-lowest mt-1">
-                        @if($activity->status_verifikasi == 'verified')
-                            <span class="material-symbols-outlined text-[12px]">check</span>
-                        @else
-                            <span class="w-2 h-2 bg-on-primary rounded-full"></span>
-                        @endif
-                    </div>
-                    <div>
-                        <p class="text-body-md font-body-md text-on-surface">Data BKU {{ $namaBulan[$activity->periode_bulan - 1] }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
-                        <p class="text-label-sm font-label-sm text-on-surface-variant">Oleh: {{ $activity->user->name ?? 'Sistem' }} • {{ $activity->updated_at->diffForHumans() }}</p>
-                    </div>
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between border-b border-outline-variant/60 pb-3 mb-4">
+                    <h3 class="font-bold text-base text-on-surface flex items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-500" data-weight="fill">history</span>
+                        <span>Aktivitas Terakhir</span>
+                    </h3>
+                    <span class="text-[11px] font-medium text-on-surface-variant">Real-time Log</span>
                 </div>
-                @empty
-                <div class="text-center text-on-surface-variant text-sm">
-                    Belum ada aktivitas.
+                <div class="space-y-4 relative before:absolute before:inset-0 before:ml-2.5 before:-translate-x-px before:h-full before:w-0.5 before:bg-outline-variant/40 pl-2">
+                    @forelse($recentActivities as $activity)
+                    <div class="relative flex items-start gap-3.5">
+                        <div class="bg-primary text-on-primary w-5 h-5 rounded-full flex items-center justify-center shrink-0 z-10 ring-4 ring-surface-container-lowest mt-0.5">
+                            @if($activity->status_verifikasi == 'verified')
+                                <span class="material-symbols-outlined text-[12px]" data-weight="fill">check_circle</span>
+                            @else
+                                <span class="w-2 h-2 bg-on-primary rounded-full"></span>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <p class="text-body-sm font-bold text-on-surface leading-tight">Data BKU {{ $namaBulan[$activity->periode_bulan - 1] }} {{ $activity->status_verifikasi == 'verified' ? 'Diverifikasi' : 'Diperbarui' }}</p>
+                            <p class="text-[11px] text-on-surface-variant mt-0.5 truncate">{{ $activity->skpd->nama ?? 'Instansi' }} • Oleh: {{ $activity->user->name ?? 'Sistem' }}</p>
+                            <span class="text-[10px] font-mono text-primary font-medium">{{ $activity->updated_at->diffForHumans() }}</span>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="text-center text-on-surface-variant text-sm py-8">
+                        Belum ada aktivitas baru.
+                    </div>
+                    @endforelse
                 </div>
-                @endforelse
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/40 text-[11px] text-on-surface-variant text-center">
+                Memilih pergerakan transaksi SiReKa
             </div>
         </div>
     </div>

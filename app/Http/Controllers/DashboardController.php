@@ -188,19 +188,163 @@ class DashboardController extends Controller
             ];
         }
 
-        // 9. Leaderboard (Top 5 SKPD Paling Disiplin - Hanya untuk Admin)
+        // 9. Leaderboard with Timeliness Scoring & Early Warning System (Hanya untuk Admin / Konsolidator)
         $topSkpds = collect();
+        $bottomSkpds = collect();
         if (!$user->skpd_id) {
-            $topSkpds = Skpd::where('status', true)
-                ->withCount(['transaksis' => function ($query) use ($tahunAktif) {
-                    $query->where('periode_tahun', $tahunAktif)
-                          ->where('status_verifikasi', 'verified');
-                }])
-                ->orderByDesc('transaksis_count')
-                ->take(5)
-                ->get();
+            $skpdsWithTrx = Skpd::where('status', true)->with(['transaksis' => function ($query) use ($tahunAktif) {
+                $query->where('periode_tahun', $tahunAktif);
+            }])->get();
+
+            $skpdScored = $skpdsWithTrx->map(function ($skpd) {
+                $transaksis = $skpd->transaksis;
+                $totalTrx = $transaksis->count();
+                $verifiedTrx = $transaksis->where('status_verifikasi', 'verified')->count();
+                
+                $totalScore = 0;
+                $selisihCount = 0;
+                
+                foreach ($transaksis as $trx) {
+                    if (abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) > 0.01) {
+                        $selisihCount++;
+                    }
+                    
+                    // Bobot waktu kedisiplinan lapor (berdasarkan tanggal created_at)
+                    $tanggalLapor = $trx->created_at ? $trx->created_at->day : 15;
+                    if ($tanggalLapor <= 5) {
+                        $totalScore += 100; // Sangat cepat (Tgl 1-5)
+                    } elseif ($tanggalLapor <= 10) {
+                        $totalScore += 85;  // Tepat waktu (Tgl 6-10)
+                    } elseif ($tanggalLapor <= 15) {
+                        $totalScore += 65;  // Batas toleransi (Tgl 11-15)
+                    } else {
+                        $totalScore += 40;  // Terlambat (> Tgl 15)
+                    }
+
+                    if ($trx->status_verifikasi == 'verified' && abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) < 0.01) {
+                        $totalScore += 20;
+                    }
+                }
+                
+                $avgScore = $totalTrx > 0 ? round(($totalScore / ($totalTrx * 120)) * 100) : 0;
+                if ($avgScore > 100) $avgScore = 100;
+                if ($totalTrx > 0 && $avgScore < 20) $avgScore = 20; // Nilai partisipasi minimal jika ada transaksi
+
+                $skpd->timeliness_score = $avgScore;
+                $skpd->transaksi_count = $totalTrx;
+                $skpd->verified_count = $verifiedTrx;
+                $skpd->selisih_count = $selisihCount;
+                return $skpd;
+            });
+
+            // Top 5 Paling Disiplin & Rajin
+            $topSkpds = $skpdScored->sortByDesc(function ($s) {
+                return ($s->verified_count * 1000) + $s->timeliness_score - ($s->selisih_count * 50);
+            })->take(5)->values();
+
+            // Bottom 5 Paling Rawan & Butuh Perhatian (Early Warning System / EWS)
+            $bottomSkpds = $skpdScored->sortBy(function ($s) {
+                return ($s->verified_count * 1000) + $s->timeliness_score - ($s->selisih_count * 100);
+            })->take(5)->values();
         }
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'namaBulan'));
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'bottomSkpds', 'namaBulan'));
+    }
+
+    /**
+     * Mencetak Rapor Kepatuhan Eksekutif & Timeliness Score SKPD (PDF untuk Pimpinan)
+     */
+    public function cetakRaporKepatuhan(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403, 'Akses khusus Admin dan Konsolidator');
+        }
+
+        $tahunAktif = session('tahun_login') ?? date('Y');
+
+        $skpdsWithTrx = Skpd::where('status', true)->with(['transaksis' => function ($query) use ($tahunAktif) {
+            $query->where('periode_tahun', $tahunAktif);
+        }])->get();
+
+        $totalSkpd = $skpdsWithTrx->count();
+        $totalVerifiedTrx = 0;
+        $totalSelisihKas = 0;
+        $totalScoreSum = 0;
+
+        $skpdScored = $skpdsWithTrx->map(function ($skpd) use (&$totalVerifiedTrx, &$totalSelisihKas, &$totalScoreSum) {
+            $transaksis = $skpd->transaksis;
+            $totalTrx = $transaksis->count();
+            $verifiedTrx = $transaksis->where('status_verifikasi', 'verified')->count();
+            
+            $totalScore = 0;
+            $selisihCount = 0;
+            
+            foreach ($transaksis as $trx) {
+                if (abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) > 0.01) {
+                    $selisihCount++;
+                }
+                
+                $tanggalLapor = $trx->created_at ? $trx->created_at->day : 15;
+                if ($tanggalLapor <= 5) {
+                    $totalScore += 100;
+                } elseif ($tanggalLapor <= 10) {
+                    $totalScore += 85;
+                } elseif ($tanggalLapor <= 15) {
+                    $totalScore += 65;
+                } else {
+                    $totalScore += 40;
+                }
+
+                if ($trx->status_verifikasi == 'verified' && abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) < 0.01) {
+                    $totalScore += 20;
+                }
+            }
+            
+            $avgScore = $totalTrx > 0 ? round(($totalScore / ($totalTrx * 120)) * 100) : 0;
+            if ($avgScore > 100) $avgScore = 100;
+            if ($totalTrx > 0 && $avgScore < 20) $avgScore = 20;
+
+            $skpd->timeliness_score = $avgScore;
+            $skpd->transaksi_count = $totalTrx;
+            $skpd->verified_count = $verifiedTrx;
+            $skpd->selisih_count = $selisihCount;
+
+            $totalVerifiedTrx += $verifiedTrx;
+            $totalSelisihKas += $selisihCount;
+            $totalScoreSum += $avgScore;
+
+            return $skpd;
+        });
+
+        // Urutkan berdasarkan skor kedisiplinan tertinggi ke terendah
+        $raporSkpd = $skpdScored->sortByDesc(function ($s) {
+            return ($s->verified_count * 1000) + $s->timeliness_score - ($s->selisih_count * 50);
+        })->values();
+
+        $avgDaerah = $totalSkpd > 0 ? round($totalScoreSum / $totalSkpd) : 0;
+        $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+
+        // Tanggal cetak format Indonesia
+        $now = \Carbon\Carbon::now();
+        $namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][$now->dayOfWeek];
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][$now->month - 1];
+        $tanggalCetak = "{$namaHari}, {$now->day} {$namaBulan} {$now->year} - Pukul " . $now->format('H:i') . " WIB";
+        $pencetak = auth()->user()->name . " (" . ucfirst(auth()->user()->role) . ")";
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.rapor_kepatuhan_pdf', compact(
+            'raporSkpd',
+            'tahunAktif',
+            'totalSkpd',
+            'totalVerifiedTrx',
+            'totalSelisihKas',
+            'avgDaerah',
+            'pengaturan',
+            'tanggalCetak',
+            'pencetak'
+        ));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->stream('Rapor_Kepatuhan_SiReKa_' . $tahunAktif . '_' . date('Ymd_His') . '.pdf');
     }
 }

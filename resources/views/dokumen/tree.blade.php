@@ -2,7 +2,7 @@
 <style>
     #appMain { max-width: 100% !important; }
 </style>
-    <div class="space-y-6" x-data="{ modalOpen: false, modalUrl: '', modalTitle: '' }">
+    <div class="space-y-6" x-data="{ modalOpen: false, modalUrl: '', modalTitle: '', bulkZipOpen: false }">
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[3px] border-primary pb-4">
             <div>
@@ -10,6 +10,10 @@
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Struktur hirarki dokumen rekonsiliasi tahun {{ $tahunAktif }}.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                <button type="button" @click="bulkZipOpen = true" class="bg-amber-500 text-slate-950 font-bold px-3.5 py-2 rounded flex items-center space-x-1.5 hover:bg-amber-400 transition-colors shadow-md font-label-sm text-label-sm">
+                    <span class="material-symbols-outlined text-[18px]" data-weight="fill">archive</span>
+                    <span>Unduh Paket Audit BPK (.ZIP)</span>
+                </button>
                 <button type="button" @click="$dispatch('expand-all')" class="bg-surface text-on-surface border border-outline-variant px-3 py-2 rounded flex items-center space-x-1 hover:bg-surface-container-low transition-colors shadow-sm font-label-sm text-label-sm">
                     <span class="material-symbols-outlined text-[18px]">unfold_more</span>
                     <span>Buka Semua</span>
@@ -24,6 +28,19 @@
                 </a>
             </div>
         </div>
+
+        @if(session('error'))
+        <div class="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-lg flex items-center gap-3 shadow-sm">
+            <span class="material-symbols-outlined text-rose-600" data-weight="fill">error</span>
+            <span class="font-body-md text-sm font-medium">{{ session('error') }}</span>
+        </div>
+        @endif
+        @if(session('success'))
+        <div class="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg flex items-center gap-3 shadow-sm">
+            <span class="material-symbols-outlined text-emerald-600" data-weight="fill">check_circle</span>
+            <span class="font-body-md text-sm font-medium">{{ session('success') }}</span>
+        </div>
+        @endif
 
         <!-- Search Filter -->
         <form action="{{ route('dokumen.tree') }}" method="GET" class="bg-surface p-4 rounded border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4 items-end">
@@ -195,6 +212,60 @@
                 <div class="flex-1 bg-surface-container-lowest p-0 relative overflow-hidden">
                     <iframe :src="modalUrl" class="w-full h-full border-none"></iframe>
                 </div>
+            </div>
+        </div>
+
+        <!-- Bulk ZIP Export Modal (Paket Audit BPK) -->
+        <div x-show="bulkZipOpen" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 md:p-6" x-transition.opacity>
+            <div class="bg-surface rounded-xl shadow-2xl w-full max-w-lg overflow-hidden border border-outline-variant" @click.away="bulkZipOpen = false">
+                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 text-white p-5 border-b border-outline-variant flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold text-base flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-400" data-weight="fill">folder_zip</span>
+                            <span>Unduh Paket Bukti Audit SiReKa</span>
+                        </h3>
+                        <p class="text-xs text-slate-300 mt-0.5">Kompresi massal file Rekening Koran, BKU, & BA ke format ZIP untuk pemeriksaan BPK.</p>
+                    </div>
+                    <button @click="bulkZipOpen = false" type="button" class="text-slate-400 hover:text-white transition-colors">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <form action="{{ route('dokumen.bulk_zip') }}" method="POST" class="p-6 space-y-4">
+                    @csrf
+                    <div>
+                        <label class="block font-bold text-body-sm text-on-surface mb-1.5">Filter Bulan (Tahun {{ $tahunAktif }})</label>
+                        <select name="bulan" class="w-full h-10 border border-outline-variant rounded-lg px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none text-on-surface font-body-sm">
+                            <option value="all">📁 Semua Bulan (Full Tahun Anggaran {{ $tahunAktif }})</option>
+                            @foreach($namaBulan as $mIdx => $mName)
+                                <option value="{{ $mIdx + 1 }}">Bulan {{ $mName }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-body-sm text-on-surface mb-1.5">Filter Instansi / SKPD</label>
+                        <select name="skpd_id" class="w-full h-10 border border-outline-variant rounded-lg px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none text-on-surface font-body-sm">
+                            <option value="all">🏛️ Seluruh SKPD Kabupaten Tapin</option>
+                            @foreach($allSkpdList ?? [] as $sItem)
+                                <option value="{{ $sItem->id }}">{{ $sItem->kode }} - {{ $sItem->nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 p-3 rounded-lg flex items-start gap-2.5">
+                        <span class="material-symbols-outlined text-amber-600 shrink-0 text-xl" data-weight="fill">info</span>
+                        <p class="text-[11px] text-amber-900 leading-normal">
+                            <strong>Otomatis Disusun:</strong> File yang diunduh akan dikelompokkan ke dalam sub-folder nama SKPD & Bulan di dalam file `.ZIP` secara otomatis.
+                        </p>
+                    </div>
+                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-outline-variant/60">
+                        <button type="button" @click="bulkZipOpen = false" class="px-4 py-2 bg-surface text-on-surface hover:bg-surface-container rounded-lg border border-outline-variant font-medium text-body-sm transition-colors">
+                            Batal
+                        </button>
+                        <button type="submit" @click="bulkZipOpen = false" class="px-5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg shadow transition-all flex items-center gap-1.5 text-body-sm">
+                            <span class="material-symbols-outlined text-base" data-weight="fill">download</span>
+                            <span>Mulai Unduh ZIP Massal</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -117,7 +117,8 @@ class DokumenController extends Controller
         ];
 
         // Meneruskan variabel $skpds untuk memunculkan link pagination di view
-        return view('dokumen.tree', compact('treeData', 'tahunAktif', 'namaBulan', 'skpds'));
+        $allSkpdList = Skpd::where('status', true)->orderBy('nama')->get();
+        return view('dokumen.tree', compact('treeData', 'tahunAktif', 'namaBulan', 'skpds', 'allSkpdList'));
     }
     public function downloadZip(Transaksi $transaksi)
     {
@@ -158,5 +159,78 @@ class DokumenController extends Controller
         }
 
         return back()->with('error', 'Tidak ada dokumen yang bisa didownload atau zip gagal dibuat.');
+    }
+
+    /**
+     * Ekspor Massal Arsip Dokumen SiReKa (Bulk ZIP Exporter Skala Kabupaten)
+     */
+    public function bulkDownloadZip(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403, 'Akses khusus Admin dan Konsolidator');
+        }
+
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $bulan = $request->input('bulan', 'all');
+        $skpdId = $request->input('skpd_id', 'all');
+
+        $query = Transaksi::with(['skpd', 'rekening'])->where('periode_tahun', $tahunAktif);
+
+        if ($bulan && $bulan !== 'all') {
+            $query->where('periode_bulan', $bulan);
+        }
+
+        if ($skpdId && $skpdId !== 'all') {
+            $query->where('skpd_id', $skpdId);
+        }
+
+        $transaksis = $query->get();
+
+        if ($transaksis->isEmpty()) {
+            return back()->with('error', 'Tidak ada data transaksi yang cocok dengan filter yang Anda pilih.');
+        }
+
+        $zip = new \ZipArchive();
+        $namaBulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        $labelWaktu = ($bulan !== 'all' && is_numeric($bulan)) ? 'Bulan_' . $namaBulanList[$bulan - 1] : 'Full_Tahun_' . $tahunAktif;
+        $fileName = 'Paket_Audit_SiReKa_' . $labelWaktu . '_' . date('His') . '.zip';
+        $zipPath = storage_path('app/public/' . $fileName);
+
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            $hasFiles = false;
+
+            foreach ($transaksis as $trx) {
+                $skpdSlug = \Illuminate\Support\Str::slug($trx->skpd->nama ?? 'Instansi_Tanpa_Nama');
+                $bulanName = str_pad($trx->periode_bulan, 2, '0', STR_PAD_LEFT) . '_' . ($namaBulanList[$trx->periode_bulan - 1] ?? 'Bulan');
+                $folder = $skpdSlug . '/' . $bulanName . '/';
+
+                $files = [
+                    'BA_Manual' => $trx->file_ba_manual,
+                    'Buku_Kas' => $trx->file_buku_kas,
+                    'Buku_Pembantu_Bank' => $trx->file_buku_pembantu_bank,
+                    'Rekening_Koran' => $trx->file_rekening_koran,
+                ];
+
+                foreach ($files as $name => $path) {
+                    if ($path && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                        $extension = pathinfo($path, PATHINFO_EXTENSION);
+                        $zip->addFile(storage_path('app/public/' . $path), $folder . $name . '.' . $extension);
+                        $hasFiles = true;
+                    }
+                }
+            }
+
+            $zip->close();
+
+            if ($hasFiles) {
+                return response()->download($zipPath)->deleteFileAfterSend(true);
+            } else {
+                if (file_exists($zipPath)) {
+                    @unlink($zipPath);
+                }
+            }
+        }
+
+        return back()->with('error', 'Tidak ditemukan fisik file dokumen lampiran di dalam rentang waktu atau instansi yang Anda pilih.');
     }
 }
