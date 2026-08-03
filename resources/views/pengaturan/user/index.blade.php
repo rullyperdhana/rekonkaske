@@ -4,14 +4,58 @@
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[3px] border-primary pb-4">
             <div>
-                <h1 class="font-headline-lg text-headline-lg text-on-surface">Manajemen Pengguna</h1>
-                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola hak akses Admin dan Operator untuk setiap SKPD.</p>
+                <h1 class="font-headline-lg text-headline-lg text-on-surface">Manajemen Pengguna & Audit Akun</h1>
+                <p class="font-body-md text-body-md text-on-surface-variant mt-1">Kelola hak akses Admin dan Operator untuk setiap SKPD serta pantau ketersediaan akun.</p>
             </div>
-            <a href="{{ route('user.create') }}" class="bg-primary text-on-primary px-4 py-2 rounded flex items-center space-x-2 hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm self-start md:self-auto font-label-sm text-label-sm">
-                <span class="material-symbols-outlined text-[18px]">person_add</span>
-                <span>Tambah Pengguna</span>
-            </a>
+            <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                @if(auth()->user()->role === 'admin')
+                <a href="{{ route('user.cetak_laporan') }}" target="_blank" class="bg-tertiary text-on-tertiary hover:bg-tertiary/90 px-4 py-2.5 rounded-lg flex items-center space-x-2 transition-colors shadow-sm font-label-sm text-label-sm font-semibold">
+                    <span class="material-symbols-outlined text-[18px]" data-weight="fill">print</span>
+                    <span>Cetak Laporan Audit (PDF)</span>
+                </a>
+                @endif
+                <a href="{{ route('user.create') }}" class="bg-primary text-on-primary hover:bg-primary/90 px-4 py-2.5 rounded-lg flex items-center space-x-2 transition-colors shadow-sm font-label-sm text-label-sm font-semibold">
+                    <span class="material-symbols-outlined text-[18px]">person_add</span>
+                    <span>Tambah Pengguna</span>
+                </a>
+            </div>
         </div>
+        
+        @if(auth()->user()->role === 'admin')
+        @php
+            $totalSkpdCount = \App\Models\Skpd::where('status', true)->count();
+            $skpdWithUserCount = \App\Models\Skpd::where('status', true)->whereHas('users')->count();
+            $skpdWithoutUserCount = $totalSkpdCount - $skpdWithUserCount;
+        @endphp
+        <!-- Executive Audit Banner untuk Internal Admin -->
+        <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-xl p-6 shadow-md border border-outline-variant flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
+            <!-- Decoration background -->
+            <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex items-start md:items-center gap-4 z-10">
+                <div class="p-3 bg-white/10 backdrop-blur rounded-xl text-amber-400 shrink-0 border border-white/10">
+                    <span class="material-symbols-outlined text-3xl" data-weight="fill">shield_person</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg text-white tracking-wide flex items-center gap-2">
+                        <span>Pengecekan Internal Akun SKPD</span>
+                        <span class="text-[11px] font-mono px-2 py-0.5 bg-amber-400/20 text-amber-300 rounded-full border border-amber-400/30">Admin Only</span>
+                    </h3>
+                    <p class="text-body-sm text-slate-300 mt-1 leading-relaxed">
+                        Dari total <strong class="text-white">{{ $totalSkpdCount }} SKPD Aktif</strong>, tercatat 
+                        <span class="text-emerald-400 font-bold bg-emerald-950/50 px-1.5 py-0.5 rounded border border-emerald-500/30">{{ $skpdWithUserCount }} SKPD Sudah Berakun</span> dan 
+                        <span class="text-rose-400 font-bold bg-rose-950/50 px-1.5 py-0.5 rounded border border-rose-500/30">{{ $skpdWithoutUserCount }} SKPD Belum Berakun (Kosong)</span>.
+                    </p>
+                </div>
+            </div>
+            <div class="z-10 shrink-0">
+                <a href="{{ route('user.cetak_laporan') }}" target="_blank" class="px-5 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/20 transition-all active:scale-95 text-body-sm">
+                    <span class="material-symbols-outlined text-lg" data-weight="fill">print</span>
+                    <span>Cetak Rekapan Audit (PDF)</span>
+                </a>
+            </div>
+        </div>
+        @endif
         
         <!-- Filters -->
         <form method="GET" action="{{ route('user.index') }}" class="bg-surface p-4 rounded border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4">

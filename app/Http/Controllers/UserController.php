@@ -81,4 +81,46 @@ class UserController extends Controller
         $user->delete();
         return redirect()->route('user.index')->with('success', 'Pengguna berhasil dihapus.');
     }
+
+    /**
+     * Mencetak Laporan Pengecekan Internal Akun SKPD dan Daftar Pengguna (PDF)
+     */
+    public function cetakLaporan(Request $request)
+    {
+        $skpds = Skpd::with('users')->where('status', true)->orderBy('kode', 'asc')->get();
+        $nonSkpdUsers = User::whereNull('skpd_id')->orderBy('role', 'asc')->orderBy('name', 'asc')->get();
+
+        $totalSkpd = $skpds->count();
+        $skpdSudahAdaUser = $skpds->filter(function ($s) {
+            return $s->users->count() > 0;
+        })->count();
+        $skpdBelumAdaUser = $totalSkpd - $skpdSudahAdaUser;
+        $totalUsers = User::count();
+
+        $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+
+        // Waktu cetak dengan terjemahan bahasa Indonesia otomatis
+        $now = \Carbon\Carbon::now();
+        $namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][$now->dayOfWeek];
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][$now->month - 1];
+        $tanggalCetak = "{$namaHari}, {$now->day} {$namaBulan} {$now->year} - Pukul " . $now->format('H:i') . " WIB";
+
+        $adminPencetak = auth()->user()->name . " (" . ucfirst(auth()->user()->role) . ")";
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pengaturan.user.laporan_pdf', compact(
+            'skpds',
+            'nonSkpdUsers',
+            'totalSkpd',
+            'skpdSudahAdaUser',
+            'skpdBelumAdaUser',
+            'totalUsers',
+            'pengaturan',
+            'tanggalCetak',
+            'adminPencetak'
+        ));
+
+        $pdf->setPaper('A4', 'landscape');
+
+        return $pdf->stream('Laporan_Audit_Kepemilikan_Akun_SKPD_' . date('Ymd_His') . '.pdf');
+    }
 }
