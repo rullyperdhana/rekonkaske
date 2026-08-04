@@ -14,14 +14,19 @@ class SiReKaStorage
     public static function exists($path): bool
     {
         if (empty($path)) return false;
+        $path = ltrim($path, '/');
 
         // 1. Cek di disk aktif saat ini (bisa Lokal, NAS, atau MinIO S3)
-        if (Storage::disk('public')->exists($path)) {
-            return true;
+        try {
+            if (Storage::disk('public')->exists($path)) {
+                return true;
+            }
+        } catch (\Throwable $e) {
+            Log::warning("SiReKaStorage::exists error on disk public: " . $e->getMessage());
         }
 
         // 2. Fallback: Cek di folder fisik hard disk lokal internal
-        $localFallbackPath = storage_path('app/public/' . ltrim($path, '/'));
+        $localFallbackPath = storage_path('app/public/' . $path);
         if (file_exists($localFallbackPath) && is_file($localFallbackPath)) {
             return true;
         }
@@ -36,16 +41,22 @@ class SiReKaStorage
     public static function read($path)
     {
         if (empty($path)) return null;
+        $path = ltrim($path, '/');
 
         // 1. Jika sudah ada di disk aktif saat ini
-        if (Storage::disk('public')->exists($path)) {
-            return Storage::disk('public')->get($path);
+        try {
+            if (Storage::disk('public')->exists($path)) {
+                return Storage::disk('public')->get($path);
+            }
+        } catch (\Throwable $e) {
+            Log::warning("SiReKaStorage::read error on disk public: " . $e->getMessage());
         }
 
         // 2. Fallback dari hard disk lokal lama
-        $localFallbackPath = storage_path('app/public/' . ltrim($path, '/'));
+        $localFallbackPath = storage_path('app/public/' . $path);
         if (file_exists($localFallbackPath) && is_file($localFallbackPath)) {
-            $content = file_get_contents($localFallbackPath);
+            $content = @file_get_contents($localFallbackPath);
+            if ($content === false) return null;
 
             // Auto-Heal: Salin ke MinIO / NAS di belakang layar agar kedepannya langsung terbaca di storage aktif
             try {
@@ -57,7 +68,7 @@ class SiReKaStorage
                         Log::info("SiReKa Auto-Heal Migration: File {$path} tersalin otomatis ke " . strtoupper($config['mode']));
                     }
                 }
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 Log::warning("SiReKa Auto-Heal Migration gagal untuk file {$path}: " . $e->getMessage());
             }
 
@@ -73,13 +84,18 @@ class SiReKaStorage
     public static function delete($path): bool
     {
         if (empty($path)) return false;
+        $path = ltrim($path, '/');
 
         $deleted = false;
-        if (Storage::disk('public')->exists($path)) {
-            $deleted = Storage::disk('public')->delete($path) || $deleted;
+        try {
+            if (Storage::disk('public')->exists($path)) {
+                $deleted = Storage::disk('public')->delete($path) || $deleted;
+            }
+        } catch (\Throwable $e) {
+            Log::warning("SiReKaStorage::delete error on disk public: " . $e->getMessage());
         }
 
-        $localFallbackPath = storage_path('app/public/' . ltrim($path, '/'));
+        $localFallbackPath = storage_path('app/public/' . $path);
         if (file_exists($localFallbackPath) && is_file($localFallbackPath)) {
             @unlink($localFallbackPath);
             $deleted = true;
