@@ -529,6 +529,10 @@ class LaporanController extends Controller
             if ($trx) {
                 if ($kriteria === 'verified') {
                     $isSudah = ($trx->status_verifikasi === 'verified');
+                } elseif ($kriteria === 'uploaded_ba') {
+                    $isSudah = ($trx->status_verifikasi === 'verified' && !empty($trx->file_ba_manual));
+                } elseif ($kriteria === 'uploaded_all') {
+                    $isSudah = ($trx->status_verifikasi === 'verified' && !empty($trx->file_ba_manual) && !empty($trx->file_buku_kas) && !empty($trx->file_buku_pembantu_bank) && !empty($trx->file_rekening_koran));
                 } else {
                     $isSudah = true;
                 }

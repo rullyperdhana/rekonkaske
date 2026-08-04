@@ -9,6 +9,24 @@ use Illuminate\Support\Facades\Route;
 class SiReKaStorage
 {
     /**
+     * Dapatkan path fisik NAS secara langsung jika aktif
+     */
+    private static function getDirectNasPath($path): ?string
+    {
+        try {
+            $configPath = storage_path('app/storage_nas_config.json');
+            if (file_exists($configPath)) {
+                $config = json_decode(file_get_contents($configPath), true);
+                if (($config['mode'] ?? '') === 'nas' && !empty($config['nas_mount_path'])) {
+                    $fullPath = rtrim($config['nas_mount_path'], '/') . '/' . ltrim($path, '/');
+                    return $fullPath;
+                }
+            }
+        } catch (\Throwable $e) {}
+        return null;
+    }
+
+    /**
      * Cek apakah file ada di storage aktif (MinIO/NAS) ataupun di hard disk lokal lama
      */
     public static function exists($path): bool
@@ -16,7 +34,13 @@ class SiReKaStorage
         if (empty($path)) return false;
         $path = ltrim($path, '/');
 
-        // 1. Cek di disk aktif saat ini (bisa Lokal, NAS, atau MinIO S3)
+        // 1. Cek langsung ke folder fisik NAS jika mode NAS aktif
+        $nasPath = self::getDirectNasPath($path);
+        if ($nasPath && file_exists($nasPath) && is_file($nasPath)) {
+            return true;
+        }
+
+        // 2. Cek di disk aktif saat ini via driver Laravel (bisa Lokal, NAS, atau MinIO S3)
         try {
             if (Storage::disk('public')->exists($path)) {
                 return true;
@@ -25,7 +49,7 @@ class SiReKaStorage
             Log::warning("SiReKaStorage::exists error on disk public: " . $e->getMessage());
         }
 
-        // 2. Fallback: Cek di folder fisik hard disk lokal internal
+        // 3. Fallback: Cek di folder fisik hard disk lokal internal
         $localFallbackPath = storage_path('app/public/' . $path);
         if (file_exists($localFallbackPath) && is_file($localFallbackPath)) {
             return true;
@@ -43,7 +67,14 @@ class SiReKaStorage
         if (empty($path)) return null;
         $path = ltrim($path, '/');
 
-        // 1. Jika sudah ada di disk aktif saat ini
+        // 1. Baca langsung dari folder fisik NAS jika mode NAS aktif dan ada
+        $nasPath = self::getDirectNasPath($path);
+        if ($nasPath && file_exists($nasPath) && is_file($nasPath)) {
+            $content = @file_get_contents($nasPath);
+            if ($content !== false) return $content;
+        }
+
+        // 2. Jika sudah ada di disk aktif saat ini via driver Laravel
         try {
             if (Storage::disk('public')->exists($path)) {
                 return Storage::disk('public')->get($path);
@@ -52,7 +83,7 @@ class SiReKaStorage
             Log::warning("SiReKaStorage::read error on disk public: " . $e->getMessage());
         }
 
-        // 2. Fallback dari hard disk lokal lama
+        // 3. Fallback dari hard disk lokal lama
         $localFallbackPath = storage_path('app/public/' . $path);
         if (file_exists($localFallbackPath) && is_file($localFallbackPath)) {
             $content = @file_get_contents($localFallbackPath);
@@ -87,6 +118,13 @@ class SiReKaStorage
         $path = ltrim($path, '/');
 
         $deleted = false;
+
+        $nasPath = self::getDirectNasPath($path);
+        if ($nasPath && file_exists($nasPath) && is_file($nasPath)) {
+            @unlink($nasPath);
+            $deleted = true;
+        }
+
         try {
             if (Storage::disk('public')->exists($path)) {
                 $deleted = Storage::disk('public')->delete($path) || $deleted;

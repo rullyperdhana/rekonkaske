@@ -52,6 +52,7 @@ class AppServiceProvider extends ServiceProvider
                         'filesystems.disks.public.url' => env('APP_URL') . '/storage-stream',
                         'filesystems.disks.public.visibility' => 'public',
                     ]);
+                    \Illuminate\Support\Facades\Storage::forgetDisk('public');
                 } elseif ($mode === 'minio' && !empty($storageConfig['minio_bucket'])) {
                     config([
                         'filesystems.disks.public.driver' => 's3',
@@ -62,6 +63,7 @@ class AppServiceProvider extends ServiceProvider
                         'filesystems.disks.public.endpoint' => $storageConfig['minio_endpoint'] ?? '',
                         'filesystems.disks.public.use_path_style_endpoint' => ($storageConfig['minio_use_path_style_endpoint'] ?? 'true') === 'true',
                     ]);
+                    \Illuminate\Support\Facades\Storage::forgetDisk('public');
                 }
             }
         } catch (\Exception $e) {

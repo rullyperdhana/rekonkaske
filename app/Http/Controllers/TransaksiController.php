@@ -224,12 +224,7 @@ class TransaksiController extends Controller
         
         foreach ($fields as $field) {
             if ($request->hasFile($field)) {
-                // Prevent operator from overwriting existing files
-                if (Auth::user()->role === 'operator' && $transaksi->$field) {
-                    continue;
-                }
-
-                // Delete old file
+                // Delete old file if present before updating with new upload
                 if ($transaksi->$field) {
                     \App\Services\SiReKaStorage::delete($transaksi->$field);
                 }

@@ -39,6 +39,8 @@
             <select name="kriteria" id="kriteria" class="w-full h-11 px-3 rounded-lg border border-outline bg-surface text-body-md focus:ring-2 focus:ring-[#25D366]/30 focus:border-[#25D366] outline-none transition-all">
                 <option value="all" {{ $kriteria === 'all' ? 'selected' : '' }}>Semua yang Sudah Input Laporan (Draft + Verified)</option>
                 <option value="verified" {{ $kriteria === 'verified' ? 'selected' : '' }}>Khusus yang Sudah Diverifikasi Selesai (Verified Only)</option>
+                <option value="uploaded_ba" {{ $kriteria === 'uploaded_ba' ? 'selected' : '' }}>Khusus yang Sudah Upload Berita Acara (BA Manual)</option>
+                <option value="uploaded_all" {{ $kriteria === 'uploaded_all' ? 'selected' : '' }}>Khusus yang Sudah Upload Lengkap (4 Dokumen)</option>
             </select>
         </div>
 
