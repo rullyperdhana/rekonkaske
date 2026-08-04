@@ -39,7 +39,56 @@
         </div>
         @endif
 
-        <!-- Storage Health Diagnostics (Gauge Banner) -->
+        <!-- Diagnostik Kapasitas Ruang Simpan EKSTERNAL (NAS / MinIO - ACTIVE STORAGE) -->
+        @if(($extStats['mode'] ?? 'local') !== 'local')
+        <div class="bg-gradient-to-r from-teal-950 via-slate-900 to-emerald-950 text-white p-6 rounded-2xl shadow-2xl border-2 border-emerald-500/60 relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute left-1/3 bottom-0 w-64 h-32 bg-teal-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-6 relative z-10">
+                <div class="space-y-2 max-w-xl">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-400 text-3xl animate-pulse" data-weight="fill">dns</span>
+                        <h2 class="text-lg font-black tracking-tight text-white">Status Penyimpanan Eksternal ({{ strtoupper($extStats['mode']) }})</h2>
+                        <span class="text-[11px] px-3 py-0.5 bg-emerald-500 text-slate-950 rounded-full font-black tracking-wider uppercase shadow-[0_0_15px_rgba(16,185,129,0.5)]">⭐ ACTIVE SIREKA STORAGE</span>
+                    </div>
+                    <p class="text-xs text-emerald-100/80 font-medium">
+                        {{ $extStats['status'] }} &mdash; {{ $extStats['message'] }}
+                    </p>
+                    @if(($extStats['file_count'] ?? 0) > 0)
+                    <div class="inline-flex items-center gap-1.5 bg-emerald-500/10 border border-emerald-500/30 px-3 py-1.5 rounded-lg text-emerald-300 text-xs font-mono font-bold mt-2 shadow-sm">
+                        <span class="material-symbols-outlined text-[18px] text-emerald-400">folder_special</span>
+                        <span>Terindeks di {{ strtoupper($extStats['mode']) }}: <strong class="text-white text-sm">{{ number_format($extStats['file_count'], 0, ',', '.') }}</strong> Dokumen & Arsip</span>
+                    </div>
+                    @endif
+                </div>
+
+                <div class="flex items-center justify-between xl:justify-end gap-4 md:gap-6 bg-slate-950/90 backdrop-blur border border-emerald-500/30 p-4 rounded-xl shrink-0 shadow-inner">
+                    <div class="text-center px-2">
+                        <span class="block text-[10px] text-emerald-400/80 font-extrabold uppercase tracking-wider">Total Kapasitas NAS/S3</span>
+                        <span class="text-lg md:text-xl font-black text-white font-mono">{{ $extStats['total'] }}</span>
+                    </div>
+                    <div class="w-px h-12 bg-slate-800"></div>
+                    <div class="text-center px-2">
+                        <span class="block text-[10px] text-amber-400/80 font-extrabold uppercase tracking-wider">Terpakai</span>
+                        <span class="text-lg md:text-xl font-black text-amber-300 font-mono">{{ $extStats['used'] }} @if(is_numeric($extStats['percent'])) <span class="text-xs text-amber-400">({{ $extStats['percent'] }}%)</span> @endif</span>
+                    </div>
+                    <div class="w-px h-12 bg-slate-800"></div>
+                    <div class="text-center px-2">
+                        <span class="block text-[10px] text-emerald-400/80 font-extrabold uppercase tracking-wider">Sisa Ruang Bebas</span>
+                        <span class="text-lg md:text-xl font-black text-emerald-400 font-mono">{{ $extStats['free'] }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-5 w-full bg-slate-950 h-3.5 rounded-full overflow-hidden p-0.5 border border-emerald-500/40 shadow-inner">
+                <div class="h-full rounded-full transition-all duration-1000 {{ ($extStats['percent'] ?? 0) < 65 ? 'bg-gradient-to-r from-emerald-500 to-teal-400 shadow-[0_0_12px_rgba(52,211,153,0.8)]' : 'bg-gradient-to-r from-amber-500 to-rose-500' }}" style="width: {{ min(100, max(8, $extStats['percent'] ?? 15)) }}%"></div>
+            </div>
+        </div>
+        @endif
+
+        <!-- Storage Health Diagnostics (Gauge Banner untuk Lokal) -->
         <div class="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 rounded-2xl shadow-lg border border-slate-800 relative overflow-hidden">
             <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
             
@@ -47,8 +96,10 @@
                 <div class="space-y-2 max-w-xl">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-amber-400 text-2xl" data-weight="fill">hard_drive</span>
-                        <h2 class="text-lg font-bold">Diagnostik Kapasitas Ruang Simpan Server</h2>
-                        @if($usedPercent < 75)
+                        <h2 class="text-lg font-bold">Diagnostik Kapasitas Ruang Simpan @if(($extStats['mode'] ?? 'local') !== 'local') Lokal VPS (Internal Fallback) @else Server Utama (Lokal) @endif</h2>
+                        @if(($extStats['mode'] ?? 'local') !== 'local')
+                            <span class="text-[11px] px-2.5 py-0.5 bg-indigo-500/20 text-indigo-300 rounded-full font-bold border border-indigo-500/40">🛡️ Standby & Auto-Fallback</span>
+                        @elseif($usedPercent < 75)
                             <span class="text-[11px] px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 rounded-full font-bold border border-emerald-500/40">🟢 Kondisi Aman</span>
                         @else
                             <span class="text-[11px] px-2.5 py-0.5 bg-rose-500/20 text-rose-300 rounded-full font-bold border border-rose-500/40 animate-pulse">⚠️ Kapasitas Menipis</span>
