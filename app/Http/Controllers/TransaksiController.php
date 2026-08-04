@@ -244,10 +244,34 @@ class TransaksiController extends Controller
                 }
 
                 try {
+                    // Pre-check diagnostik untuk driver lokal / mount NAS
+                    $diskDriver = config('filesystems.disks.public.driver');
+                    $diskRoot = config('filesystems.disks.public.root');
+                    if ($diskDriver === 'local' && !empty($diskRoot)) {
+                        if (!file_exists($diskRoot)) {
+                            throw new \Exception("Folder storage root ('{$diskRoot}') tidak ditemukan atau belum di-mount di server.");
+                        }
+                        if (!is_writable($diskRoot)) {
+                            $owner = @function_exists('posix_getpwuid') && @function_exists('fileowner') ? (@posix_getpwuid(fileowner($diskRoot))['name'] ?? 'root/other') : 'root';
+                            throw new \Exception("Folder ('{$diskRoot}') tidak berhak ditulisi oleh PHP/Webserver (Pemilik folder saat ini: {$owner}). Jalankan di SSH VPS Anda: chown -R www:www {$diskRoot} && chmod -R 775 {$diskRoot}");
+                        }
+                        $subDir = rtrim($diskRoot, '/') . '/dokumen_rekonsiliasi';
+                        if (!is_dir($subDir)) {
+                            @mkdir($subDir, 0777, true);
+                            @chmod($subDir, 0775);
+                        }
+                        if (is_dir($subDir) && !is_writable($subDir)) {
+                            $owner = @function_exists('posix_getpwuid') && @function_exists('fileowner') ? (@posix_getpwuid(fileowner($subDir))['name'] ?? 'root/other') : 'root';
+                            throw new \Exception("Subfolder ('{$subDir}') menolak penulisan file (Pemilik: {$owner}). Jalankan di SSH VPS Anda: chown -R www:www {$diskRoot} && chmod -R 775 {$diskRoot}");
+                        }
+                    }
+
                     // Simpan ke disk public aktif saat ini (Lokal/NAS/MinIO S3)
                     $storedPath = $file->store('dokumen_rekonsiliasi', 'public');
                     if (!$storedPath) {
-                        throw new \Exception("Penyimpanan gagal (path kosong). Periksa izin tulis (permissions) pada folder NAS/S3 server Anda.");
+                        $phpError = error_get_last();
+                        $reason = $phpError['message'] ?? "Izin tulis folder ditolak oleh sistem Linux atau open_basedir aaPanel.";
+                        throw new \Exception("Penyimpanan gagal dengan info: {$reason}");
                     }
 
                     // Delete old file if present & catat jejak audit (Audit Trail)
