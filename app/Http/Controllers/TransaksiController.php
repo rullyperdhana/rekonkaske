@@ -208,7 +208,10 @@ class TransaksiController extends Controller
             abort(403);
         }
 
-        return view('transaksi.upload', compact('transaksi'));
+        $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+        $allowReupload = $pengaturanGlobal ? (bool) ($pengaturanGlobal->allow_operator_reupload ?? false) : false;
+
+        return view('transaksi.upload', compact('transaksi', 'allowReupload'));
     }
 
     public function uploadStore(UploadTransaksiRequest $request, Transaksi $transaksi)
@@ -220,12 +223,21 @@ class TransaksiController extends Controller
 
         $validated = $request->validated();
 
+        $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+        $allowReupload = $pengaturanGlobal ? (bool) ($pengaturanGlobal->allow_operator_reupload ?? false) : false;
+
         $fields = ['file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
         
         foreach ($fields as $field) {
             if ($request->hasFile($field)) {
-                // Delete old file if present before updating with new upload
+                // Keamanan Audit: Mencegah operator menimpa bukti jika izin re-upload nonaktif
+                if (Auth::user()->role === 'operator' && $transaksi->$field && !$allowReupload) {
+                    continue;
+                }
+
+                // Delete old file if present & catat jejak audit (Audit Trail)
                 if ($transaksi->$field) {
+                    \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Berkas {$field} pada Transaksi ID #{$transaksi->id} (SKPD ID #{$transaksi->skpd_id}) ditimpa oleh User ID #" . Auth::id() . " (" . Auth::user()->name . ") [Role: " . Auth::user()->role . "]");
                     \App\Services\SiReKaStorage::delete($transaksi->$field);
                 }
                 $transaksi->$field = $request->file($field)->store('dokumen_rekonsiliasi', 'public');

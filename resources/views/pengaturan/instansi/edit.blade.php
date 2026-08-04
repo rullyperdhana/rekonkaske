@@ -33,6 +33,22 @@
                             </label>
                             <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">Jika diaktifkan, link <b>Daftar Akun Baru</b> akan muncul di halaman login. Operator dapat mendaftar mandiri (hanya 1 per SKPD).</p>
                         </div>
+
+                        <div class="flex flex-col gap-1.5 p-4 bg-amber-500/10 rounded-lg border border-amber-500/30 mt-2">
+                            <label class="text-label-sm font-bold text-amber-700 flex items-center justify-between cursor-pointer" for="allow_operator_reupload">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-amber-600">shield_lock</span>
+                                    Izin Re-Upload & Timpa Dokumen (Operator SKPD)
+                                </span>
+                                <div class="relative inline-flex items-center">
+                                  <input type="checkbox" id="allow_operator_reupload" name="allow_operator_reupload" class="sr-only peer" value="1" {{ old('allow_operator_reupload', $pengaturan->allow_operator_reupload ?? false) ? 'checked' : '' }}>
+                                  <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-amber-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+                                </div>
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                <b>Proteksi Keamanan Audit:</b> Jika dinonaktifkan (<b>OFF</b> - Default Disarankan), operator SKPD tidak berhak mengganti/menimpa dokumen yang sudah diunggah demi menghindari penyamaran bukti atau ketidaksesuaian berkas paska rekon. Aktifkan (<b>ON</b>) sementara hanya saat masa pembenahan data atau migrasi arsip.
+                            </p>
+                        </div>
                         
                         <div class="flex flex-col gap-1.5 mt-2">
                             <label class="text-label-sm font-label-sm text-on-surface" for="logo_file">Logo Aplikasi (Hanya Admin) <span class="text-error">*</span></label>

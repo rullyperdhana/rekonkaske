@@ -56,8 +56,18 @@
                             <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_ba_manual))
-                    <input type="file" name="file_ba_manual" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-error/10 file:text-error hover:file:bg-error/20 cursor-pointer">
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_ba_manual || ($allowReupload ?? false))))
+                        <input type="file" name="file_ba_manual" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-error/10 file:text-error hover:file:bg-error/20 cursor-pointer">
+                        @if($transaksi->file_ba_manual && ($allowReupload ?? false) && Auth::user()->role === 'operator')
+                            <p class="mt-2 text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5 font-medium">
+                                <span class="material-symbols-outlined text-[15px]">info</span> Izin Re-Upload diaktifkan Admin: Anda diperbolehkan menimpa file lama.
+                            </p>
+                        @endif
+                    @elseif(Auth::user()->role === 'operator' && $transaksi->file_ba_manual && !($allowReupload ?? false))
+                        <div class="mt-2 text-[11px] text-error bg-error/5 p-3 rounded-lg border border-error/20 flex items-start gap-2 font-medium">
+                            <span class="material-symbols-outlined text-[18px] text-error shrink-0">lock</span>
+                            <span>Dokumen ini dikunci permanen demi proteksi audit rekon paska verifikasi. Hubungi Admin BKAD jika ada koreksi bukti yang sah.</span>
+                        </div>
                     @endif
                 </div>
 
@@ -82,8 +92,18 @@
                             <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_kas))
-                    <input type="file" name="file_buku_kas" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_buku_kas || ($allowReupload ?? false))))
+                        <input type="file" name="file_buku_kas" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer">
+                        @if($transaksi->file_buku_kas && ($allowReupload ?? false) && Auth::user()->role === 'operator')
+                            <p class="mt-2 text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5 font-medium">
+                                <span class="material-symbols-outlined text-[15px]">info</span> Izin Re-Upload diaktifkan Admin: Anda diperbolehkan menimpa file lama.
+                            </p>
+                        @endif
+                    @elseif(Auth::user()->role === 'operator' && $transaksi->file_buku_kas && !($allowReupload ?? false))
+                        <div class="mt-2 text-[11px] text-error bg-error/5 p-3 rounded-lg border border-error/20 flex items-start gap-2 font-medium">
+                            <span class="material-symbols-outlined text-[18px] text-error shrink-0">lock</span>
+                            <span>Dokumen ini dikunci permanen demi proteksi audit rekon paska verifikasi. Hubungi Admin BKAD jika ada koreksi bukti yang sah.</span>
+                        </div>
                     @endif
                 </div>
 
@@ -108,8 +128,18 @@
                             <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_pembantu_bank))
-                    <input type="file" name="file_buku_pembantu_bank" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-tertiary/10 file:text-tertiary hover:file:bg-tertiary/20 cursor-pointer">
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_buku_pembantu_bank || ($allowReupload ?? false))))
+                        <input type="file" name="file_buku_pembantu_bank" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-tertiary/10 file:text-tertiary hover:file:bg-tertiary/20 cursor-pointer">
+                        @if($transaksi->file_buku_pembantu_bank && ($allowReupload ?? false) && Auth::user()->role === 'operator')
+                            <p class="mt-2 text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5 font-medium">
+                                <span class="material-symbols-outlined text-[15px]">info</span> Izin Re-Upload diaktifkan Admin: Anda diperbolehkan menimpa file lama.
+                            </p>
+                        @endif
+                    @elseif(Auth::user()->role === 'operator' && $transaksi->file_buku_pembantu_bank && !($allowReupload ?? false))
+                        <div class="mt-2 text-[11px] text-error bg-error/5 p-3 rounded-lg border border-error/20 flex items-start gap-2 font-medium">
+                            <span class="material-symbols-outlined text-[18px] text-error shrink-0">lock</span>
+                            <span>Dokumen ini dikunci permanen demi proteksi audit rekon paska verifikasi. Hubungi Admin BKAD jika ada koreksi bukti yang sah.</span>
+                        </div>
                     @endif
                 </div>
 
@@ -134,8 +164,18 @@
                             <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
-                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_rekening_koran))
-                    <input type="file" name="file_rekening_koran" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary/10 file:text-secondary hover:file:bg-secondary/20 cursor-pointer">
+                    @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_rekening_koran || ($allowReupload ?? false))))
+                        <input type="file" name="file_rekening_koran" accept=".pdf,.jpg,.jpeg,.png" class="w-full text-body-md rounded-lg border border-outline-variant bg-surface-container-lowest file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-secondary/10 file:text-secondary hover:file:bg-secondary/20 cursor-pointer">
+                        @if($transaksi->file_rekening_koran && ($allowReupload ?? false) && Auth::user()->role === 'operator')
+                            <p class="mt-2 text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg border border-amber-200 flex items-center gap-1.5 font-medium">
+                                <span class="material-symbols-outlined text-[15px]">info</span> Izin Re-Upload diaktifkan Admin: Anda diperbolehkan menimpa file lama.
+                            </p>
+                        @endif
+                    @elseif(Auth::user()->role === 'operator' && $transaksi->file_rekening_koran && !($allowReupload ?? false))
+                        <div class="mt-2 text-[11px] text-error bg-error/5 p-3 rounded-lg border border-error/20 flex items-start gap-2 font-medium">
+                            <span class="material-symbols-outlined text-[18px] text-error shrink-0">lock</span>
+                            <span>Dokumen ini dikunci permanen demi proteksi audit rekon paska verifikasi. Hubungi Admin BKAD jika ada koreksi bukti yang sah.</span>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -148,7 +188,7 @@
                 @php
                     $canUpload = Auth::user()->role === 'admin' || 
                                  (Auth::user()->role === 'operator' && 
-                                  (!$transaksi->file_ba_manual || !$transaksi->file_buku_kas || !$transaksi->file_buku_pembantu_bank || !$transaksi->file_rekening_koran));
+                                  (($allowReupload ?? false) || !$transaksi->file_ba_manual || !$transaksi->file_buku_kas || !$transaksi->file_buku_pembantu_bank || !$transaksi->file_rekening_koran));
                 @endphp
                 @if($canUpload)
                 <button type="submit" class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-sm font-bold shadow hover:bg-primary/90 transition-colors flex items-center gap-2">

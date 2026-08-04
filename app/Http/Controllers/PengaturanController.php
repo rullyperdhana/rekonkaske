@@ -65,6 +65,7 @@ class PengaturanController extends Controller
 
         if (auth()->user()->role === 'admin') {
             $validated['is_registration_open'] = $request->has('is_registration_open') ? true : false;
+            $validated['allow_operator_reupload'] = $request->has('allow_operator_reupload') ? true : false;
         }
 
         $pengaturan->update($validated);
