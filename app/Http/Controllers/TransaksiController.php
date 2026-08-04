@@ -227,25 +227,74 @@ class TransaksiController extends Controller
         $allowReupload = $pengaturanGlobal ? (bool) ($pengaturanGlobal->allow_operator_reupload ?? false) : false;
 
         $fields = ['file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
+        $uploadedCount = 0;
+        $errors = [];
         
         foreach ($fields as $field) {
             if ($request->hasFile($field)) {
+                $file = $request->file($field);
+                if (!$file->isValid()) {
+                    $errors[] = "File " . strtoupper(str_replace('file_', '', $field)) . " gagal diunggah: " . $file->getErrorMessage();
+                    continue;
+                }
+
                 // Keamanan Audit: Mencegah operator menimpa bukti jika izin re-upload nonaktif
                 if (Auth::user()->role === 'operator' && $transaksi->$field && !$allowReupload) {
                     continue;
                 }
 
-                // Delete old file if present & catat jejak audit (Audit Trail)
-                if ($transaksi->$field) {
-                    \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Berkas {$field} pada Transaksi ID #{$transaksi->id} (SKPD ID #{$transaksi->skpd_id}) ditimpa oleh User ID #" . Auth::id() . " (" . Auth::user()->name . ") [Role: " . Auth::user()->role . "]");
-                    \App\Services\SiReKaStorage::delete($transaksi->$field);
+                try {
+                    // Simpan ke disk public aktif saat ini (Lokal/NAS/MinIO S3)
+                    $storedPath = $file->store('dokumen_rekonsiliasi', 'public');
+                    if (!$storedPath) {
+                        throw new \Exception("Penyimpanan gagal (path kosong). Periksa izin tulis (permissions) pada folder NAS/S3 server Anda.");
+                    }
+
+                    // Delete old file if present & catat jejak audit (Audit Trail)
+                    if ($transaksi->$field) {
+                        \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Berkas {$field} pada Transaksi ID #{$transaksi->id} (SKPD ID #{$transaksi->skpd_id}) ditimpa oleh User ID #" . Auth::id() . " (" . Auth::user()->name . ") [Role: " . Auth::user()->role . "]");
+                        \App\Services\SiReKaStorage::delete($transaksi->$field);
+                    }
+
+                    $transaksi->$field = $storedPath;
+                    $uploadedCount++;
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error("Gagal menyimpan dokumen {$field} ke storage: " . $e->getMessage());
+                    $errors[] = "Gagal menyimpan " . strtoupper(str_replace('file_', '', $field)) . ": " . $e->getMessage();
                 }
-                $transaksi->$field = $request->file($field)->store('dokumen_rekonsiliasi', 'public');
             }
+        }
+
+        if (!empty($errors)) {
+            return redirect()->route('transaksi.upload', $transaksi->id)->with('error', implode(' | ', $errors));
+        }
+
+        if ($uploadedCount === 0) {
+            // Deteksi jika file yang diupload ditolak diam-diam oleh PHP (melebihi post_max_size / upload_max_filesize)
+            $contentLength = (int) ($request->server('CONTENT_LENGTH', 0));
+            $maxPostSize = self::getBytes(ini_get('post_max_size'));
+            if ($contentLength > 0 && $maxPostSize > 0 && $contentLength >= $maxPostSize) {
+                return redirect()->route('transaksi.upload', $transaksi->id)->with('error', "Gagal mengunggah: Total ukuran file melepasi batas maksimal server (post_max_size PHP Anda: " . ini_get('post_max_size') . "). Silakan perkecil ukuran file atau naikkan batas upload di PHP aaPanel Anda.");
+            }
+            return redirect()->route('transaksi.upload', $transaksi->id)->with('error', 'Tidak ada file baru yang dipilih atau berkas gagal diterima oleh server.');
         }
 
         $transaksi->save();
 
-        return redirect()->route('transaksi.upload', $transaksi->id)->with('success', 'Dokumen berhasil diupload.');
+        return redirect()->route('transaksi.upload', $transaksi->id)->with('success', "{$uploadedCount} dokumen berhasil disimpan ke server.");
+    }
+
+    private static function getBytes($val): int
+    {
+        $val = trim((string) $val);
+        if (empty($val)) return 0;
+        $last = strtolower($val[strlen($val)-1]);
+        $val = (int) $val;
+        switch($last) {
+            case 'g': $val *= 1024;
+            case 'm': $val *= 1024;
+            case 'k': $val *= 1024;
+        }
+        return $val;
     }
 }
