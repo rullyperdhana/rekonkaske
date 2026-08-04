@@ -83,6 +83,46 @@
             </div>
         </div>
 
+        <!-- Panel Migrasi & Sinkronisasi Arsip Massal -->
+        @if(($config['mode'] ?? 'local') !== 'local')
+        <div class="bg-gradient-to-r from-emerald-950 via-slate-900 to-teal-950 border-2 border-emerald-600/60 p-6 rounded-2xl text-white shadow-xl relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+                <div class="space-y-2 max-w-2xl">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-emerald-400 text-3xl" data-weight="fill">cloud_sync</span>
+                        <h3 class="text-lg font-black tracking-tight">Sinkronisasi & Migrasi Massal Ke {{ strtoupper($config['mode']) }}</h3>
+                        <span class="px-2.5 py-0.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-extrabold text-[11px] rounded-full">⚡ SIAP SINKRON</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed">
+                        Saat ini Anda telah mengaktifkan mode <strong>{{ strtoupper($config['mode']) }}</strong>. SiReKa telah dilengkapi teknologi <strong>Smart Auto-Fallback</strong> (membaca file lokal lama secara otomatis). Namun jika Anda ingin memindahkan seluruh arsip fisik lama ke storage baru secara langsung sekarang juga, cukup klik tombol sinkronisasi di sebelah kanan.
+                    </p>
+                    <div class="p-2.5 bg-slate-950/80 border border-slate-800 rounded-xl text-xs font-mono text-slate-400 flex items-center justify-between gap-3 shadow-inner">
+                        <span>💻 Untuk sinkronisasi berskala besar ribuan file di terminal server tanpa batas waktu browser, gunakan perintah: <strong class="text-emerald-400 font-bold">php artisan sireka:sync-storage</strong></span>
+                    </div>
+                </div>
+
+                <form action="{{ route('pengaturan.storage.sync') }}" method="POST" class="shrink-0">
+                    @csrf
+                    <button type="submit" onclick="return confirm('Mulai proses penyalinan batch file dari hard disk lokal ke {{ strtoupper($config['mode']) }}? Proses ini akan mengkopi hingga 100 dokumen per klik secara aman.')" class="w-full md:w-auto px-6 py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black rounded-xl shadow-[0_0_25px_-5px_rgba(16,185,129,0.4)] transition-all flex items-center justify-center gap-2 active:scale-95 text-sm">
+                        <span class="material-symbols-outlined text-xl font-extrabold">cloud_upload</span>
+                        <span>Sinkronkan Arsip Lama Sekarang</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+        @else
+        <div class="bg-slate-900/80 border border-slate-800 p-5 rounded-2xl text-slate-300 text-xs flex flex-col md:flex-row items-center justify-between gap-4 shadow-md">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-indigo-400 text-2xl shrink-0" data-weight="fill">shield_with_heart</span>
+                <div>
+                    <strong class="text-white block font-semibold text-sm">Proteksi SiReKa Storage Engine: Smart Auto-Fallback & Auto-Heal Aktif</strong>
+                    <span>Jika kelak sewaktu-waktu Anda mengaktifkan NAS atau MinIO S3 di bawah, seluruh file lokal lama Anda di hard disk tidak perlu terburu-buru dimigrasi manual! SiReKa akan otomatis membacakan file asli di hard disk lama (Auto-Fallback) dan mengkopikannya perlahan (Auto-Heal) setiap diakses, atau dapat dipacu massal melalui tombol sinkron yang akan muncul saat NAS/MinIO aktif.</span>
+                </div>
+            </div>
+        </div>
+        @endif
+
         <!-- Form Konfigurasi Utama -->
         <form action="{{ route('pengaturan.storage.update') }}" method="POST" class="space-y-6">
             @csrf

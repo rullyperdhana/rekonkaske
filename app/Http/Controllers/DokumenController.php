@@ -144,10 +144,13 @@ class DokumenController extends Controller
 
             $hasFiles = false;
             foreach ($files as $name => $path) {
-                if ($path && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                if ($path && \App\Services\SiReKaStorage::exists($path)) {
                     $extension = pathinfo($path, PATHINFO_EXTENSION);
-                    $zip->addFile(storage_path('app/public/' . $path), $name . '.' . $extension);
-                    $hasFiles = true;
+                    $content = \App\Services\SiReKaStorage::read($path);
+                    if ($content !== null) {
+                        $zip->addFromString($name . '.' . $extension, $content);
+                        $hasFiles = true;
+                    }
                 }
             }
 
@@ -212,10 +215,13 @@ class DokumenController extends Controller
                 ];
 
                 foreach ($files as $name => $path) {
-                    if ($path && \Illuminate\Support\Facades\Storage::disk('public')->exists($path)) {
+                    if ($path && \App\Services\SiReKaStorage::exists($path)) {
                         $extension = pathinfo($path, PATHINFO_EXTENSION);
-                        $zip->addFile(storage_path('app/public/' . $path), $folder . $name . '.' . $extension);
-                        $hasFiles = true;
+                        $content = \App\Services\SiReKaStorage::read($path);
+                        if ($content !== null) {
+                            $zip->addFromString($folder . $name . '.' . $extension, $content);
+                            $hasFiles = true;
+                        }
                     }
                 }
             }

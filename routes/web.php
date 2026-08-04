@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifikasiController;
 
 // Public Routes
+Route::get('/storage-stream/{path}', [\App\Http\Controllers\StorageConfigController::class, 'streamFile'])->where('path', '.*')->name('storage.stream');
 Route::get('/maintenance-notice', [\App\Http\Controllers\MaintenanceController::class, 'notice'])->name('maintenance.notice');
 Route::get('/verifikasi/{id}', [VerifikasiController::class, 'show'])->name('verifikasi.show')->middleware('signed');
 
@@ -45,6 +46,7 @@ Route::middleware('auth')->group(function () {
         Route::get('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'index'])->name('pengaturan.storage.index');
         Route::post('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'update'])->name('pengaturan.storage.update');
         Route::post('pengaturan/storage/test', [\App\Http\Controllers\StorageConfigController::class, 'testConnection'])->name('pengaturan.storage.test');
+        Route::post('pengaturan/storage/sync', [\App\Http\Controllers\StorageConfigController::class, 'syncFiles'])->name('pengaturan.storage.sync');
     });
 
     // Laporan (Admin & Konsolidator)

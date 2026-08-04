@@ -26,6 +26,8 @@
   - 🖥️ **Network Attached Storage (NAS / NFS Mount)** - Menyalurkan file fisik ke mesin Synology/QNAP di jaringan Data Center/Kominfo. Dilengkapi boks instruksi terminal siap pakai.
   - ☁️ **MinIO / Object Storage (S3 Enterprise)** - Dukungan cloud lokal bergaya S3 yang terlindungi secara enkripsi.
 * **Uji Koneksi (Test Connection):** Alat pengujian otomatis izin tulis (writable) dan ping koneksi sebelum memindahkan mode aktif.
+* **🛡️ Smart Auto-Fallback & Auto-Heal (Pembacaan Ganda):** Ketika Anda beralih ke NAS atau MinIO (S3), file arsip lama di hard disk lokal lama *tidak akan error 404* saat dibuka/diunduh. SiReKa secara cerdas mendeteksi dan mengambil file dari hard disk lokal asal jika belum ada di cloud, sekaligus menyalinya secara otomatis ke storage baru di latar belakang (*Auto-Heal*).
+* **🚀 Batch Storage Synchronizer (Alat Migrasi Massal):** Dilengkapi tombol web **"Sinkronkan Arsip Lama Sekarang"** di dasbor pengaturan (untuk batch 100 file per klik tanpa timeout) serta perintah terminal server khusus: `php artisan sireka:sync-storage` untuk memigrasi ribuan file ke MinIO/NAS dengan indikator progress real-time.
 
 ### 5. 🔒 Mode Pemeliharaan & Penguncian Akses SKPD (Animated Lockdown System)
 * **Perlindungan Data Saat Update Server:** Saat Admin ingin memperbarui kode, dokumen, atau memulihkan database, Admin dapat mengaktifkan **Lockdown Mode** dari menu `/pengaturan/maintenance`.

@@ -53,7 +53,7 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ Storage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_ba_manual))
@@ -79,7 +79,7 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ Storage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_kas))
@@ -105,7 +105,7 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ Storage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_buku_pembantu_bank))
@@ -131,7 +131,7 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ Storage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && !$transaksi->file_rekening_koran))

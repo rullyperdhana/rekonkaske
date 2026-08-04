@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use App\Services\SiReKaStorage;
 
 class StorageConfigController extends Controller
 {
@@ -156,4 +157,119 @@ class StorageConfigController extends Controller
         $bytes /= pow(1024, $pow);
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
+
+    /**
+     * Layari (stream) file dokumen dengan dukungan Smart Auto-Fallback dan Auto-Heal
+     */
+    public function streamFile($path)
+    {
+        if (!SiReKaStorage::exists($path)) {
+            abort(404, 'Dokumen tidak ditemukan pada server.');
+        }
+
+        $content = SiReKaStorage::read($path);
+        if ($content === null) {
+            abort(404, 'File gagal dibaca.');
+        }
+
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+        $mimeTypes = [
+            'pdf' => 'application/pdf',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'zip' => 'application/zip'
+        ];
+        $mime = $mimeTypes[$extension] ?? 'application/octet-stream';
+
+        return response($content, 200)
+            ->header('Content-Type', $mime)
+            ->header('Content-Disposition', 'inline; filename="' . basename($path) . '"');
+    }
+
+    /**
+     * Sinkronkan massal (Batch Migration) dari folder lokal ke Storage Baru via tombol web Admin
+     */
+    public function syncFiles(Request $request)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $configPath = storage_path('app/storage_nas_config.json');
+        $mode = 'local';
+        if (file_exists($configPath)) {
+            $config = json_decode(file_get_contents($configPath), true);
+            $mode = $config['mode'] ?? 'local';
+        }
+
+        if ($mode === 'local') {
+            return back()->with('info', '💡 Mode penyimpanan saat ini masih LOKAL server internal. Seluruh arsip sudah menetap di hard disk Anda, sinkronisasi cloud/NAS belum diperlukan.');
+        }
+
+        $baseDir = storage_path('app/public');
+        if (!is_dir($baseDir)) {
+            return back()->with('error', 'Folder arsip lokal tidak ditemukan.');
+        }
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($baseDir, \RecursiveDirectoryIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $toMigrate = [];
+        foreach ($files as $file) {
+            if ($file->isDir() || str_starts_with($file->getFilename(), '.') || $file->getFilename() === '.gitignore') continue;
+            $realpath = $file->getRealPath();
+            $relativePath = str_replace('\\', '/', substr($realpath, strlen($baseDir) + 1));
+            
+            if (!Storage::disk('public')->exists($relativePath)) {
+                $toMigrate[] = [
+                    'real' => $realpath,
+                    'relative' => $relativePath
+                ];
+            }
+        }
+
+        $totalPending = count($toMigrate);
+        if ($totalPending === 0) {
+            return back()->with('success', "🎉 Mantap! Seluruh arsip dokumen lokal (0 file tertunda) sudah tersinkronisasi 100% dengan server " . strtoupper($mode) . " Anda!");
+        }
+
+        $batch = array_slice($toMigrate, 0, 100);
+        $successCount = 0;
+        $failCount = 0;
+
+        foreach ($batch as $item) {
+            try {
+                $content = file_get_contents($item['real']);
+                if (Storage::disk('public')->put($item['relative'], $content)) {
+                    $successCount++;
+                } else {
+                    $failCount++;
+                }
+            } catch (\Exception $e) {
+                $failCount++;
+            }
+        }
+
+        try {
+            if (function_exists('activity') && Auth::user()) {
+                activity('storage_migration')
+                    ->causedBy(Auth::user())
+                    ->log("Admin mengklik tombol Sinkronisasi Arsip: {$successCount} file tersalin ke " . strtoupper($mode));
+            }
+        } catch (\Exception $ex) {}
+
+        $sisa = $totalPending - $successCount;
+        $msg = "🚀 Sinkronisasi Berhasil! {$successCount} file arsip lama telah tersalin sempurna ke " . strtoupper($mode) . ".";
+        if ($sisa > 0) {
+            $msg .= " Masih tersisa {$sisa} file lama. Klik kembali tombol 'Sinkronkan Arsip' untuk melanjutkan batch selanjutnya!";
+        } else {
+            $msg .= " Kini 100% seluruh arsip Anda telah berada di storage baru!";
+        }
+
+        return back()->with('success', $msg);
+    }
 }
+

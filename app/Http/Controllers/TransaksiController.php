@@ -160,7 +160,7 @@ class TransaksiController extends Controller
         if ($request->hasFile('file_bukti')) {
             // Delete old file if exists
             if ($transaksi->file_bukti) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->file_bukti);
+                \App\Services\SiReKaStorage::delete($transaksi->file_bukti);
             }
             $validated['file_bukti'] = $request->file('file_bukti')->store('bukti_rekonsiliasi', 'public');
         }
@@ -189,7 +189,7 @@ class TransaksiController extends Controller
         $fields = ['file_bukti', 'file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
         foreach ($fields as $field) {
             if ($transaksi->$field) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->$field);
+                \App\Services\SiReKaStorage::delete($transaksi->$field);
             }
         }
 
@@ -231,7 +231,7 @@ class TransaksiController extends Controller
 
                 // Delete old file
                 if ($transaksi->$field) {
-                    \Illuminate\Support\Facades\Storage::disk('public')->delete($transaksi->$field);
+                    \App\Services\SiReKaStorage::delete($transaksi->$field);
                 }
                 $transaksi->$field = $request->file($field)->store('dokumen_rekonsiliasi', 'public');
             }

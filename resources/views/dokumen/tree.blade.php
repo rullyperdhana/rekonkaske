@@ -165,7 +165,7 @@
                                                                     <span class="font-label-sm text-on-surface">{{ $doc['title'] }}</span>
                                                                 </div>
                                                                 @if($trx->$field)
-                                                                    <button type="button" @click="modalOpen = true; modalUrl = '{{ Storage::url($trx->$field) }}'; modalTitle = '{{ $doc['title'] }} - {{ $skpd['nama'] }}'" class="px-4 py-2 bg-primary text-on-primary rounded text-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
+                                                                    <button type="button" @click="modalOpen = true; modalUrl = '{{ \App\Services\SiReKaStorage::url($trx->$field) }}'; modalTitle = '{{ $doc['title'] }} - {{ $skpd['nama'] }}'" class="px-4 py-2 bg-primary text-on-primary rounded text-sm hover:bg-primary-container transition-colors flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
                                                                         <span class="material-symbols-outlined text-[18px]">visibility</span> Lihat Dokumen
                                                                     </button>
                                                                 @else
