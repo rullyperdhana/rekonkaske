@@ -190,12 +190,12 @@
                     e.preventDefault();
                     Swal.fire({
                         title: 'Apakah Anda Yakin?',
-                        text: "Data dan file dokumen terkait akan dihapus secara permanen!",
+                        html: "Data dan file dokumen terkait akan dihapus!<br><br><div class='p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-200 rounded text-sm text-left border border-blue-200 dark:border-blue-800'>💡 <strong>Tips Operator:</strong> Jika hanya terjadi salah cetak angka saldo atau keterangan, disarankan menggunakan tombol <strong>EDIT (✏️)</strong> tanpa perlu menghapus dan mengisi dari awal.</div>",
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#ba1a1a', // error color
                         cancelButtonColor: '#737783', // outline color
-                        confirmButtonText: 'Ya, Hapus!',
+                        confirmButtonText: 'Ya, Tetap Hapus',
                         cancelButtonText: 'Batal'
                     }).then((result) => {
                         if (result.isConfirmed) {
