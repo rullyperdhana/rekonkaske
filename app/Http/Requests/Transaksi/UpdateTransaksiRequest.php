@@ -30,7 +30,8 @@ class UpdateTransaksiRequest extends FormRequest
                 Rule::unique('transaksis')->where(function ($query) {
                     return $query->where('skpd_id', $this->skpd_id)
                                  ->where('rekening_id', $this->rekening_id)
-                                 ->where('periode_tahun', $this->periode_tahun);
+                                 ->where('periode_tahun', $this->periode_tahun)
+                                 ->whereNull('deleted_at');
                 })->ignore($transaksiId),
             ],
             'periode_tahun' => 'required|integer|min:2000|max:2099',
@@ -52,6 +53,7 @@ class UpdateTransaksiRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'periode_bulan.unique' => 'Data rekonsiliasi untuk Rekening, Bulan, dan Tahun ini sudah terdaftar dan aktif. Silakan gunakan periode lain.',
             'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
             'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
         ];
