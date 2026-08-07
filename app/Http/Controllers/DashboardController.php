@@ -112,17 +112,18 @@ class DashboardController extends Controller
         }
 
         // 4b. Advanced Executive Analytics Chart Data (Hanya untuk Admin/Konsolidator)
-        $advChartData = [
-            'status_bulan' => ['verified' => 0, 'draft' => 0, 'belum' => 0],
-            'kedisiplinan' => [
-                'tepat_waktu' => array_fill(0, 12, 0),
-                'terlambat' => array_fill(0, 12, 0),
-            ],
-            'selisih' => array_fill(0, 12, 0),
-            'target_month_status' => 1
-        ];
+        $advChartData = null;
 
         if (!$user->skpd_id) {
+            $advChartData = [
+                'status_bulan' => ['verified' => 0, 'draft' => 0, 'belum' => 0],
+                'kedisiplinan' => [
+                    'tepat_waktu' => array_fill(0, 12, 0),
+                    'terlambat' => array_fill(0, 12, 0),
+                ],
+                'selisih' => array_fill(0, 12, 0),
+                'target_month_status' => 1
+            ];
             $totalSkpdCount = Skpd::where('status', true)->count();
             
             // Tentukan bulan target untuk Pie Chart (Bulan lalu atau bulan terakhir lapor)
