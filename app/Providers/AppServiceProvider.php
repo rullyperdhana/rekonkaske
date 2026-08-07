@@ -41,11 +41,17 @@ class AppServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
             $user = \Illuminate\Support\Facades\Auth::user();
             if ($user && in_array($user->role, ['admin', 'konsolidator'])) {
-                $globalActivities = \App\Models\Transaksi::with(['skpd', 'user'])
-                    ->orderBy('updated_at', 'desc')
-                    ->take(5)
-                    ->get();
-                $view->with('globalActivities', $globalActivities);
+                // Periksa pengaturan global apakah live log diaktifkan
+                $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+                $isLiveLogActive = $pengaturan ? $pengaturan->is_livelog_active : true;
+
+                if ($isLiveLogActive) {
+                    $globalActivities = \App\Models\Transaksi::with(['skpd', 'user'])
+                        ->orderBy('updated_at', 'desc')
+                        ->take(5)
+                        ->get();
+                    $view->with('globalActivities', $globalActivities);
+                }
             }
         });
 

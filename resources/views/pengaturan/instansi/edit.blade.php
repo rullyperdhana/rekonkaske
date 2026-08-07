@@ -50,6 +50,22 @@
                             </p>
                         </div>
                         
+                        <div class="flex flex-col gap-1.5 p-4 bg-blue-500/10 rounded-lg border border-blue-500/30 mt-2">
+                            <label class="text-label-sm font-bold text-blue-700 flex items-center justify-between cursor-pointer" for="is_livelog_active">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-blue-600">sensors</span>
+                                    Aktifkan Live Log (Teks Berjalan di Footer)
+                                </span>
+                                <div class="relative inline-flex items-center">
+                                  <input type="checkbox" id="is_livelog_active" name="is_livelog_active" class="sr-only peer" value="1" {{ old('is_livelog_active', $pengaturan->is_livelog_active ?? true) ? 'checked' : '' }}>
+                                  <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                                </div>
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                Jika diaktifkan, teks animasi aktivitas transaksi terbaru akan muncul dan berjalan di bagian bawah layar (*footer*). Nonaktifkan jika mengganggu pemandangan layar.
+                            </p>
+                        </div>
+                        
                         <div class="flex flex-col gap-1.5 mt-2">
                             <label class="text-label-sm font-label-sm text-on-surface" for="logo_file">Logo Aplikasi (Hanya Admin) <span class="text-error">*</span></label>
                             <input class="h-10 p-1.5 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-sm font-body-md w-full transition-all outline-none" 
