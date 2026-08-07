@@ -95,6 +95,12 @@ class RekeningController extends Controller
         if (auth()->user()->role === 'operator' && $rekening->skpd_id !== auth()->user()->skpd_id) {
             abort(403, 'Unauthorized action.');
         }
+
+        // Cek apakah ada transaksi yang sudah menggunakan rekening ini
+        if (\App\Models\Transaksi::where('rekening_id', $rekening->id)->exists()) {
+            return redirect()->route('rekening.index')->with('error', 'Rekening ini tidak bisa dihapus karena sudah memiliki histori transaksi. Silakan ubah Status rekening menjadi Tidak Aktif.');
+        }
+
         $rekening->delete();
         return redirect()->route('rekening.index')->with('success', 'Rekening berhasil dihapus.');
     }
