@@ -49,6 +49,7 @@
                             <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface">Rekening</th>
                             <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface">Selisih</th>
                             <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface">Status</th>
+                            <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface text-center">Dokumen</th>
                             <th class="py-3 px-4 font-label-sm text-label-sm text-on-surface text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -75,6 +76,19 @@
                                 @endif
                             </td>
                             <td class="py-3 px-4 text-center">
+                                @php
+                                    $docCount = 0;
+                                    if($trx->file_ba_manual) $docCount++;
+                                    if($trx->file_buku_kas) $docCount++;
+                                    if($trx->file_buku_pembantu_bank) $docCount++;
+                                    if($trx->file_rekening_koran) $docCount++;
+                                @endphp
+                                <a href="{{ route('transaksi.upload', $trx->id) }}" class="inline-flex items-center justify-center gap-1 {{ $docCount > 0 ? 'text-secondary hover:text-secondary-container' : 'text-primary hover:text-primary-container' }} transition-colors text-label-sm font-label-sm border px-2 py-1 rounded border-outline-variant" title="Lihat/Kelola Dokumen">
+                                    <span class="material-symbols-outlined text-[16px]">folder_open</span>
+                                    {{ $docCount }}/4
+                                </a>
+                            </td>
+                            <td class="py-3 px-4 text-center">
                                 <a href="{{ route('ba.show', $trx->id) }}" class="inline-block text-primary hover:text-primary-container px-3 py-1 border border-primary rounded text-label-sm font-label-sm transition-colors" title="Lihat BA">
                                     <span class="material-symbols-outlined text-[16px] align-text-bottom mr-1">visibility</span>
                                     Lihat BA
@@ -83,7 +97,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="6" class="py-4 text-center text-on-surface-variant">Belum ada Berita Acara.</td>
+                            <td colspan="7" class="py-4 text-center text-on-surface-variant">Belum ada Berita Acara.</td>
                         </tr>
                         @endforelse
                     </tbody>
