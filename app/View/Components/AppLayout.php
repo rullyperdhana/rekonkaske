@@ -14,7 +14,9 @@ class AppLayout extends Component
     {
         $globalActivities = collect();
         $user = \Illuminate\Support\Facades\Auth::user();
-        if ($user && in_array($user->role, ['admin', 'konsolidator'])) {
+        
+        // Hanya tampilkan Live Log di halaman Dashboard
+        if ($user && in_array($user->role, ['admin', 'konsolidator']) && request()->routeIs('dashboard')) {
             $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
             $isLiveLogActive = $pengaturan ? $pengaturan->is_livelog_active : true;
 
