@@ -183,60 +183,7 @@
         </div>
     </div>
     
-    <!-- Discrepancy Summary (Full Width) -->
-    <div class="mt-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-headline-sm font-headline-sm text-on-surface">Ringkasan Selisih Transaksi</h3>
-            <a class="text-primary text-label-sm font-label-sm hover:underline" href="{{ route('laporan.ringkasan-selisih') }}">Lihat Detail</a>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                <tr class="bg-surface-container-low border-b border-outline-variant">
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">No. Bukti</th>
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Tanggal</th>
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Instansi (SKPD)</th>
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase">Keterangan</th>
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase text-right">Nilai Selisih</th>
-                    <th class="py-3 px-4 text-label-sm font-label-sm text-on-surface-variant uppercase text-center">Status</th>
-                </tr>
-                </thead>
-                <tbody class="text-body-md font-body-md">
-                @forelse($selisihTransaksis as $selisih)
-                <tr class="border-b border-outline-variant/50 hover:bg-surface-container-lowest/50 transition-colors">
-                    <td class="py-3 px-4 whitespace-nowrap">
-                        {{ str_pad($selisih->periode_bulan, 2, '0', STR_PAD_LEFT) }}/{{ $selisih->periode_tahun }}
-                    </td>
-                    <td class="py-3 px-4 whitespace-nowrap">{{ $selisih->updated_at->format('d M Y') }}</td>
-                    <td class="py-3 px-4 font-bold">{{ $selisih->skpd->nama ?? '-' }}</td>
-                    <td class="py-3 px-4 text-on-surface-variant">{{ $selisih->keterangan_selisih ?: 'Tidak ada keterangan' }}</td>
-                    <td class="py-3 px-4 font-data-tabular text-right text-error text-lg font-bold whitespace-nowrap">
-                        Rp {{ number_format(abs($selisih->bku_saldo_akhir - $selisih->bank_saldo_akhir), 2, ',', '.') }}
-                    </td>
-                    <td class="py-3 px-4 text-center whitespace-nowrap">
-                        @if($selisih->status_verifikasi == 'draft')
-                        <span class="inline-flex items-center gap-1 bg-error-container/30 text-on-error-container px-2 py-1 rounded text-label-sm font-label-sm">
-                            <span class="material-symbols-outlined text-sm">warning</span> Pending
-                        </span>
-                        @else
-                        <span class="inline-flex items-center gap-1 bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded text-label-sm font-label-sm">
-                            <span class="material-symbols-outlined text-sm">check</span> Resolved
-                        </span>
-                        @endif
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="6" class="py-4 text-center text-on-surface-variant">Tidak ada transaksi dengan selisih yang mencolok.</td>
-                </tr>
-                @endforelse
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-4">
-            {{ $selisihTransaksis->appends(request()->except('selisih_page'))->links() }}
-        </div>
-    </div>
+    <!-- Discrepancy Summary Dipindahkan ke Menu Laporan -->
 
     <!-- Executive Analytics & Leaderboard Section -->
     @if(isset($topSkpds) && count($topSkpds) > 0)

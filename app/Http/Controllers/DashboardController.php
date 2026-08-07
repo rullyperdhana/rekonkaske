@@ -65,11 +65,7 @@ class DashboardController extends Controller
             }
         }
 
-        // 2. Ringkasan Selisih Transaksi: Transaksi with discrepancy (not 0) and not verified yet
-        // Alternatively, just any recent transaction with a discrepancy
-        $selisihTransaksis = (clone $query)->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) > 0')
-                                           ->orderBy('created_at', 'desc')
-                                           ->paginate(10, ['*'], 'selisih_page');
+        // Ringkasan Selisih Transaksi dipindahkan ke halaman Laporan (Tunggakan & Selisih / Ringkasan Selisih)
 
         // 3. Aktivitas Terakhir
         $recentActivities = (clone $query)->orderBy('updated_at', 'desc')
@@ -310,7 +306,7 @@ class DashboardController extends Controller
             })->take(5)->values();
         }
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'advChartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'bottomSkpds', 'namaBulan'));
+        return view('dashboard', compact('latestTransaksi', 'summary', 'recentActivities', 'chartData', 'advChartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'bottomSkpds', 'namaBulan'));
     }
 
     /**
