@@ -18,6 +18,15 @@
             darkMode: "class",
             theme: {
                 extend: {
+                    "keyframes": {
+                        "marquee": {
+                            "0%": { transform: "translateX(100vw)" },
+                            "100%": { transform: "translateX(-100%)" }
+                        }
+                    },
+                    "animation": {
+                        "marquee": "marquee 25s linear infinite"
+                    },
                     "colors": {
                         "primary-container": "#004a99",
                         "surface-container-high": "#e6e8ea",
@@ -106,7 +115,7 @@
     @include('layouts.topbar')
 
     <!-- Main Content -->
-    <main id="appMain" class="lg:ml-64 pt-24 px-4 lg:px-8 pb-12 max-w-container-max mx-auto transition-all duration-300">
+    <main id="appMain" class="lg:ml-64 pt-24 px-4 lg:px-8 pb-20 max-w-container-max mx-auto transition-all duration-300">
         @if(session('success'))
             <div class="mb-6 bg-secondary-container text-on-secondary-container px-4 py-3 rounded-lg flex items-center gap-3 shadow-sm" role="alert">
                 <span class="material-symbols-outlined">check_circle</span>
@@ -125,6 +134,35 @@
 
         {{ $slot }}
     </main>
+
+    <!-- Footer Marquee Live Log (Admin & Konsolidator) -->
+    @if(isset($globalActivities) && $globalActivities->count() > 0)
+    <div id="footerMarquee" class="fixed bottom-0 left-0 right-0 z-[45] bg-slate-900 text-slate-100 border-t border-slate-700 py-2.5 overflow-hidden flex items-center shadow-lg lg:ml-64 transition-all duration-300">
+        <div class="flex-shrink-0 bg-blue-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 z-10 shadow-[4px_0_15px_rgba(0,0,0,0.8)] relative">
+            <span class="material-symbols-outlined text-[16px] animate-pulse">sensors</span> LIVE LOG
+        </div>
+        <div class="flex-grow overflow-hidden relative flex items-center h-full group">
+            <div class="animate-marquee whitespace-nowrap flex items-center gap-12 pl-4 group-hover:[animation-play-state:paused]">
+                @foreach($globalActivities as $act)
+                    <div class="flex items-center gap-2 text-sm">
+                        @if($act->status_verifikasi == 'verified')
+                            <span class="text-emerald-400 material-symbols-outlined text-[16px]">check_circle</span> 
+                        @else
+                            <span class="text-amber-400 material-symbols-outlined text-[16px]">pending</span>
+                        @endif
+                        <span class="font-bold text-white">{{ $act->skpd->nama ?? 'Instansi' }}</span>
+                        <span class="text-slate-300">({{ $namaBulan[$act->periode_bulan - 1] ?? 'Bulan' }})</span>
+                        <span class="italic text-slate-200">{{ $act->status_verifikasi == 'verified' ? 'Telah diverifikasi' : 'Diperbarui' }}</span>
+                        <span class="text-slate-400 text-xs">— Oleh {{ $act->user->name ?? 'Sistem' }} ({{ $act->updated_at->diffForHumans() }})</span>
+                    </div>
+                @endforeach
+            </div>
+            <!-- Gradient fades -->
+            <div class="absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-slate-900 to-transparent z-0"></div>
+            <div class="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-slate-900 to-transparent z-0"></div>
+        </div>
+    </div>
+    @endif
 
     <script>
         function toggleSidebar() {
@@ -154,6 +192,12 @@
                 
                 main.classList.toggle('lg:ml-64');
                 main.classList.toggle('lg:ml-0');
+                
+                const footerMarquee = document.getElementById('footerMarquee');
+                if (footerMarquee) {
+                    footerMarquee.classList.toggle('lg:ml-64');
+                    footerMarquee.classList.toggle('lg:ml-0');
+                }
             }
         }
 

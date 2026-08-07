@@ -37,6 +37,18 @@ class AppServiceProvider extends ServiceProvider
         $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         \Illuminate\Support\Facades\View::share('namaBulan', $namaBulan);
 
+        // Share globalActivities to layouts.app for Admin and Konsolidator
+        \Illuminate\Support\Facades\View::composer('layouts.app', function ($view) {
+            $user = \Illuminate\Support\Facades\Auth::user();
+            if ($user && in_array($user->role, ['admin', 'konsolidator'])) {
+                $globalActivities = \App\Models\Transaksi::with(['skpd', 'user'])
+                    ->orderBy('updated_at', 'desc')
+                    ->take(5)
+                    ->get();
+                $view->with('globalActivities', $globalActivities);
+            }
+        });
+
         // Dynamic SiReKa Storage Engine Configuration (NAS / MinIO S3)
         try {
             $storageConfigPath = storage_path('app/storage_nas_config.json');
