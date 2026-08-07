@@ -73,8 +73,31 @@
                             <p class="text-[11px] text-on-surface-variant mt-1">Kosongkan jika tidak ingin mengubah logo.</p>
                             @error('logo_file') <span class="text-error text-[11px]">{{ $message }}</span> @enderror
                         </div>
+                        <div class="flex flex-col gap-1.5 mt-4 p-4 bg-surface border border-outline-variant rounded-lg">
+                            <label class="text-label-sm font-bold text-primary flex items-center gap-1.5" for="teks_pengantar_ba">
+                                <span class="material-symbols-outlined text-[18px]">format_align_justify</span>
+                                Template Kata Pengantar BA (Hanya Admin)
+                            </label>
+                            <textarea class="p-3 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-md font-body-md w-full transition-all outline-none resize-y" 
+                                id="teks_pengantar_ba" name="teks_pengantar_ba" rows="4">{{ old('teks_pengantar_ba', $pengaturan->teks_pengantar_ba ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :') }}</textarea>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                <b>Variabel yang bisa digunakan:</b> <code class="bg-surface-container-high px-1 rounded text-primary">[HARI]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[TANGGAL]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[BULAN]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[TAHUN]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[AKHIR_BULAN]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[NAMA_INSTANSI]</code>, <code class="bg-surface-container-high px-1 rounded text-primary">[NAMA_PEMDA]</code>. Gunakan tag <code>&lt;br&gt;</code> untuk enter/baris baru.
+                            </p>
+                        </div>
+                        
+                        <div class="flex flex-col gap-1.5 p-4 bg-surface border border-outline-variant rounded-lg">
+                            <label class="text-label-sm font-bold text-primary flex items-center gap-1.5" for="teks_penutup_ba">
+                                <span class="material-symbols-outlined text-[18px]">format_align_center</span>
+                                Template Kata Penutup BA (Hanya Admin)
+                            </label>
+                            <textarea class="p-3 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-md font-body-md w-full transition-all outline-none resize-y" 
+                                id="teks_penutup_ba" name="teks_penutup_ba" rows="2">{{ old('teks_penutup_ba', $pengaturan->teks_penutup_ba ?? '** Rincian terlampir') }}</textarea>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                Teks yang muncul di bagian paling bawah tabel sebelum tanda tangan.
+                            </p>
+                        </div>
                         @endif
-                        <div class="flex flex-col gap-1.5">
+                        <div class="flex flex-col gap-1.5 mt-2">
                             <label class="text-label-sm font-label-sm text-on-surface" for="isi_kop">Isi Kop Surat <span class="text-error">*</span></label>
                             <textarea class="p-3 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-md font-body-md w-full transition-all outline-none resize-y" 
                                 id="isi_kop" name="isi_kop" rows="5">{{ old('isi_kop', $pengaturan->isi_kop) }}</textarea>

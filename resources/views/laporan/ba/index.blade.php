@@ -100,13 +100,31 @@
                     
                     $namaInstansi = $lines[1] ?? 'Badan Keuangan dan Aset Daerah';
                     $namaPemda = $lines[0] ?? 'Kabupaten Tapin';
+                    
+                    // Ambil template pengantar (Prioritas: Snapshot -> Pengaturan Global -> Default)
+                    $templatePengantar = $transaksi->snapshot_pengantar_ba 
+                        ?? $pengaturan->teks_pengantar_ba 
+                        ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :';
+                    
+                    // Parse placeholders
+                    $templatePengantar = str_replace(
+                        ['[HARI]', '[TANGGAL]', '[BULAN]', '[TAHUN]', '[AKHIR_BULAN]', '[NAMA_INSTANSI]', '[NAMA_PEMDA]'],
+                        [$tanggal, $tglNum, $bulanLengkap, $tahunLengkap, $akhirBulan, ucwords(strtolower($namaInstansi)), ucwords(strtolower($namaPemda))],
+                        $templatePengantar
+                    );
+                    
+                    $templatePenutup = $transaksi->snapshot_penutup_ba 
+                        ?? $pengaturan->teks_penutup_ba 
+                        ?? '** Rincian terlampir';
+                        
+                    $paragraphs = explode('<br><br>', $templatePengantar);
                 @endphp
+                
+                @foreach($paragraphs as $p)
                 <p class="indent-10">
-                    Pada hari ini {{ $tanggal }} Tanggal {{ $tglNum }} Bulan {{ $bulanLengkap }} Tahun {{ $tahunLengkap }}, telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per {{ $akhirBulan }} pada {{ ucwords(strtolower($namaInstansi)) }} {{ ucwords(strtolower($namaPemda)) }}.
+                    {!! str_replace('<br>', '<br/>', $p) !!}
                 </p>
-                <p class="indent-10">
-                    Dengan mencocokkan BKU Bendahara Pengeluaran per {{ $akhirBulan }} pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per {{ $akhirBulan }} dengan hasil sebagai berikut :
-                </p>
+                @endforeach
             </div>
             
             <!-- Financial Table -->
@@ -200,7 +218,7 @@
             
             <!-- Lampiran Note -->
             <div class="mb-10 text-sm font-medium text-black">
-                ** Rincian terlampir
+                {!! nl2br(str_replace('<br>', "\n", $templatePenutup)) !!}
             </div>
             
             <!-- Signatures Section -->

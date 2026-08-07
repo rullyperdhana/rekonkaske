@@ -173,6 +173,14 @@ class TransaksiController extends Controller
             $validated[$field] = $validated[$field] ?? 0;
         }
 
+        // Snapshot BA jika diverifikasi
+        if (isset($validated['status_verifikasi']) && $validated['status_verifikasi'] === 'verified') {
+            // Hanya snapshot jika sebelumnya belum verified atau kalau mau ditimpa update
+            $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+            $validated['snapshot_pengantar_ba'] = $pengaturanGlobal->teks_pengantar_ba ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :';
+            $validated['snapshot_penutup_ba'] = $pengaturanGlobal->teks_penutup_ba ?? '** Rincian terlampir';
+        }
+
         $transaksi->update($validated);
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');

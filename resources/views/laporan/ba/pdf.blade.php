@@ -160,12 +160,32 @@
         $namaPemda = $lines[0] ?? 'Kabupaten Tapin';
     @endphp
 
-    <p class="text-justify indent mb-2">
-        Pada hari ini {{ $tanggal }} Tanggal {{ $tglNum }} Bulan {{ $bulanLengkap }} Tahun {{ $tahunLengkap }}, telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per {{ $akhirBulan }} pada {{ ucwords(strtolower($namaInstansi)) }} {{ ucwords(strtolower($namaPemda)) }}.
-    </p>
-    <p class="text-justify indent mb-4">
-        Dengan mencocokkan BKU Bendahara Pengeluaran per {{ $akhirBulan }} pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per {{ $akhirBulan }} dengan hasil sebagai berikut :
-    </p>
+    @php
+        // Ambil template pengantar (Prioritas: Snapshot -> Pengaturan Global -> Default)
+        $templatePengantar = $transaksi->snapshot_pengantar_ba 
+            ?? $pengaturan->teks_pengantar_ba 
+            ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :';
+        
+        // Parse placeholders
+        $templatePengantar = str_replace(
+            ['[HARI]', '[TANGGAL]', '[BULAN]', '[TAHUN]', '[AKHIR_BULAN]', '[NAMA_INSTANSI]', '[NAMA_PEMDA]'],
+            [$tanggal, $tglNum, $bulanLengkap, $tahunLengkap, $akhirBulan, ucwords(strtolower($namaInstansi)), ucwords(strtolower($namaPemda))],
+            $templatePengantar
+        );
+        
+        $templatePenutup = $transaksi->snapshot_penutup_ba 
+            ?? $pengaturan->teks_penutup_ba 
+            ?? '** Rincian terlampir';
+            
+        // Pisahkan paragraf jika ada <br><br> agar indentasi p bekerja
+        $paragraphs = explode('<br><br>', $templatePengantar);
+    @endphp
+
+    @foreach($paragraphs as $idx => $p)
+        <p class="text-justify indent {{ $idx == count($paragraphs)-1 ? 'mb-4' : 'mb-2' }}">
+            {!! str_replace('<br>', '<br/>', $p) !!}
+        </p>
+    @endforeach
 
     <!-- Tabel Keuangan -->
     <table class="keuangan" border="1" cellpadding="5" cellspacing="0">
@@ -253,7 +273,7 @@
     @endif
 
     <div class="mb-4 text-sm font-bold">
-        ** Rincian terlampir
+        {!! nl2br(str_replace('<br>', "\n", $templatePenutup)) !!}
     </div>
 
     <!-- Tanda Tangan -->
