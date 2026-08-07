@@ -81,7 +81,7 @@
                                     <a href="{{ route('rekening.edit', $rekening->id) }}" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-primary-container/20 text-primary transition-colors border border-transparent hover:border-primary-container">
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </a>
-                                    <form action="{{ route('rekening.destroy', $rekening->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus Rekening ini?');" class="inline-block">
+                                    <form action="{{ route('rekening.destroy', $rekening->id) }}" method="POST" class="inline-block form-delete">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="w-8 h-8 flex items-center justify-center rounded-md hover:bg-error-container/50 text-error transition-colors border border-transparent hover:border-error-container">

@@ -125,11 +125,16 @@
         @endif
         
         @if(session('error'))
-            <div class="mb-6 bg-error-container text-on-error-container px-4 py-3 rounded-lg flex items-center gap-3 shadow-sm" role="alert">
-                <span class="material-symbols-outlined">error</span>
-                <span class="text-body-md font-body-md">{{ session('error') }}</span>
-                <button class="ml-auto" onclick="this.parentElement.remove()"><span class="material-symbols-outlined text-sm">close</span></button>
-            </div>
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Aksi Ditolak!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#ba1a1a'
+                    });
+                });
+            </script>
         @endif
 
         {{ $slot }}
