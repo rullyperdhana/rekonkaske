@@ -70,6 +70,7 @@ Route::middleware('auth')->group(function () {
     Route::get('transaksi/get-saldo-awal', [TransaksiController::class, 'getSaldoAwal'])->name('transaksi.getSaldoAwal');
     Route::get('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadForm'])->name('transaksi.upload');
     Route::post('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadStore'])->name('transaksi.upload.store');
+    Route::delete('transaksi/{transaksi}/hapus-dokumen/{field}', [TransaksiController::class, 'hapusDokumen'])->name('transaksi.hapus-dokumen');
     Route::resource('transaksi', TransaksiController::class)->where(['transaksi' => '[0-9]+'])->except(['show']);
     
     // Catch-all untuk transaksi yang tidak valid (misal: /transaksi/upload tanpa ID)

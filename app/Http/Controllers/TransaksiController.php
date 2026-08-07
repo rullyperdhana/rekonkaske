@@ -308,6 +308,27 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.upload', $transaksi->id)->with('success', "{$uploadedCount} dokumen berhasil disimpan ke server.");
     }
 
+    public function hapusDokumen(Request $request, Transaksi $transaksi, $field)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Hanya admin yang dapat menghapus dokumen spesifik.');
+        }
+
+        $validFields = ['file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'];
+        if (!in_array($field, $validFields)) {
+            return redirect()->back()->with('error', 'Field dokumen tidak valid.');
+        }
+
+        if ($transaksi->$field) {
+            \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Berkas {$field} pada Transaksi ID #{$transaksi->id} (SKPD ID #{$transaksi->skpd_id}) dihapus oleh Admin User ID #" . Auth::id() . " (" . Auth::user()->name . ") agar dapat diupload ulang oleh SKPD.");
+            \App\Services\SiReKaStorage::delete($transaksi->$field);
+            $transaksi->$field = null;
+            $transaksi->save();
+        }
+
+        return redirect()->route('transaksi.upload', $transaksi->id)->with('success', 'Dokumen berhasil dihapus. SKPD sekarang dapat mengunggah ulang dokumen tersebut.');
+    }
+
     private static function getBytes($val): int
     {
         $val = trim((string) $val);

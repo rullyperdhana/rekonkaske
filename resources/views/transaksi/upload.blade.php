@@ -53,7 +53,15 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_ba_manual) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                                @if(Auth::user()->role === 'admin')
+                                    <button type="button" onclick="hapusDokumen('file_ba_manual')" class="text-error hover:text-error/80 text-label-sm font-label-sm flex items-center gap-1 font-medium bg-error/10 px-2 py-1 rounded">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_ba_manual || ($allowReupload ?? false))))
@@ -89,7 +97,15 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_kas) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                                @if(Auth::user()->role === 'admin')
+                                    <button type="button" onclick="hapusDokumen('file_buku_kas')" class="text-error hover:text-error/80 text-label-sm font-label-sm flex items-center gap-1 font-medium bg-error/10 px-2 py-1 rounded">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_buku_kas || ($allowReupload ?? false))))
@@ -125,7 +141,15 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_buku_pembantu_bank) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                                @if(Auth::user()->role === 'admin')
+                                    <button type="button" onclick="hapusDokumen('file_buku_pembantu_bank')" class="text-error hover:text-error/80 text-label-sm font-label-sm flex items-center gap-1 font-medium bg-error/10 px-2 py-1 rounded">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_buku_pembantu_bank || ($allowReupload ?? false))))
@@ -161,7 +185,15 @@
                                 <span class="material-symbols-outlined text-[18px]">check_circle</span>
                                 <span class="text-label-sm font-label-sm">File sudah diupload</span>
                             </div>
-                            <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ \App\Services\SiReKaStorage::url($transaksi->file_rekening_koran) }}" target="_blank" class="text-primary hover:text-primary-container text-label-sm font-label-sm underline">Lihat</a>
+                                @if(Auth::user()->role === 'admin')
+                                    <button type="button" onclick="hapusDokumen('file_rekening_koran')" class="text-error hover:text-error/80 text-label-sm font-label-sm flex items-center gap-1 font-medium bg-error/10 px-2 py-1 rounded">
+                                        <span class="material-symbols-outlined text-[16px]">delete</span>
+                                        Hapus
+                                    </button>
+                                @endif
+                            </div>
                         </div>
                     @endif
                     @if(Auth::user()->role === 'admin' || (Auth::user()->role === 'operator' && (!$transaksi->file_rekening_koran || ($allowReupload ?? false))))
@@ -198,5 +230,19 @@
                 @endif
             </div>
         </form>
+        <form id="formHapusDokumen" method="POST" action="" class="hidden">
+            @csrf
+            @method('DELETE')
+        </form>
+        
+        <script>
+            function hapusDokumen(field) {
+                if (confirm('Apakah Anda yakin ingin menghapus dokumen ini agar SKPD dapat mengunggah ulang?')) {
+                    const form = document.getElementById('formHapusDokumen');
+                    form.action = `/transaksi/{{ $transaksi->id }}/hapus-dokumen/${field}`;
+                    form.submit();
+                }
+            }
+        </script>
     </div>
 </x-app-layout>
