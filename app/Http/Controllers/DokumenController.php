@@ -54,7 +54,7 @@ class DokumenController extends Controller
         }
 
         // Mengambil SKPD yang memiliki transaksi di tahun aktif dengan paginasi
-        $skpds = $query->orderBy('nama')->paginate(10)->withQueryString();
+        $skpds = $query->orderBy('kode')->paginate(10)->withQueryString();
 
         // Kita akan melakukan grouping di Controller agar View lebih ringan.
         $treeData = [];
@@ -66,7 +66,7 @@ class DokumenController extends Controller
             $totalVerified = 0;
 
             $treeData[$skpd->id] = [
-                'nama' => $skpd->nama,
+                'nama' => $skpd->kode . ' - ' . $skpd->nama,
                 'rekenings' => [],
                 'stats' => []
             ];
@@ -117,7 +117,7 @@ class DokumenController extends Controller
         ];
 
         // Meneruskan variabel $skpds untuk memunculkan link pagination di view
-        $allSkpdList = Skpd::where('status', true)->orderBy('nama')->get();
+        $allSkpdList = Skpd::where('status', true)->orderBy('kode')->get();
         return view('dokumen.tree', compact('treeData', 'tahunAktif', 'namaBulan', 'skpds', 'allSkpdList'));
     }
     public function downloadZip(Transaksi $transaksi)
@@ -128,7 +128,7 @@ class DokumenController extends Controller
 
         $zip = new \ZipArchive();
         
-        $skpdName = $transaksi->skpd->nama ?? 'SKPD';
+        $skpdName = ($transaksi->skpd->kode ?? '') . '_' . ($transaksi->skpd->nama ?? 'SKPD');
         $bulan = str_pad($transaksi->periode_bulan, 2, '0', STR_PAD_LEFT);
         $tahun = $transaksi->periode_tahun;
         $fileName = 'Dokumen_' . \Illuminate\Support\Str::slug($skpdName) . '_' . $bulan . '_' . $tahun . '.zip';
@@ -203,7 +203,7 @@ class DokumenController extends Controller
             $hasFiles = false;
 
             foreach ($transaksis as $trx) {
-                $skpdSlug = \Illuminate\Support\Str::slug($trx->skpd->nama ?? 'Instansi_Tanpa_Nama');
+                $skpdSlug = \Illuminate\Support\Str::slug(($trx->skpd->kode ?? '') . ' ' . ($trx->skpd->nama ?? 'Instansi_Tanpa_Nama'));
                 $bulanName = str_pad($trx->periode_bulan, 2, '0', STR_PAD_LEFT) . '_' . ($namaBulanList[$trx->periode_bulan - 1] ?? 'Bulan');
                 $folder = $skpdSlug . '/' . $bulanName . '/';
 
