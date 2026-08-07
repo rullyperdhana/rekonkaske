@@ -99,6 +99,7 @@ class DashboardController extends Controller
             }
             
             // Only calculate sum if we haven't passed the current month (don't chart future months)
+            // Only calculate sum if we haven't passed the current month (don't chart future months)
             if ($m <= $currentMonth) {
                 $sumBku = 0;
                 $sumBank = 0;
@@ -113,6 +114,67 @@ class DashboardController extends Controller
                 $chartData['bank'][$m - 1] = 0;
             }
         }
+
+        // 4b. Advanced Executive Analytics Chart Data (Hanya untuk Admin/Konsolidator)
+        $advChartData = [
+            'status_bulan' => ['verified' => 0, 'draft' => 0, 'belum' => 0],
+            'kedisiplinan' => [
+                'tepat_waktu' => array_fill(0, 12, 0),
+                'terlambat' => array_fill(0, 12, 0),
+            ],
+            'selisih' => array_fill(0, 12, 0),
+            'target_month_status' => 1
+        ];
+
+        if (!$user->skpd_id) {
+            $totalSkpdCount = Skpd::where('status', true)->count();
+            
+            // Tentukan bulan target untuk Pie Chart (Bulan lalu atau bulan terakhir lapor)
+            $targetMonthStatus = $currentMonth > 1 ? $currentMonth - 1 : 12;
+            $targetYearStatus = $currentMonth > 1 ? $tahunAktif : $tahunAktif - 1;
+            if ($tahunAktif < date('Y')) {
+                $targetMonthStatus = 12;
+                $targetYearStatus = $tahunAktif;
+            }
+
+            $advChartData['target_month_status'] = $targetMonthStatus;
+
+            // Pie Chart (Status)
+            $verifiedTrxCount = Transaksi::where('periode_tahun', $targetYearStatus)
+                ->where('periode_bulan', $targetMonthStatus)
+                ->where('status_verifikasi', 'verified')
+                ->distinct('skpd_id')->count('skpd_id');
+                
+            $draftTrxCount = Transaksi::where('periode_tahun', $targetYearStatus)
+                ->where('periode_bulan', $targetMonthStatus)
+                ->where('status_verifikasi', 'draft')
+                ->distinct('skpd_id')->count('skpd_id');
+
+            $advChartData['status_bulan']['verified'] = $verifiedTrxCount;
+            $advChartData['status_bulan']['draft'] = $draftTrxCount;
+            $advChartData['status_bulan']['belum'] = max(0, $totalSkpdCount - $verifiedTrxCount - $draftTrxCount);
+            
+            // Bar & Line Chart (12 months)
+            $allTrxForAdv = (clone $query)->get();
+            foreach ($allTrxForAdv as $trxAdv) {
+                $mIndex = $trxAdv->periode_bulan - 1;
+                
+                // Kedisiplinan: 1 SKPD bisa punya banyak transaksi per bulan (rekening banyak).
+                // Agar tidak duplicate count SKPD, kita cukup menghitung frekuensi transaksi tepat waktu vs lambat.
+                $tanggalLapor = $trxAdv->created_at ? $trxAdv->created_at->day : 15;
+                if ($tanggalLapor <= 10) {
+                    $advChartData['kedisiplinan']['tepat_waktu'][$mIndex]++;
+                } else {
+                    $advChartData['kedisiplinan']['terlambat'][$mIndex]++;
+                }
+                
+                // Selisih
+                if (abs($trxAdv->bku_saldo_akhir - $trxAdv->bank_saldo_akhir) > 0.01) {
+                    $advChartData['selisih'][$mIndex]++;
+                }
+            }
+        }
+
 
         // 5. Reminder (Notifikasi Peringatan)
         $missingMonth = null;
@@ -248,7 +310,7 @@ class DashboardController extends Controller
             })->take(5)->values();
         }
 
-        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'bottomSkpds', 'namaBulan'));
+        return view('dashboard', compact('latestTransaksi', 'summary', 'selisihTransaksis', 'recentActivities', 'chartData', 'advChartData', 'missingMonth', 'tahunAktif', 'skpdRekonStatus', 'skpdsPaginated', 'pengumumans', 'kepatuhanData', 'topSkpds', 'bottomSkpds', 'namaBulan'));
     }
 
     /**

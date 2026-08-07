@@ -257,6 +257,44 @@
     </div>
     @endif
 
+    <!-- Advanced Analytics Charts (Hanya Admin) -->
+    @if(isset($advChartData))
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <!-- 1. Pie Chart: Status Bulan Ini -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+            <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Komposisi Kepatuhan (Bulan {{ $advChartData['target_month_status'] }})</h3>
+            <div class="relative w-full h-48 mt-4">
+                <canvas id="advPieStatus"></canvas>
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/40 text-[11px] text-on-surface-variant text-center">
+                Status kelengkapan dokumen SKPD
+            </div>
+        </div>
+        
+        <!-- 2. Bar Chart: Kedisiplinan Waktu (Jan - Des) -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+            <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Tren Kedisiplinan Pelaporan ({{ $tahunAktif }})</h3>
+            <div class="relative w-full h-48 mt-4">
+                <canvas id="advBarDisiplin"></canvas>
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/40 text-[11px] text-on-surface-variant text-center">
+                Tepat waktu (Tgl 1-10) vs Terlambat (> Tgl 10)
+            </div>
+        </div>
+
+        <!-- 3. Line Chart: Tren Selisih Kas (Jan - Des) -->
+        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 shadow-sm">
+            <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Tren Selisih Kas Daerah ({{ $tahunAktif }})</h3>
+            <div class="relative w-full h-48 mt-4">
+                <canvas id="advLineSelisih"></canvas>
+            </div>
+            <div class="mt-4 pt-3 border-t border-outline-variant/40 text-[11px] text-on-surface-variant text-center">
+                Frekuensi SKPD yang mengalami selisih
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="grid grid-cols-1 {{ isset($topSkpds) && count($topSkpds) > 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-1' }} gap-6 mt-6">
         <!-- Top 5 Leaderboard -->
         @if(isset($topSkpds) && count($topSkpds) > 0)
@@ -478,6 +516,103 @@
                                     }
                                 }
                             }
+                        }
+                    }
+                });
+            }
+            @endif
+            // Advanced Executive Analytics Charts
+            @if(isset($advChartData))
+            const advData = @json($advChartData);
+            
+            // 1. Pie Chart (Status Bulan Terakhir)
+            const ctxAdvPie = document.getElementById('advPieStatus');
+            if(ctxAdvPie) {
+                new Chart(ctxAdvPie.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Verified', 'Draft/Proses', 'Belum Lapor'],
+                        datasets: [{
+                            data: [advData.status_bulan.verified, advData.status_bulan.draft, advData.status_bulan.belum],
+                            backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                            borderWidth: 0,
+                            hoverOffset: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 12, font: {size: 11} }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Bar Chart (Kedisiplinan)
+            const ctxAdvBar = document.getElementById('advBarDisiplin');
+            if(ctxAdvBar) {
+                new Chart(ctxAdvBar.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
+                        datasets: [
+                            {
+                                label: 'Tepat Waktu',
+                                data: advData.kedisiplinan.tepat_waktu,
+                                backgroundColor: '#0284C7',
+                                borderRadius: 3
+                            },
+                            {
+                                label: 'Terlambat',
+                                data: advData.kedisiplinan.terlambat,
+                                backgroundColor: '#94A3B8',
+                                borderRadius: 3
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'top', labels: {boxWidth: 12, font:{size: 11}} }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                        }
+                    }
+                });
+            }
+
+            // 3. Line Chart (Tren Selisih Kas)
+            const ctxAdvLine = document.getElementById('advLineSelisih');
+            if(ctxAdvLine) {
+                new Chart(ctxAdvLine.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
+                        datasets: [{
+                            label: 'Jumlah Transaksi Selisih',
+                            data: advData.selisih,
+                            borderColor: '#DC2626',
+                            backgroundColor: '#FECACA',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                            pointBackgroundColor: '#DC2626'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, ticks: { stepSize: 1 } }
                         }
                     }
                 });
