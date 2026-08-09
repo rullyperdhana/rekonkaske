@@ -138,7 +138,6 @@
                         <tr class="hover:bg-surface-container-lowest transition-colors">
                             <td class="py-4 px-6">
                                 <div class="text-on-surface font-semibold">{{ $stat['nama'] }}</div>
-                                <div class="text-xs text-on-surface-variant">{{ $stat['kode'] ?? '-' }}</div>
                             </td>
                             <td class="py-4 px-6 text-center">
                                 @if($stat['bulan_selesai'] == 12)
