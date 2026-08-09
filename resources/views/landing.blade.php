@@ -117,7 +117,7 @@
         </div>
     </header>
 
-    <main class="flex-1 w-full max-w-7xl mx-auto px-6 py-12">
+    <main class="flex-1 w-full max-w-[1920px] mx-auto px-6 py-12">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-on-surface mb-3">Status Rekonsiliasi SKPD</h2>
             <p class="text-lg text-on-surface-variant">Tahun Anggaran {{ $tahunAktif }}</p>
@@ -176,7 +176,7 @@
     </main>
 
     <footer class="bg-surface-container-low py-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-on-surface-variant">
+        <div class="max-w-[1920px] mx-auto px-6 text-center text-sm text-on-surface-variant">
             &copy; {{ date('Y') }} BKAD Kabupaten Tapin. All rights reserved.
         </div>
     </footer>

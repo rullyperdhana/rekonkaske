@@ -83,7 +83,7 @@
                         "full": "0.75rem"
                     },
                     "spacing": {
-                        "container-max": "1440px",
+                        "container-max": "1920px",
                         "margin-desktop": "48px",
                         "margin-mobile": "16px",
                         "gutter": "24px",
