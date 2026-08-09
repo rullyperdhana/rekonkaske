@@ -16,7 +16,7 @@ class LandingController extends Controller
         $pengaturan = Pengaturan::whereNull('skpd_id')->first();
 
         $skpdRekonStatus = [];
-        $skpdsPaginated = Skpd::where('status', true)->orderBy('nama')->paginate(10);
+        $skpdsPaginated = Skpd::where('status', true)->orderBy('kode')->paginate(10);
         $allSkpds = $skpdsPaginated->items();
         foreach ($allSkpds as $skpd) {
             $bulanRekon = Transaksi::where('skpd_id', $skpd->id)
@@ -27,7 +27,7 @@ class LandingController extends Controller
                 ->toArray();
             
             $skpdRekonStatus[] = [
-                'nama' => $skpd->nama,
+                'nama' => $skpd->kode . ' - ' . $skpd->nama,
                 'kode' => $skpd->kode,
                 'bulan_selesai' => count($bulanRekon),
                 'bulan_list' => $bulanRekon,

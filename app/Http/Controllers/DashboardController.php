@@ -192,7 +192,7 @@ class DashboardController extends Controller
         if ($user->skpd_id) {
             $skpdQuery->where('id', $user->skpd_id);
         }
-        $skpdsPaginated = $skpdQuery->orderBy('nama')->paginate(10);
+        $skpdsPaginated = $skpdQuery->orderBy('kode')->paginate(10);
         $allSkpds = $skpdsPaginated->items();
         foreach ($allSkpds as $skpd) {
             $bulanRekon = Transaksi::where('skpd_id', $skpd->id)
@@ -203,7 +203,7 @@ class DashboardController extends Controller
                 ->toArray();
             
             $skpdRekonStatus[] = [
-                'nama' => $skpd->nama,
+                'nama' => $skpd->kode . ' - ' . $skpd->nama,
                 'kode' => $skpd->kode,
                 'bulan_selesai' => count($bulanRekon),
                 'bulan_list' => $bulanRekon,
