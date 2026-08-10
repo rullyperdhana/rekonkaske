@@ -10,6 +10,14 @@
                 <p class="font-body-md text-body-md text-on-surface-variant mt-1">Struktur hirarki dokumen rekonsiliasi tahun {{ $tahunAktif }}.</p>
             </div>
             <div class="flex flex-wrap items-center gap-2 self-start md:self-auto">
+                <a href="{{ route('dokumen.tree.excel') }}" class="bg-[#107c41] text-white font-bold px-3 py-2 rounded flex items-center space-x-1.5 hover:bg-[#0c5e31] transition-colors shadow-md font-label-sm text-label-sm">
+                    <span class="material-symbols-outlined text-[18px]">table</span>
+                    <span>Unduh Excel</span>
+                </a>
+                <a href="{{ route('dokumen.tree.pdf') }}" target="_blank" class="bg-rose-600 text-white font-bold px-3 py-2 rounded flex items-center space-x-1.5 hover:bg-rose-700 transition-colors shadow-md font-label-sm text-label-sm">
+                    <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                    <span>Cetak PDF</span>
+                </a>
                 <button type="button" @click="bulkZipOpen = true" class="bg-amber-500 text-slate-950 font-bold px-3.5 py-2 rounded flex items-center space-x-1.5 hover:bg-amber-400 transition-colors shadow-md font-label-sm text-label-sm">
                     <span class="material-symbols-outlined text-[18px]" data-weight="fill">archive</span>
                     <span>Unduh Paket Audit BPK (.ZIP)</span>

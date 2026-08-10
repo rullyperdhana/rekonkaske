@@ -120,6 +120,109 @@ class DokumenController extends Controller
         $allSkpdList = Skpd::where('status', true)->orderBy('kode')->get();
         return view('dokumen.tree', compact('treeData', 'tahunAktif', 'namaBulan', 'skpds', 'allSkpdList'));
     }
+
+    public function eksporExcel(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403);
+        }
+
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $skpds = Skpd::with(['transaksis' => function ($q) use ($tahunAktif) {
+            $q->where('periode_tahun', $tahunAktif);
+        }, 'transaksis.rekening'])->orderBy('kode')->get();
+
+        $skpdData = [];
+        foreach ($skpds as $skpd) {
+            $totalTransaksi = 0;
+            $totalDokumenMissing = 0;
+            $totalDraft = 0;
+            $totalVerified = 0;
+            $rekeningCount = [];
+
+            foreach ($skpd->transaksis as $trx) {
+                if (!$trx->rekening) continue;
+                $totalTransaksi++;
+                $rekeningCount[$trx->rekening_id] = true;
+
+                if ($trx->status_verifikasi == 'verified') $totalVerified++;
+                else $totalDraft++;
+
+                $docMissing = 0;
+                if (!$trx->file_ba_manual) $docMissing++;
+                if (!$trx->file_buku_kas) $docMissing++;
+                if (!$trx->file_buku_pembantu_bank) $docMissing++;
+                if (!$trx->file_rekening_koran) $docMissing++;
+                
+                $totalDokumenMissing += $docMissing;
+            }
+
+            $skpdData[] = [
+                'skpd' => $skpd,
+                'total_rekening' => count($rekeningCount),
+                'total_transaksi' => $totalTransaksi,
+                'total_verified' => $totalVerified,
+                'total_draft' => $totalDraft,
+                'total_dokumen_missing' => $totalDokumenMissing
+            ];
+        }
+
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\ArsipExport($skpdData, $tahunAktif), 'Laporan_Kelengkapan_Arsip_' . $tahunAktif . '.xlsx');
+    }
+
+    public function cetakPdf(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403);
+        }
+
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $pengaturan = \App\Models\Pengaturan::first();
+        $skpds = Skpd::with(['transaksis' => function ($q) use ($tahunAktif) {
+            $q->where('periode_tahun', $tahunAktif);
+        }, 'transaksis.rekening'])->orderBy('kode')->get();
+
+        $skpdData = [];
+        foreach ($skpds as $skpd) {
+            $totalTransaksi = 0;
+            $totalDokumenMissing = 0;
+            $totalDraft = 0;
+            $totalVerified = 0;
+            $rekeningCount = [];
+
+            foreach ($skpd->transaksis as $trx) {
+                if (!$trx->rekening) continue;
+                $totalTransaksi++;
+                $rekeningCount[$trx->rekening_id] = true;
+
+                if ($trx->status_verifikasi == 'verified') $totalVerified++;
+                else $totalDraft++;
+
+                $docMissing = 0;
+                if (!$trx->file_ba_manual) $docMissing++;
+                if (!$trx->file_buku_kas) $docMissing++;
+                if (!$trx->file_buku_pembantu_bank) $docMissing++;
+                if (!$trx->file_rekening_koran) $docMissing++;
+                
+                $totalDokumenMissing += $docMissing;
+            }
+
+            $skpdData[] = [
+                'skpd' => $skpd,
+                'total_rekening' => count($rekeningCount),
+                'total_transaksi' => $totalTransaksi,
+                'total_verified' => $totalVerified,
+                'total_draft' => $totalDraft,
+                'total_dokumen_missing' => $totalDokumenMissing
+            ];
+        }
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.arsip_pdf', compact('skpdData', 'tahunAktif', 'pengaturan'));
+        $pdf->setPaper('A4', 'portrait');
+
+        return $pdf->stream('Laporan_Kelengkapan_Arsip_' . $tahunAktif . '.pdf');
+    }
+
     public function downloadZip(Transaksi $transaksi)
     {
         if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {

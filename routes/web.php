@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/laporan/konsolidasi/excel', [\App\Http\Controllers\LaporanController::class, 'eksporKonsolidasi'])->name('laporan.konsolidasi.excel');
         Route::get('/dashboard/cetak-rapor-kepatuhan', [\App\Http\Controllers\DashboardController::class, 'cetakRaporKepatuhan'])->name('dashboard.cetak-rapor-kepatuhan');
         Route::get('/dokumen/tree', [\App\Http\Controllers\DokumenController::class, 'tree'])->name('dokumen.tree');
+        Route::get('/dokumen/tree/excel', [\App\Http\Controllers\DokumenController::class, 'eksporExcel'])->name('dokumen.tree.excel');
+        Route::get('/dokumen/tree/pdf', [\App\Http\Controllers\DokumenController::class, 'cetakPdf'])->name('dokumen.tree.pdf');
         Route::get('/dokumen/tree/{transaksi}/zip', [\App\Http\Controllers\DokumenController::class, 'downloadZip'])->name('dokumen.zip');
         Route::post('/dokumen/bulk-zip', [\App\Http\Controllers\DokumenController::class, 'bulkDownloadZip'])->name('dokumen.bulk_zip');
     });
