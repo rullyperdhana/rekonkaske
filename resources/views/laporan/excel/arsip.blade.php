@@ -30,13 +30,21 @@
                 <td style="border: 1px solid #000;">{{ $data['skpd']->nama }}</td>
                 @for($i = 1; $i <= 12; $i++)
                     @php
-                        $status = $data['bulan_status'][$i];
+                        $statusParts = explode('|', $data['bulan_status'][$i]);
+                        $rekonStatus = $statusParts[0] ?? '-';
+                        $docStatus = $statusParts[1] ?? '-';
+                        
                         $color = '#000';
-                        if ($status == 'Lengkap') $color = '#1b6d24';
-                        if ($status == 'Kurang') $color = '#ba1a1a';
+                        if ($docStatus == 'Lengkap') $color = '#1b6d24';
+                        if ($docStatus == 'Kurang') $color = '#ba1a1a';
                     @endphp
-                    <td style="text-align: center; border: 1px solid #000; color: {{ $color }}; font-weight: {{ $status == '-' ? 'normal' : 'bold' }};">
-                        {{ $status == 'Lengkap' ? 'Lengkap' : ($status == 'Kurang' ? 'Kurang' : '-') }}
+                    <td style="text-align: center; border: 1px solid #000; color: {{ $color }}; font-weight: {{ $rekonStatus == '-' ? 'normal' : 'bold' }};">
+                        @if($rekonStatus != '-')
+                            {{ $rekonStatus }}
+                            ({{ $docStatus }})
+                        @else
+                            -
+                        @endif
                     </td>
                 @endfor
             </tr>

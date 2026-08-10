@@ -141,10 +141,14 @@ class DokumenController extends Controller
                 $bulan = $trx->periode_bulan;
                 
                 if (!isset($trxPerBulan[$bulan])) {
-                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0];
+                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0, 'has_draft' => false];
                 }
                 
                 $trxPerBulan[$bulan]['total']++;
+                
+                if ($trx->status_verifikasi != 'verified') {
+                    $trxPerBulan[$bulan]['has_draft'] = true;
+                }
                 
                 $docMissing = 0;
                 if (!$trx->file_ba_manual) $docMissing++;
@@ -160,10 +164,13 @@ class DokumenController extends Controller
             $bulanStatus = [];
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($trxPerBulan[$i])) {
-                    if ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0) {
-                        $bulanStatus[$i] = 'Lengkap';
+                    $isLengkap = ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0);
+                    $rekonStatus = $trxPerBulan[$i]['has_draft'] ? 'Draft' : 'Verified';
+
+                    if ($isLengkap) {
+                        $bulanStatus[$i] = $rekonStatus . '|Lengkap';
                     } else {
-                        $bulanStatus[$i] = 'Kurang';
+                        $bulanStatus[$i] = $rekonStatus . '|Kurang';
                     }
                 } else {
                     $bulanStatus[$i] = '-';
@@ -200,10 +207,14 @@ class DokumenController extends Controller
                 $bulan = $trx->periode_bulan;
                 
                 if (!isset($trxPerBulan[$bulan])) {
-                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0];
+                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0, 'has_draft' => false];
                 }
                 
                 $trxPerBulan[$bulan]['total']++;
+                
+                if ($trx->status_verifikasi != 'verified') {
+                    $trxPerBulan[$bulan]['has_draft'] = true;
+                }
                 
                 $docMissing = 0;
                 if (!$trx->file_ba_manual) $docMissing++;
@@ -219,10 +230,13 @@ class DokumenController extends Controller
             $bulanStatus = [];
             for ($i = 1; $i <= 12; $i++) {
                 if (isset($trxPerBulan[$i])) {
-                    if ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0) {
-                        $bulanStatus[$i] = 'Lengkap';
+                    $isLengkap = ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0);
+                    $rekonStatus = $trxPerBulan[$i]['has_draft'] ? 'Draft' : 'Verified';
+
+                    if ($isLengkap) {
+                        $bulanStatus[$i] = $rekonStatus . '|Lengkap';
                     } else {
-                        $bulanStatus[$i] = 'Kurang';
+                        $bulanStatus[$i] = $rekonStatus . '|Kurang';
                     }
                 } else {
                     $bulanStatus[$i] = '-';

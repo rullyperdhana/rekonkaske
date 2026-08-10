@@ -129,14 +129,32 @@
                 <td>{{ $data['skpd']->nama }}</td>
                 @for($i = 1; $i <= 12; $i++)
                     @php
-                        $status = $data['bulan_status'][$i];
+                        $statusParts = explode('|', $data['bulan_status'][$i]);
+                        $rekonStatus = $statusParts[0] ?? '-';
+                        $docStatus = $statusParts[1] ?? '-';
+
                         $class = '';
-                        $text = '-';
-                        if ($status == 'Lengkap') { $class = 'status-success font-bold'; $text = 'V'; }
-                        if ($status == 'Kurang') { $class = 'status-danger font-bold'; $text = 'X'; }
+                        $textRekon = '';
+                        $textDoc = '';
+                        
+                        if ($docStatus == 'Lengkap') { 
+                            $class = 'status-success font-bold'; 
+                            $textDoc = 'V'; 
+                        }
+                        if ($docStatus == 'Kurang') { 
+                            $class = 'status-danger font-bold'; 
+                            $textDoc = 'X'; 
+                        }
+                        
+                        if ($rekonStatus == 'Verified') $textRekon = 'Verif';
+                        if ($rekonStatus == 'Draft') $textRekon = 'Draft';
                     @endphp
                     <td class="text-center {{ $class }}">
-                        {{ $text }}
+                        @if($rekonStatus != '-')
+                            {{ $textRekon }}<br>({{ $textDoc }})
+                        @else
+                            -
+                        @endif
                     </td>
                 @endfor
             </tr>
@@ -150,7 +168,10 @@
     </table>
     
     <div style="margin-top: 10px; font-size: 10px;">
-        <strong>Keterangan:</strong><br>
+        <strong>Keterangan (Status Rekon):</strong><br>
+        <strong>Verif</strong> : Transaksi sudah Diverifikasi &nbsp;&nbsp;&nbsp;
+        <strong>Draft</strong> : Transaksi masih Draft<br><br>
+        <strong>Keterangan (Kelengkapan Dokumen):</strong><br>
         <span class="status-success font-bold">V</span> : Lengkap (Sudah diunggah semua) &nbsp;&nbsp;&nbsp;
         <span class="status-danger font-bold">X</span> : Kurang (Ada dokumen yang belum diunggah) &nbsp;&nbsp;&nbsp;
         <span>-</span> : Belum ada laporan/transaksi
