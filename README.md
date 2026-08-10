@@ -49,6 +49,11 @@
 * **Animasi Live Log Dashboard:** Fitur teks berjalan interaktif (*ticker*) di area *footer* yang menyiarkan detak log aktivitas transaksi/verifikasi SKPD secara langsung dan elegan tanpa harus *refresh* halaman terus-menerus (dapat dinyala/matikan).
 * **Audit Trail & Keamanan Ekstra:** Dilengkapi catatan log aktivitas lengkap (Alamat IP, User-Agent browser, waktu eksekusi), pembatasan percobaan login (*Rate Limiting*), proteksi Captcha, Auto-Logout karena tidak ada aktivitas (*Session Timeout*), dan kebijakan password yang ketat.
 
+### 7. 🎨 UI/UX Premium & Landing Page Modern (Public Face)
+* **Desain Organik & "Fresh" (Anti-Kaku):** Meninggalkan gaya template AI/Admin yang membosankan, wajah depan portal SiReKa dirancang menggunakan antarmuka _floating cards_, *glassmorphism*, gradient mewah, serta spasi tipografi (whitespace) bernuansa *startup fintech* / enterprise.
+* **Pencarian SKPD Real-time:** Memudahkan publik atau kepala instansi untuk langsung mencari nama SKPD (tanpa merusak susunan halaman) melalui bilah pencarian cerdas yang langsung memotong data tanpa perlu pusing beralih halaman (*pagination*).
+* **Indikator Visual Organik:** Status kemajuan rekonsiliasi per instansi tidak lagi menggunakan sekadar teks, namun direpresentasikan melalui warna status lencana dinamis (Badge) dan bulatan-bulatan (Circles) indikator tiap bulan, menampilkan data dengan cara yang ramah bagi mata masyarakat/auditor.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
