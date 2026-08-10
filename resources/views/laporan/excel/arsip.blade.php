@@ -1,12 +1,12 @@
 <table>
     <thead>
         <tr>
-            <th colspan="8" style="text-align: center; font-size: 14px; font-weight: bold;">
+            <th colspan="15" style="text-align: center; font-size: 14px; font-weight: bold;">
                 Laporan Kelengkapan Arsip Dokumen SKPD
             </th>
         </tr>
         <tr>
-            <th colspan="8" style="text-align: center; font-weight: bold;">
+            <th colspan="15" style="text-align: center; font-weight: bold;">
                 Tahun Anggaran {{ $tahunAktif }}
             </th>
         </tr>
@@ -17,11 +17,9 @@
             <th style="font-weight: bold; text-align: center; border: 1px solid #000;">No</th>
             <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Kode SKPD</th>
             <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Nama SKPD</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Jml Rekening</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Jml Transaksi</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Verified</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Draft</th>
-            <th style="font-weight: bold; text-align: center; border: 1px solid #000;">Dokumen Kurang (Belum Upload)</th>
+            @foreach($namaBulan as $bulan)
+                <th style="font-weight: bold; text-align: center; border: 1px solid #000;">{{ substr($bulan, 0, 3) }}</th>
+            @endforeach
         </tr>
     </thead>
     <tbody>
@@ -30,17 +28,17 @@
                 <td style="text-align: center; border: 1px solid #000;">{{ $index + 1 }}</td>
                 <td style="text-align: center; border: 1px solid #000;">{{ $data['skpd']->kode }}</td>
                 <td style="border: 1px solid #000;">{{ $data['skpd']->nama }}</td>
-                <td style="text-align: center; border: 1px solid #000;">{{ $data['total_rekening'] }}</td>
-                <td style="text-align: center; border: 1px solid #000;">{{ $data['total_transaksi'] }}</td>
-                <td style="text-align: center; border: 1px solid #000; color: {{ $data['total_verified'] > 0 ? '#1b6d24' : '#000' }};">
-                    {{ $data['total_verified'] }}
-                </td>
-                <td style="text-align: center; border: 1px solid #000; color: {{ $data['total_draft'] > 0 ? '#ba1a1a' : '#000' }};">
-                    {{ $data['total_draft'] }}
-                </td>
-                <td style="text-align: center; border: 1px solid #000; color: {{ $data['total_dokumen_missing'] > 0 ? '#ba1a1a' : '#1b6d24' }}; font-weight: {{ $data['total_dokumen_missing'] > 0 ? 'bold' : 'normal' }};">
-                    {{ $data['total_dokumen_missing'] == 0 ? 'Lengkap' : $data['total_dokumen_missing'] }}
-                </td>
+                @for($i = 1; $i <= 12; $i++)
+                    @php
+                        $status = $data['bulan_status'][$i];
+                        $color = '#000';
+                        if ($status == 'Lengkap') $color = '#1b6d24';
+                        if ($status == 'Kurang') $color = '#ba1a1a';
+                    @endphp
+                    <td style="text-align: center; border: 1px solid #000; color: {{ $color }}; font-weight: {{ $status == '-' ? 'normal' : 'bold' }};">
+                        {{ $status == 'Lengkap' ? 'Lengkap' : ($status == 'Kurang' ? 'Kurang' : '-') }}
+                    </td>
+                @endfor
             </tr>
         @endforeach
     </tbody>

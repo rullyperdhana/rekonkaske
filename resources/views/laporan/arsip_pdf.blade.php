@@ -35,11 +35,11 @@
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
-            font-size: 11px;
+            font-size: 10px;
             border: 1px solid #000;
         }
         table.keuangan th, table.keuangan td {
-            padding: 5px;
+            padding: 4px;
             border-bottom: 1px solid #000;
             border-right: 1px solid #000;
         }
@@ -85,6 +85,8 @@
                 $base64Logo = 'data:image/' . $type . ';base64,' . base64_encode($data);
             }
         }
+        
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
     @endphp
 
     <table class="kop-table">
@@ -111,14 +113,12 @@
     <table class="keuangan">
         <thead>
             <tr>
-                <th class="text-center" style="width: 5%">No</th>
-                <th class="text-center" style="width: 12%">Kode SKPD</th>
-                <th class="text-center" style="width: 38%">Nama SKPD</th>
-                <th class="text-center" style="width: 9%">Rekening</th>
-                <th class="text-center" style="width: 9%">Transaksi</th>
-                <th class="text-center" style="width: 9%">Verified</th>
-                <th class="text-center" style="width: 9%">Draft</th>
-                <th class="text-center" style="width: 9%">Kurang</th>
+                <th class="text-center" style="width: 3%">No</th>
+                <th class="text-center" style="width: 8%">Kode SKPD</th>
+                <th class="text-center" style="width: 23%">Nama SKPD</th>
+                @foreach($namaBulan as $bulan)
+                    <th class="text-center" style="width: 5.5%">{{ substr($bulan, 0, 3) }}</th>
+                @endforeach
             </tr>
         </thead>
         <tbody>
@@ -127,26 +127,34 @@
                 <td class="text-center">{{ $loop->iteration }}</td>
                 <td class="text-center">{{ $data['skpd']->kode }}</td>
                 <td>{{ $data['skpd']->nama }}</td>
-                <td class="text-center">{{ $data['total_rekening'] }}</td>
-                <td class="text-center">{{ $data['total_transaksi'] }}</td>
-                <td class="text-center {{ $data['total_verified'] > 0 ? 'status-success font-bold' : '' }}">
-                    {{ $data['total_verified'] }}
-                </td>
-                <td class="text-center {{ $data['total_draft'] > 0 ? 'status-danger font-bold' : '' }}">
-                    {{ $data['total_draft'] }}
-                </td>
-                <td class="text-center {{ $data['total_dokumen_missing'] > 0 ? 'status-danger font-bold' : 'status-success' }}">
-                    {{ $data['total_dokumen_missing'] == 0 ? 'Lengkap' : $data['total_dokumen_missing'] }}
-                </td>
+                @for($i = 1; $i <= 12; $i++)
+                    @php
+                        $status = $data['bulan_status'][$i];
+                        $class = '';
+                        $text = '-';
+                        if ($status == 'Lengkap') { $class = 'status-success font-bold'; $text = 'V'; }
+                        if ($status == 'Kurang') { $class = 'status-danger font-bold'; $text = 'X'; }
+                    @endphp
+                    <td class="text-center {{ $class }}">
+                        {{ $text }}
+                    </td>
+                @endfor
             </tr>
             @endforeach
             @if(empty($skpdData))
             <tr>
-                <td colspan="8" class="text-center" style="padding: 10px; color: #666;">Belum ada data SKPD.</td>
+                <td colspan="15" class="text-center" style="padding: 10px; color: #666;">Belum ada data SKPD.</td>
             </tr>
             @endif
         </tbody>
     </table>
+    
+    <div style="margin-top: 10px; font-size: 10px;">
+        <strong>Keterangan:</strong><br>
+        <span class="status-success font-bold">V</span> : Lengkap (Sudah diunggah semua) &nbsp;&nbsp;&nbsp;
+        <span class="status-danger font-bold">X</span> : Kurang (Ada dokumen yang belum diunggah) &nbsp;&nbsp;&nbsp;
+        <span>-</span> : Belum ada laporan/transaksi
+    </div>
 
     <table class="ttd-table">
         <tr>

@@ -134,36 +134,45 @@ class DokumenController extends Controller
 
         $skpdData = [];
         foreach ($skpds as $skpd) {
-            $totalTransaksi = 0;
-            $totalDokumenMissing = 0;
-            $totalDraft = 0;
-            $totalVerified = 0;
-            $rekeningCount = [];
-
+            $trxPerBulan = [];
+            
             foreach ($skpd->transaksis as $trx) {
                 if (!$trx->rekening) continue;
-                $totalTransaksi++;
-                $rekeningCount[$trx->rekening_id] = true;
-
-                if ($trx->status_verifikasi == 'verified') $totalVerified++;
-                else $totalDraft++;
-
+                $bulan = $trx->periode_bulan;
+                
+                if (!isset($trxPerBulan[$bulan])) {
+                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0];
+                }
+                
+                $trxPerBulan[$bulan]['total']++;
+                
                 $docMissing = 0;
                 if (!$trx->file_ba_manual) $docMissing++;
                 if (!$trx->file_buku_kas) $docMissing++;
                 if (!$trx->file_buku_pembantu_bank) $docMissing++;
                 if (!$trx->file_rekening_koran) $docMissing++;
                 
-                $totalDokumenMissing += $docMissing;
+                if ($docMissing > 0) {
+                    $trxPerBulan[$bulan]['missing']++;
+                }
+            }
+
+            $bulanStatus = [];
+            for ($i = 1; $i <= 12; $i++) {
+                if (isset($trxPerBulan[$i])) {
+                    if ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0) {
+                        $bulanStatus[$i] = 'Lengkap';
+                    } else {
+                        $bulanStatus[$i] = 'Kurang';
+                    }
+                } else {
+                    $bulanStatus[$i] = '-';
+                }
             }
 
             $skpdData[] = [
                 'skpd' => $skpd,
-                'total_rekening' => count($rekeningCount),
-                'total_transaksi' => $totalTransaksi,
-                'total_verified' => $totalVerified,
-                'total_draft' => $totalDraft,
-                'total_dokumen_missing' => $totalDokumenMissing
+                'bulan_status' => $bulanStatus,
             ];
         }
 
@@ -184,41 +193,50 @@ class DokumenController extends Controller
 
         $skpdData = [];
         foreach ($skpds as $skpd) {
-            $totalTransaksi = 0;
-            $totalDokumenMissing = 0;
-            $totalDraft = 0;
-            $totalVerified = 0;
-            $rekeningCount = [];
-
+            $trxPerBulan = [];
+            
             foreach ($skpd->transaksis as $trx) {
                 if (!$trx->rekening) continue;
-                $totalTransaksi++;
-                $rekeningCount[$trx->rekening_id] = true;
-
-                if ($trx->status_verifikasi == 'verified') $totalVerified++;
-                else $totalDraft++;
-
+                $bulan = $trx->periode_bulan;
+                
+                if (!isset($trxPerBulan[$bulan])) {
+                    $trxPerBulan[$bulan] = ['total' => 0, 'missing' => 0];
+                }
+                
+                $trxPerBulan[$bulan]['total']++;
+                
                 $docMissing = 0;
                 if (!$trx->file_ba_manual) $docMissing++;
                 if (!$trx->file_buku_kas) $docMissing++;
                 if (!$trx->file_buku_pembantu_bank) $docMissing++;
                 if (!$trx->file_rekening_koran) $docMissing++;
                 
-                $totalDokumenMissing += $docMissing;
+                if ($docMissing > 0) {
+                    $trxPerBulan[$bulan]['missing']++;
+                }
+            }
+
+            $bulanStatus = [];
+            for ($i = 1; $i <= 12; $i++) {
+                if (isset($trxPerBulan[$i])) {
+                    if ($trxPerBulan[$i]['missing'] == 0 && $trxPerBulan[$i]['total'] > 0) {
+                        $bulanStatus[$i] = 'Lengkap';
+                    } else {
+                        $bulanStatus[$i] = 'Kurang';
+                    }
+                } else {
+                    $bulanStatus[$i] = '-';
+                }
             }
 
             $skpdData[] = [
                 'skpd' => $skpd,
-                'total_rekening' => count($rekeningCount),
-                'total_transaksi' => $totalTransaksi,
-                'total_verified' => $totalVerified,
-                'total_draft' => $totalDraft,
-                'total_dokumen_missing' => $totalDokumenMissing
+                'bulan_status' => $bulanStatus,
             ];
         }
 
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.arsip_pdf', compact('skpdData', 'tahunAktif', 'pengaturan'));
-        $pdf->setPaper('A4', 'portrait');
+        $pdf->setPaper('A4', 'landscape');
 
         return $pdf->stream('Laporan_Kelengkapan_Arsip_' . $tahunAktif . '.pdf');
     }
