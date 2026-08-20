@@ -81,7 +81,7 @@ class TransaksiController extends Controller
             $query->where('periode_bulan', $request->bulan);
         }
 
-        $transaksis = $query->paginate(10);
+        $transaksis = $query->paginate(10)->withQueryString();
         return view('transaksi.index', compact('transaksis'));
     }
 

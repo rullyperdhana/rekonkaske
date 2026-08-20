@@ -118,3 +118,6 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 ---
 *SiReKa - Solusi Digitalisasi Transparan & Akuntabel untuk Pengelolaan Keuangan Pemerintah Kabupaten Tapin.*
 
+---
+## 📝 Changelog
+* **v2.0.1** - Perbaikan bug pada sistem paginasi tabel (Laporan BA & Transaksi) di mana filter pencarian/bulan kini tetap tersimpan (`withQueryString`) saat berpindah halaman.

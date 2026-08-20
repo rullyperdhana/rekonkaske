@@ -40,7 +40,7 @@ class BaController extends Controller
             $query->where('periode_bulan', $request->bulan);
         }
 
-        $transaksis = $query->paginate(10);
+        $transaksis = $query->paginate(10)->withQueryString();
         return view('laporan.ba.list', compact('transaksis'));
     }
 
