@@ -202,10 +202,16 @@
                 <p class="text-sm text-slate-500 font-medium mt-1">Pantau kelengkapan laporan dari total {{ count($skpdRekonStatus) }} SKPD</p>
             </div>
             
-            <div class="hidden sm:flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
-                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Lengkap</span>
-                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Sebagian</span>
-                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Kosong</span>
+            <div class="hidden sm:flex items-center gap-2 bg-slate-50 px-2 py-1.5 rounded-xl border border-slate-200">
+                <button onclick="filterSkpdTable('lengkap')" id="btn-filter-lengkap" class="filter-skpd-btn flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors focus:outline-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Lengkap
+                </button>
+                <button onclick="filterSkpdTable('sebagian')" id="btn-filter-sebagian" class="filter-skpd-btn flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors focus:outline-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Sebagian
+                </button>
+                <button onclick="filterSkpdTable('kosong')" id="btn-filter-kosong" class="filter-skpd-btn flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors focus:outline-none">
+                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Kosong
+                </button>
             </div>
         </div>
 
@@ -220,9 +226,17 @@
                         <th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Status Akhir</th>
                     </tr>
                 </thead>
-                <tbody class="text-sm divide-y divide-slate-100 bg-white">
+                <tbody class="text-sm divide-y divide-slate-100 bg-white" id="skpd-table-body">
                     @foreach($skpdRekonStatus as $skpdStatus)
-                    <tr class="hover:bg-blue-50/60 transition-colors group">
+                    @php
+                        $statusText = 'kosong';
+                        if($skpdStatus['bulan_selesai'] >= 12) {
+                            $statusText = 'lengkap';
+                        } elseif($skpdStatus['bulan_selesai'] > 0) {
+                            $statusText = 'sebagian';
+                        }
+                    @endphp
+                    <tr class="skpd-row hover:bg-blue-50/60 transition-colors group" data-status="{{ $statusText }}">
                         <td class="px-5 py-3">
                             <div class="flex items-center gap-3">
                                 @php
@@ -496,6 +510,58 @@
             if(activeBtn) {
                 activeBtn.classList.remove('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/60', 'border-transparent', 'font-medium');
                 activeBtn.classList.add('active-tab', 'bg-white', 'text-blue-600', 'shadow-sm', 'border-slate-200', 'font-bold');
+            }
+        }
+
+        // Logic for Filter SKPD Status Table
+        let activeSkpdFilter = null;
+        function filterSkpdTable(status) {
+            // Toggle active filter
+            if (activeSkpdFilter === status) {
+                activeSkpdFilter = null; // Turn off if clicked again
+            } else {
+                activeSkpdFilter = status;
+            }
+
+            // Update buttons styling
+            document.querySelectorAll('.filter-skpd-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow-sm', 'border-slate-300', 'text-blue-700');
+                btn.classList.add('hover:bg-slate-200');
+            });
+
+            if (activeSkpdFilter) {
+                const activeBtn = document.getElementById('btn-filter-' + activeSkpdFilter);
+                if (activeBtn) {
+                    activeBtn.classList.remove('hover:bg-slate-200');
+                    activeBtn.classList.add('bg-white', 'shadow-sm', 'border-slate-300', 'text-blue-700');
+                }
+            }
+
+            // Filter rows based on data-status attribute
+            const rows = document.querySelectorAll('.skpd-row');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                if (!activeSkpdFilter || row.getAttribute('data-status') === activeSkpdFilter) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            // Handle empty state manually if needed
+            let emptyMsg = document.getElementById('skpd-empty-message');
+            if (visibleCount === 0) {
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('tr');
+                    emptyMsg.id = 'skpd-empty-message';
+                    emptyMsg.innerHTML = '<td colspan="14" class="px-5 py-8 text-center text-slate-500 text-sm">Tidak ada SKPD dengan status tersebut di halaman ini.</td>';
+                    document.getElementById('skpd-table-body').appendChild(emptyMsg);
+                }
+                emptyMsg.style.display = '';
+            } else if (emptyMsg) {
+                emptyMsg.style.display = 'none';
             }
         }
 
