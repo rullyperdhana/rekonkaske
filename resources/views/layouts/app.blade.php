@@ -106,7 +106,7 @@
 </head>
 <body class="bg-background text-on-background font-body-lg min-h-screen">
     <!-- Mobile sidebar overlay -->
-    <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/50 z-20 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
+    <div id="sidebarOverlay" class="fixed inset-0 bg-gray-900/50 z-40 hidden lg:hidden backdrop-blur-sm transition-opacity" onclick="toggleSidebar()"></div>
 
     <!-- SideNavBar -->
     @include('layouts.sidebar')
@@ -115,7 +115,7 @@
     @include('layouts.topbar')
 
     <!-- Main Content -->
-    <main id="appMain" class="lg:ml-64 pt-24 px-4 lg:px-8 pb-20 max-w-container-max mx-auto transition-all duration-300">
+    <main id="appMain" class="lg:ml-72 pt-24 px-4 lg:px-8 pb-20 max-w-container-max mx-auto transition-all duration-300">
         @if(session('success'))
             <div class="mb-6 bg-secondary-container text-on-secondary-container px-4 py-3 rounded-lg flex items-center gap-3 shadow-sm" role="alert">
                 <span class="material-symbols-outlined">check_circle</span>
@@ -142,7 +142,7 @@
 
     <!-- Footer Marquee Live Log (Admin & Konsolidator) -->
     @if(isset($globalActivities) && $globalActivities->count() > 0)
-    <div id="footerMarquee" class="fixed bottom-0 left-0 right-0 z-[45] bg-slate-900 text-slate-100 border-t border-slate-700 py-2.5 overflow-hidden flex items-center shadow-lg lg:ml-64 transition-all duration-300">
+    <div id="footerMarquee" class="fixed bottom-0 left-0 right-0 z-[45] bg-slate-900 text-slate-100 border-t border-slate-700 py-2.5 overflow-hidden flex items-center shadow-lg lg:ml-72 transition-all duration-300">
         <div class="flex-shrink-0 bg-blue-600 px-4 py-1.5 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5 z-10 shadow-[4px_0_15px_rgba(0,0,0,0.8)] relative">
             <span class="material-symbols-outlined text-[16px] animate-pulse">sensors</span> LIVE LOG
         </div>
@@ -188,19 +188,19 @@
             } else {
                 // Desktop toggle
                 sidebar.classList.toggle('lg:translate-x-0');
-                sidebar.classList.toggle('lg:-translate-x-full');
+                sidebar.classList.toggle('lg:-translate-x-[120%]');
                 
-                topbar.classList.toggle('lg:ml-64');
+                topbar.classList.toggle('lg:ml-72');
                 topbar.classList.toggle('lg:ml-0');
-                topbar.classList.toggle('lg:w-[calc(100%-16rem)]');
+                topbar.classList.toggle('lg:w-[calc(100%-18rem)]');
                 topbar.classList.toggle('lg:w-full');
                 
-                main.classList.toggle('lg:ml-64');
+                main.classList.toggle('lg:ml-72');
                 main.classList.toggle('lg:ml-0');
                 
                 const footerMarquee = document.getElementById('footerMarquee');
                 if (footerMarquee) {
-                    footerMarquee.classList.toggle('lg:ml-64');
+                    footerMarquee.classList.toggle('lg:ml-72');
                     footerMarquee.classList.toggle('lg:ml-0');
                 }
             }

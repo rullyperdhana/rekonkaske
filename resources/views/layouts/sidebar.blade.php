@@ -1,4 +1,4 @@
-<nav id="appSidebar" class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container w-72 shadow-2xl dark:shadow-none z-30 transform -translate-x-[120%] lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
+<nav id="appSidebar" class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container w-72 shadow-2xl dark:shadow-none z-50 transform -translate-x-[120%] lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
     @php
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first();
         $logoApp = ($pengaturanGlobal && $pengaturanGlobal->logo) 

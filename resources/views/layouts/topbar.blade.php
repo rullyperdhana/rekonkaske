@@ -1,4 +1,4 @@
-<header id="appTopbar" class="bg-surface-container-lowest dark:bg-surface-dim docked full-width top-0 border-b-2 border-primary dark:border-primary-container flat no shadows flex justify-between items-center h-16 px-4 lg:px-8 lg:ml-64 w-full lg:w-[calc(100%-16rem)] fixed z-10 transition-all duration-300">
+<header id="appTopbar" class="bg-surface-container-lowest dark:bg-surface-dim docked full-width top-0 border-b-2 border-primary dark:border-primary-container flat no shadows flex justify-between items-center h-16 px-4 lg:px-8 lg:ml-72 w-full lg:w-[calc(100%-18rem)] fixed z-30 transition-all duration-300">
     <div class="flex items-center gap-4 lg:gap-8">
         <button onclick="toggleSidebar()" class="text-on-surface-variant hover:text-primary p-1 rounded-full hover:bg-surface-container-high transition-colors">
             <span class="material-symbols-outlined">menu</span>
