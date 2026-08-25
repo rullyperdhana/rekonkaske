@@ -217,5 +217,8 @@
                 <span class="text-label-sm font-label-sm">Logout</span>
             </button>
         </form>
+        <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.0.5</p>
+        </div>
     </div>
 </nav>
