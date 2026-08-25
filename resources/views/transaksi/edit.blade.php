@@ -84,7 +84,7 @@
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-data-tabular">Rp</span>
                                     <input type="hidden" name="bku_saldo_awal" id="bku_saldo_awal" value="{{ old('bku_saldo_awal', $transaksi->bku_saldo_awal) }}">
-                                    <input id="bku_saldo_awal_display" class="calc-bku w-full h-10 pl-10 pr-4 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest font-data-tabular" type="text" data-target="bku_saldo_awal" value="{{ old('bku_saldo_awal', $transaksi->bku_saldo_awal) }}"/>
+                                    <input id="bku_saldo_awal_display" class="calc-bku w-full h-10 pl-10 pr-4 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary font-data-tabular {{ !($pengaturanGlobal->allow_edit_saldo_awal ?? false) ? 'bg-surface-container-low cursor-not-allowed text-on-surface-variant' : 'bg-surface-container-lowest' }}" {{ !($pengaturanGlobal->allow_edit_saldo_awal ?? false) ? 'readonly' : '' }} type="text" data-target="bku_saldo_awal" value="{{ old('bku_saldo_awal', $transaksi->bku_saldo_awal) }}"/>
                                 </div>
                             </div>
                             <div class="pt-2">
@@ -133,7 +133,7 @@
                                 <div class="relative">
                                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-data-tabular">Rp</span>
                                     <input type="hidden" name="bank_saldo_awal" id="bank_saldo_awal" value="{{ old('bank_saldo_awal', $transaksi->bank_saldo_awal) }}">
-                                    <input id="bank_saldo_awal_display" class="calc-bank w-full h-10 pl-10 pr-4 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary bg-surface-container-lowest font-data-tabular" type="text" data-target="bank_saldo_awal" value="{{ old('bank_saldo_awal', $transaksi->bank_saldo_awal) }}"/>
+                                    <input id="bank_saldo_awal_display" class="calc-bank w-full h-10 pl-10 pr-4 border-outline-variant rounded focus:border-primary focus:ring-1 focus:ring-primary font-data-tabular {{ !($pengaturanGlobal->allow_edit_saldo_awal ?? false) ? 'bg-surface-container-low cursor-not-allowed text-on-surface-variant' : 'bg-surface-container-lowest' }}" {{ !($pengaturanGlobal->allow_edit_saldo_awal ?? false) ? 'readonly' : '' }} type="text" data-target="bank_saldo_awal" value="{{ old('bank_saldo_awal', $transaksi->bank_saldo_awal) }}"/>
                                 </div>
                             </div>
                             <div class="pt-2">
@@ -226,7 +226,7 @@
             // --- Rupiah Formatter ---
             function formatRupiah(angka) {
                 if (angka === null || angka === undefined || angka === '') return '0';
-                let num = parseFloat(String(angka).replace(/\./g, '').replace(/,/g, '.'));
+                let num = parseFloat(angka);
                 if (isNaN(num)) return '0';
                 return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(num);
             }

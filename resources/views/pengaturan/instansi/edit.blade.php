@@ -66,6 +66,22 @@
                             </p>
                         </div>
                         
+                        <div class="flex flex-col gap-1.5 p-4 bg-emerald-500/10 rounded-lg border border-emerald-500/30 mt-2">
+                            <label class="text-label-sm font-bold text-emerald-700 flex items-center justify-between cursor-pointer" for="allow_edit_saldo_awal">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-emerald-600">lock_open</span>
+                                    Izinkan Edit Saldo Kas Awal
+                                </span>
+                                <div class="relative inline-flex items-center">
+                                  <input type="checkbox" id="allow_edit_saldo_awal" name="allow_edit_saldo_awal" class="sr-only peer" value="1" {{ old('allow_edit_saldo_awal', $pengaturan->allow_edit_saldo_awal ?? false) ? 'checked' : '' }}>
+                                  <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-emerald-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
+                                </div>
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                Secara default (<b>OFF</b>), sistem akan otomatis mengisi dan mengunci Saldo Kas Awal berdasarkan Saldo Akhir bulan sebelumnya demi mencegah kesalahan input. Aktifkan (<b>ON</b>) jika ada penyesuaian khusus atau saat entri bulan Januari.
+                            </p>
+                        </div>
+                        
                         <div class="flex flex-col gap-1.5 mt-2">
                             <label class="text-label-sm font-label-sm text-on-surface" for="logo_file">Logo Aplikasi (Hanya Admin) <span class="text-error">*</span></label>
                             <input class="h-10 p-1.5 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-sm font-body-md w-full transition-all outline-none" 

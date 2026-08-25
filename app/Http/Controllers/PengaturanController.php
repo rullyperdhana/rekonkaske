@@ -67,6 +67,7 @@ class PengaturanController extends Controller
             $validated['is_registration_open'] = $request->has('is_registration_open') ? true : false;
             $validated['allow_operator_reupload'] = $request->has('allow_operator_reupload') ? true : false;
             $validated['is_livelog_active'] = $request->has('is_livelog_active') ? true : false;
+            $validated['allow_edit_saldo_awal'] = $request->has('allow_edit_saldo_awal') ? true : false;
             
             if ($request->has('teks_pengantar_ba')) {
                 $validated['teks_pengantar_ba'] = $request->teks_pengantar_ba;

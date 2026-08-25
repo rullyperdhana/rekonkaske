@@ -95,7 +95,8 @@ class TransaksiController extends Controller
             $rekeningQuery->where('skpd_id', Auth::user()->skpd_id);
         }
         $rekenings = $rekeningQuery->orderBy('nama')->get();
-        return view('transaksi.create', compact('skpds', 'rekenings'));
+        $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+        return view('transaksi.create', compact('skpds', 'rekenings', 'pengaturanGlobal'));
     }
 
     public function store(StoreTransaksiRequest $request)
@@ -144,7 +145,8 @@ class TransaksiController extends Controller
             $rekeningQuery->where('skpd_id', Auth::user()->skpd_id);
         }
         $rekenings = $rekeningQuery->orderBy('nama')->get();
-        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings'));
+        $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings', 'pengaturanGlobal'));
     }
 
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
