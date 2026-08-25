@@ -40,14 +40,15 @@
 
         <!-- Master Data -->
         <li class="group/menu">
-            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+            @php $isMasterData = request()->routeIs('skpd.*', 'rekening.*', 'tahun.*'); @endphp
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ $isMasterData ? 'bg-primary-container/30 text-on-primary' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">database</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="{{ $isMasterData ? 'fill' : '300' }}">database</span>
                     <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Master Data</span>
                 </div>
-                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300 {{ $isMasterData ? 'rotate-180' : '' }}">expand_more</span>
             </button>
-            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
+            <ul class="{{ $isMasterData ? '' : 'hidden' }} mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 @if(auth()->user()->role === 'admin')
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('skpd.index') }}">
@@ -86,14 +87,15 @@
 
         <!-- Laporan -->
         <li class="group/menu">
-            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+            @php $isLaporan = request()->routeIs('ba.*', 'laporan.*', 'dokumen.*'); @endphp
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ $isLaporan ? 'bg-primary-container/30 text-on-primary' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">assessment</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="{{ $isLaporan ? 'fill' : '300' }}">assessment</span>
                     <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Laporan</span>
                 </div>
-                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300 {{ $isLaporan ? 'rotate-180' : '' }}">expand_more</span>
             </button>
-            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
+            <ul class="{{ $isLaporan ? '' : 'hidden' }} mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('ba.index') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
@@ -143,14 +145,15 @@
 
         <!-- Pengaturan -->
         <li class="group/menu">
-            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+            @php $isPengaturan = request()->routeIs('user.*', 'pengaturan.*', 'password.*', 'log.*', 'pengumuman.*'); @endphp
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ $isPengaturan ? 'bg-primary-container/30 text-on-primary' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">settings</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="{{ $isPengaturan ? 'fill' : '300' }}">settings</span>
                     <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Pengaturan</span>
                 </div>
-                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300 {{ $isPengaturan ? 'rotate-180' : '' }}">expand_more</span>
             </button>
-            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
+            <ul class="{{ $isPengaturan ? '' : 'hidden' }} mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 @if(auth()->user()->role === 'admin')
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('user.index') }}">
