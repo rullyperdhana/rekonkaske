@@ -1,21 +1,5 @@
 <x-app-layout>
-    @if(isset($pengumumans) && $pengumumans->count() > 0)
-        <div class="mb-8 space-y-4">
-            @foreach($pengumumans as $pengumuman)
-                <div class="p-5 bg-primary-container/20 text-on-surface rounded-xl border-l-4 border-primary shadow-sm flex items-start gap-4 relative overflow-hidden group transition-all hover:bg-primary-container/30">
-                    <div class="p-2 bg-primary/10 text-primary rounded-lg shrink-0">
-                        <span class="material-symbols-outlined text-[28px]">campaign</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-title-md mb-1">{{ $pengumuman->judul }}</h3>
-                        <p class="text-body-md text-on-surface-variant whitespace-pre-line leading-relaxed">{{ $pengumuman->isi }}</p>
-                        <span class="text-label-sm font-label-sm text-on-surface-variant/70 mt-3 inline-block">Diumumkan pada {{ $pengumuman->created_at->format('d M Y') }}</span>
-                    </div>
-                    <div class="absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-primary/5 to-transparent pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                </div>
-            @endforeach
-        </div>
-    @endif
+
     <div class="mb-8">
         <h2 class="text-headline-lg font-headline-lg text-on-surface mb-2">Tinjauan Rekonsiliasi</h2>
         @if($summary['has_data'])
@@ -35,144 +19,143 @@
     </div>
     @endif
     
+    <!-- Modern Pill Tabs Navigation -->
+    <div class="mb-8 overflow-x-auto pb-2 custom-scrollbar">
+        <div class="inline-flex bg-slate-100/80 p-1.5 rounded-xl border border-slate-200 min-w-max">
+            <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn active-tab relative whitespace-nowrap py-2.5 px-5 rounded-lg font-bold text-sm transition-all duration-300 bg-white text-blue-600 shadow-sm border border-slate-200">
+                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">dashboard</span> Ringkasan Utama</div>
+            </button>
+            <button onclick="switchTab('tab-status')" id="btn-tab-status" class="tab-btn relative whitespace-nowrap py-2.5 px-5 rounded-lg font-medium text-sm transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 border border-transparent">
+                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">list_alt</span> Status SKPD</div>
+            </button>
+            @if(isset($topSkpds) || isset($advChartData))
+            <button onclick="switchTab('tab-analytics')" id="btn-tab-analytics" class="tab-btn relative whitespace-nowrap py-2.5 px-5 rounded-lg font-medium text-sm transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 border border-transparent">
+                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">monitoring</span> Analitik Eksekutif</div>
+            </button>
+            <button onclick="switchTab('tab-activity')" id="btn-tab-activity" class="tab-btn relative whitespace-nowrap py-2.5 px-5 rounded-lg font-medium text-sm transition-all duration-300 text-slate-500 hover:text-slate-800 hover:bg-slate-200/60 border border-transparent">
+                <div class="flex items-center gap-2"><span class="material-symbols-outlined text-[18px]">history</span> Aktivitas & Peringkat</div>
+            </button>
+            @endif
+        </div>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div id="tab-overview" class="tab-content block animate-[fadeIn_0.3s_ease-in-out]">
+
     <!-- Metric Cards -->
     <div class="grid grid-cols-1 md:grid-cols-{{ isset($kepatuhanData) ? '4' : '3' }} gap-6 mb-8">
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
-            <div class="flex justify-between items-start">
+        
+        <!-- CARD 1: Total BKU -->
+        <div class="relative overflow-hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-500"></div>
+            
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total BKU (SIPANDA)</h3>
-                    <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 group-hover:text-blue-500 transition-colors">Total BKU (SIPANDA)</h3>
+                    <p class="text-2xl font-black text-slate-800 tracking-tight">
                         Rp {{ $summary['has_data'] ? number_format($summary['bku'], 2, ',', '.') : '0,00' }}
                     </p>
                 </div>
-                <div class="p-2 bg-primary-fixed rounded-lg text-primary">
-                    <span class="material-symbols-outlined">account_balance_wallet</span>
+                <div class="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl text-white shadow-lg shadow-blue-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
                 </div>
             </div>
-            <div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
-                Saldo Buku Kas Umum Bendahara
+            <div class="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                Saldo BKU Bendahara
             </div>
         </div>
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
-            <div class="flex justify-between items-start">
+
+        <!-- CARD 2: Total Bank -->
+        <div class="relative overflow-hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl group-hover:bg-emerald-500/20 transition-all duration-500"></div>
+            
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Total Bank Kalsel</h3>
-                    <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 group-hover:text-emerald-500 transition-colors">Total Bank Kalsel</h3>
+                    <p class="text-2xl font-black text-slate-800 tracking-tight">
                         Rp {{ $summary['has_data'] ? number_format($summary['bank'], 2, ',', '.') : '0,00' }}
                     </p>
                 </div>
-                <div class="p-2 bg-secondary-fixed rounded-lg text-secondary">
-                    <span class="material-symbols-outlined">account_balance</span>
+                <div class="p-3 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl text-white shadow-lg shadow-emerald-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">account_balance</span>
                 </div>
             </div>
-            <div class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+            <div class="mt-4 flex items-center gap-2 text-sm text-slate-500 font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                 Saldo Rekening Koran
             </div>
         </div>
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
-            <div class="flex justify-between items-start">
+
+        <!-- CARD 3: Status Rekonsiliasi -->
+        @php
+            $statusColor = $summary['is_matched'] ? 'emerald' : 'rose';
+            $statusGradient = $summary['is_matched'] ? 'from-emerald-500 to-green-500' : 'from-rose-500 to-red-500';
+            $statusBg = $summary['is_matched'] ? 'bg-emerald-50' : 'bg-rose-50';
+            $statusText = $summary['is_matched'] ? 'text-emerald-700' : 'text-rose-700';
+            $statusIcon = $summary['is_matched'] ? 'check_circle' : 'warning';
+        @endphp
+        <div class="relative overflow-hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group">
+            <div class="absolute -right-6 -top-6 w-24 h-24 bg-{{$statusColor}}-500/10 rounded-full blur-2xl group-hover:bg-{{$statusColor}}-500/20 transition-all duration-500"></div>
+            
+            <div class="flex justify-between items-start relative z-10">
                 <div>
-                    <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Status Rekonsiliasi</h3>
-                    <div class="flex items-center gap-2">
-                        <p class="text-headline-md font-headline-md text-on-surface">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 group-hover:text-{{$statusColor}}-500 transition-colors">Status Rekonsiliasi</h3>
+                    <div class="flex items-center gap-3 mt-1">
+                        <p class="text-2xl font-black text-slate-800 tracking-tight">
                             {{ $summary['has_data'] ? ($summary['is_matched'] ? '100%' : 'Selisih') : '-' }}
                         </p>
                         @if($summary['has_data'])
-                            @if($summary['is_matched'])
-                                <span class="bg-secondary-container/30 text-on-secondary-container px-2 py-1 rounded text-label-sm font-label-sm flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">check_circle</span> Matched
-                                </span>
-                            @else
-                                <span class="bg-error-container/30 text-on-error-container px-2 py-1 rounded text-label-sm font-label-sm flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">warning</span> Discrepancy
-                                </span>
-                            @endif
+                            <span class="{{$statusBg}} {{$statusText}} px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-sm">
+                                <span class="material-symbols-outlined text-[14px]">{{$statusIcon}}</span> 
+                                {{ $summary['is_matched'] ? 'Matched' : 'Discrepancy' }}
+                            </span>
                         @endif
                     </div>
                 </div>
-                <div class="p-2 bg-tertiary-fixed-dim rounded-lg text-tertiary">
-                    <span class="material-symbols-outlined">fact_check</span>
+                <div class="p-3 bg-gradient-to-br {{$statusGradient}} rounded-xl text-white shadow-lg shadow-{{$statusColor}}-500/30 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shrink-0">
+                    <span class="material-symbols-outlined text-[24px]">fact_check</span>
                 </div>
             </div>
-            <div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
-                <div class="{{ $summary['is_matched'] ? 'bg-secondary' : 'bg-error' }} h-full w-full rounded-full"></div>
+            
+            @if($summary['has_data'])
+            <div class="mt-5 w-full bg-slate-100 h-2 rounded-full overflow-hidden shadow-inner">
+                <div class="bg-gradient-to-r {{$statusGradient}} h-full w-full rounded-full relative overflow-hidden">
+                    @if(!$summary['is_matched'])
+                    <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                    @endif
+                </div>
             </div>
+            @else
+            <div class="mt-4 flex items-center gap-2 text-sm text-slate-400 font-medium">
+                Belum ada data
+            </div>
+            @endif
         </div>
         
+        <!-- CARD 4: Kepatuhan -->
         @if(isset($kepatuhanData))
-        <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm flex flex-col gap-4">
-            <h3 class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider mb-1">Kepatuhan (Bulan {{ $kepatuhanData['target_bulan'] }})</h3>
-            <div class="flex-grow flex flex-col items-center justify-center relative w-full h-32">
+        <div class="relative overflow-hidden bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300 group flex flex-col">
+            <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-violet-500/10 rounded-full blur-2xl group-hover:bg-violet-500/20 transition-all duration-500"></div>
+            
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 group-hover:text-violet-500 transition-colors relative z-10 flex items-center justify-between">
+                Kepatuhan (Bulan {{ $kepatuhanData['target_bulan'] }})
+                <span class="material-symbols-outlined text-[16px] text-violet-400 group-hover:animate-spin">data_usage</span>
+            </h3>
+            <div class="flex-grow flex flex-col items-center justify-center relative w-full h-28 z-10 my-2">
                 <canvas id="kepatuhanChart"></canvas>
             </div>
-            <div class="text-center mt-2">
-                <p class="text-headline-md font-headline-md text-on-surface font-data-tabular">
+            <div class="text-center relative z-10">
+                <p class="text-xl font-black text-slate-800 tracking-tight">
                     {{ $kepatuhanData['persentase'] }}%
                 </p>
-                <p class="text-label-sm text-on-surface-variant">({{ $kepatuhanData['patuh'] }}/{{ $kepatuhanData['total_skpd'] }} Lapor)</p>
+                <p class="text-[11px] font-medium text-slate-500 mt-0.5">({{ $kepatuhanData['patuh'] }} dari {{ $kepatuhanData['total_skpd'] }} Lapor)</p>
             </div>
         </div>
         @endif
     </div>
 
     <!-- Removed Chart Analytics from here, moved to Main Content Area -->
-
-    <!-- Status Rekonsiliasi Per SKPD -->
-    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
-        <div class="flex justify-between items-center mb-6">
-            <h3 class="text-headline-sm font-headline-sm text-on-surface">Status Rekonsiliasi Per SKPD — {{ $tahunAktif }}</h3>
-            <span class="text-label-sm font-label-sm text-on-surface-variant">Total: {{ count($skpdRekonStatus) }} SKPD</span>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-surface-container-low border-b border-outline-variant">
-                        <th class="px-4 py-3 text-label-sm font-label-sm font-semibold text-on-surface">SKPD</th>
-                        @for($i = 1; $i <= 12; $i++)
-                            <th class="px-2 py-3 text-label-sm font-label-sm font-semibold text-on-surface text-center" title="Bulan {{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</th>
-                        @endfor
-                        <th class="px-4 py-3 text-label-sm font-label-sm font-semibold text-on-surface text-center">Status</th>
-                    </tr>
-                </thead>
-                <tbody class="text-body-md font-body-md divide-y divide-outline-variant/50">
-                    @foreach($skpdRekonStatus as $skpdStatus)
-                    <tr class="hover:bg-surface-container-lowest/50 transition-colors">
-                        <td class="px-4 py-3">
-                            <span class="font-medium text-on-surface">{{ $skpdStatus['nama'] }}</span>
-                        </td>
-                        @for($i = 1; $i <= 12; $i++)
-                            <td class="px-2 py-3 text-center">
-                                @if(in_array($i, $skpdStatus['bulan_list']))
-                                    <span class="material-symbols-outlined text-secondary text-[18px]" title="Bulan {{ $i }} Selesai">check_circle</span>
-                                @else
-                                    <span class="material-symbols-outlined text-error/30 text-[18px]" title="Bulan {{ $i }} Belum">cancel</span>
-                                @endif
-                            </td>
-                        @endfor
-                        <td class="px-4 py-3 text-center">
-                            @if($skpdStatus['bulan_selesai'] >= 12)
-                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-green-100 text-green-700 text-label-sm font-label-sm font-medium whitespace-nowrap">
-                                    <span class="material-symbols-outlined text-[14px]">check_circle</span> Lengkap
-                                </span>
-                            @elseif($skpdStatus['bulan_selesai'] > 0)
-                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-orange-100 text-orange-700 text-label-sm font-label-sm font-medium whitespace-nowrap">
-                                    <span class="material-symbols-outlined text-[14px]">pending</span> Sebagian
-                                </span>
-                            @else
-                                <span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-red-100 text-red-700 text-label-sm font-label-sm font-medium whitespace-nowrap">
-                                    <span class="material-symbols-outlined text-[14px]">cancel</span> Belum
-                                </span>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-        <div class="mt-4">
-            {{ $skpdsPaginated->links() }}
-        </div>
-    </div>
 
     <!-- Chart Analytics -->
     <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
@@ -183,7 +166,117 @@
         </div>
     </div>
     
+    @if(isset($advChartData))
+    <!-- Tren Penyerapan Kas (Penerimaan vs Pengeluaran) -->
+    <div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-6 shadow-sm mb-8">
+        <h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Tren Penyerapan Kas Daerah (Penerimaan vs Belanja) - {{ $tahunAktif }}</h3>
+        <p class="text-body-md font-body-md text-on-surface-variant mb-6">Perbandingan antara Kas Masuk dan Keluar dari semua SKPD.</p>
+        <div class="w-full relative h-72">
+            <canvas id="advPenyerapanKas"></canvas>
+        </div>
+    </div>
+    @endif
+    
     <!-- Discrepancy Summary Dipindahkan ke Menu Laporan -->
+
+    </div> <!-- END TAB OVERVIEW -->
+
+    <!-- TAB: STATUS -->
+    <div id="tab-status" class="tab-content hidden animate-[fadeIn_0.3s_ease-in-out]">
+    
+    <!-- Status Rekonsiliasi Per SKPD -->
+    <!-- Status Rekonsiliasi Per SKPD -->
+    @php
+        $bulanSingkat = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'];
+    @endphp
+    <div class="bg-white rounded-2xl p-6 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] mb-8 relative overflow-hidden">
+        <!-- Decorative blob -->
+        <div class="absolute -left-10 -top-10 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="flex justify-between items-end mb-6 relative z-10">
+            <div>
+                <h3 class="text-lg font-black text-slate-800 tracking-tight flex items-center gap-2">
+                    <span class="material-symbols-outlined text-blue-500">domain</span>
+                    Status Rekonsiliasi Per SKPD — {{ $tahunAktif }}
+                </h3>
+                <p class="text-sm text-slate-500 font-medium mt-1">Pantau kelengkapan laporan dari total {{ count($skpdRekonStatus) }} SKPD</p>
+            </div>
+            
+            <div class="hidden sm:flex items-center gap-4 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200">
+                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Lengkap</span>
+                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Sebagian</span>
+                <span class="flex items-center gap-1.5 text-xs font-bold text-slate-600"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span> Kosong</span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr class="bg-slate-50 border-b border-slate-200">
+                        <th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Instansi SKPD</th>
+                        @for($i = 1; $i <= 12; $i++)
+                            <th class="px-2 py-4 text-[11px] font-bold text-slate-500 uppercase text-center w-10" title="Bulan {{ $i }}">{{ $bulanSingkat[$i-1] }}</th>
+                        @endfor
+                        <th class="px-5 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Status Akhir</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm divide-y divide-slate-100 bg-white">
+                    @foreach($skpdRekonStatus as $skpdStatus)
+                    <tr class="hover:bg-blue-50/60 transition-colors group">
+                        <td class="px-5 py-3">
+                            <div class="flex items-center gap-3">
+                                @php
+                                    $namaBersih = preg_replace('/[^A-Za-z]/', '', $skpdStatus['nama']);
+                                    $inisial = $namaBersih ? strtoupper(substr($namaBersih, 0, 1)) : '?';
+                                @endphp
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 text-blue-700 flex items-center justify-center font-bold text-xs shrink-0 shadow-inner group-hover:scale-110 transition-transform">
+                                    {{ $inisial }}
+                                </div>
+                                <span class="font-bold text-slate-700 group-hover:text-blue-700 transition-colors">{{ $skpdStatus['nama'] }}</span>
+                            </div>
+                        </td>
+                        @for($i = 1; $i <= 12; $i++)
+                            <td class="px-2 py-3 text-center">
+                                @if(in_array($i, $skpdStatus['bulan_list']))
+                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-600 shadow-sm" title="Bulan {{ $i }} Selesai">
+                                        <span class="material-symbols-outlined text-[14px] font-bold">check</span>
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-50 text-slate-300" title="Bulan {{ $i }} Belum">
+                                        <span class="material-symbols-outlined text-[14px]">remove</span>
+                                    </span>
+                                @endif
+                            </td>
+                        @endfor
+                        <td class="px-5 py-3 text-right">
+                            @if($skpdStatus['bulan_selesai'] >= 12)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200/60 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_5px_#10b981]"></span> Lengkap
+                                </span>
+                            @elseif($skpdStatus['bulan_selesai'] > 0)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-700 text-xs font-bold border border-amber-200/60 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_5px_#f59e0b]"></span> Sebagian
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 text-rose-700 text-xs font-bold border border-rose-200/60 shadow-sm">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_5px_#f43f5e]"></span> Belum Lapor
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-5 flex justify-end">
+            {{ $skpdsPaginated->links() }}
+        </div>
+    </div>
+
+    </div> <!-- END TAB STATUS -->
+
+    <!-- TAB: ANALYTICS -->
+    <div id="tab-analytics" class="tab-content hidden animate-[fadeIn_0.3s_ease-in-out]">
 
     <!-- Executive Analytics & Leaderboard Section -->
     @if(isset($topSkpds) && count($topSkpds) > 0)
@@ -241,6 +334,11 @@
         </div>
     </div>
     @endif
+
+    </div> <!-- END TAB ANALYTICS -->
+
+    <!-- TAB: ACTIVITY -->
+    <div id="tab-activity" class="tab-content hidden animate-[fadeIn_0.3s_ease-in-out]">
 
     <div class="grid grid-cols-1 {{ isset($topSkpds) && count($topSkpds) > 0 ? 'lg:grid-cols-3' : 'lg:grid-cols-1' }} gap-6 mt-6">
         <!-- Top 5 Leaderboard -->
@@ -368,6 +466,48 @@
         </div>
     </div>
     
+    </div> <!-- END TAB ACTIVITY -->
+
+    <!-- Tabs Javascript -->
+    <script>
+        function switchTab(tabId) {
+            // Simpan state tab aktif ke sessionStorage
+            sessionStorage.setItem('activeDashboardTab', tabId);
+
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            const targetTab = document.getElementById(tabId);
+            if(targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('block');
+                
+                // Trigger resize event so Chart.js can re-render properly inside previously hidden containers
+                setTimeout(() => {
+                    window.dispatchEvent(new Event('resize'));
+                }, 10);
+            }
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active-tab', 'bg-white', 'text-blue-600', 'shadow-sm', 'border-slate-200', 'font-bold');
+                btn.classList.add('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/60', 'border-transparent', 'font-medium');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if(activeBtn) {
+                activeBtn.classList.remove('text-slate-500', 'hover:text-slate-800', 'hover:bg-slate-200/60', 'border-transparent', 'font-medium');
+                activeBtn.classList.add('active-tab', 'bg-white', 'text-blue-600', 'shadow-sm', 'border-slate-200', 'font-bold');
+            }
+        }
+
+        // Restore tab aktif saat halaman di-reload (misal: saat klik pagination)
+        document.addEventListener('DOMContentLoaded', () => {
+            const activeTab = sessionStorage.getItem('activeDashboardTab');
+            if (activeTab && document.getElementById(activeTab)) {
+                switchTab(activeTab);
+            }
+        });
+    </script>
+
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -445,7 +585,7 @@
                         labels: ['Sudah Lapor', 'Belum Lapor'],
                         datasets: [{
                             data: [patuh, belum],
-                            backgroundColor: ['#006B5E', '#E0E3E1'],
+                            backgroundColor: ['#8B5CF6', '#EDE9FE'], // Violet-500 and Violet-100
                             borderWidth: 0,
                             hoverOffset: 4
                         }]
@@ -561,6 +701,99 @@
                         scales: {
                             y: { beginAtZero: true, ticks: { stepSize: 1 } }
                         }
+                    }
+                });
+            }
+            // 4. Bar Chart (Tren Penyerapan Kas)
+            const ctxAdvPenyerapan = document.getElementById('advPenyerapanKas');
+            if(ctxAdvPenyerapan) {
+                new Chart(ctxAdvPenyerapan.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Ags', 'Sep', 'Okt', 'Nov', 'Des'],
+                        datasets: [
+                            {
+                                label: 'Total Penerimaan',
+                                data: advData.penyerapan.penerimaan,
+                                backgroundColor: '#10B981', // Emerald 500
+                                borderRadius: 4,
+                            },
+                            {
+                                label: 'Total Pengeluaran (Belanja)',
+                                data: advData.penyerapan.pengeluaran,
+                                backgroundColor: '#F43F5E', // Rose 500
+                                borderRadius: 4,
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                                labels: { font: { family: "'Inter', sans-serif", size: 12 } }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed.y !== null) {
+                                            label += new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(context.parsed.y);
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        if(value >= 1000000000000) return 'Rp ' + (value/1000000000000).toFixed(1) + 'T';
+                                        if(value >= 1000000000) return 'Rp ' + (value/1000000000).toFixed(1) + 'M';
+                                        if(value >= 1000000) return 'Rp ' + (value/1000000).toFixed(0) + 'Jt';
+                                        return value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            @endif
+            
+            // Pop Out Pengumuman (SweetAlert)
+            @if(isset($pengumumans) && $pengumumans->count() > 0)
+            if (!sessionStorage.getItem('pengumuman_dibaca')) {
+                let htmlContent = `
+                    <div class="text-left space-y-4 max-h-72 overflow-y-auto mt-4 px-2 custom-scrollbar">
+                        @foreach($pengumumans as $pengumuman)
+                            <div class="p-4 bg-blue-50 border border-blue-100 rounded-lg">
+                                <h4 class="font-bold text-primary mb-1 text-base">{{ $pengumuman->judul }}</h4>
+                                <p class="text-sm text-gray-700 whitespace-pre-line leading-relaxed">{{ $pengumuman->isi }}</p>
+                                <div class="text-xs text-gray-500 mt-3 flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-[14px]">calendar_today</span> 
+                                    {{ $pengumuman->created_at->format('d M Y') }}
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                `;
+
+                Swal.fire({
+                    title: '📢 Pengumuman Baru',
+                    html: htmlContent,
+                    confirmButtonText: 'Saya Telah Membaca',
+                    confirmButtonColor: '#00346f', // primary color
+                    width: '600px',
+                    allowOutsideClick: false,
+                    allowEscapeKey: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        sessionStorage.setItem('pengumuman_dibaca', 'true');
                     }
                 });
             }

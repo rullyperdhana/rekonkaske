@@ -122,6 +122,10 @@ class DashboardController extends Controller
                     'terlambat' => array_fill(0, 12, 0),
                 ],
                 'selisih' => array_fill(0, 12, 0),
+                'penyerapan' => [
+                    'penerimaan' => array_fill(0, 12, 0),
+                    'pengeluaran' => array_fill(0, 12, 0),
+                ],
                 'target_month_status' => 1
             ];
             $totalSkpdCount = Skpd::where('status', true)->count();
@@ -169,6 +173,10 @@ class DashboardController extends Controller
                 if (abs($trxAdv->bku_saldo_akhir - $trxAdv->bank_saldo_akhir) > 0.01) {
                     $advChartData['selisih'][$mIndex]++;
                 }
+                
+                // Penyerapan Kas (Penerimaan vs Pengeluaran)
+                $advChartData['penyerapan']['penerimaan'][$mIndex] += $trxAdv->bku_penerimaan;
+                $advChartData['penyerapan']['pengeluaran'][$mIndex] += $trxAdv->bku_pengeluaran;
             }
         }
 
