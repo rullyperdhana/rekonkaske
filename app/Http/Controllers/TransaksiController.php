@@ -21,16 +21,20 @@ class TransaksiController extends Controller
         $periodeBulan = (int)$request->periode_bulan;
         $periodeTahun = (int)$request->periode_tahun;
 
-        if (!$skpdId || !$rekeningId || !$periodeBulan || !$periodeTahun) {
-            return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0]);
+        if (!$skpdId || !$rekeningId || !$periodeTahun) {
+            return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0, 'existing_months' => []]);
         }
+        
+        $existingMonths = Transaksi::where('skpd_id', $skpdId)
+            ->where('rekening_id', $rekeningId)
+            ->where('periode_tahun', $periodeTahun)
+            ->pluck('periode_bulan')
+            ->toArray();
 
         // Cari transaksi di bulan sebelumnya pada tahun yang sama
-        // Jika bulan adalah 1, mungkin perlu cari bulan 12 tahun sebelumnya (opsional, tergantung rule bisnis)
-        // Saat ini asumsikan hanya mencari di dalam tahun berjalan.
         $prevMonth = $periodeBulan - 1;
         if ($prevMonth < 1) {
-            return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0]);
+            return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0, 'existing_months' => $existingMonths]);
         }
 
         $prevTransaksi = Transaksi::where('skpd_id', $skpdId)
@@ -39,14 +43,11 @@ class TransaksiController extends Controller
             ->where('periode_bulan', $prevMonth)
             ->first();
 
-        if ($prevTransaksi) {
-            return response()->json([
-                'bku_saldo_akhir' => $prevTransaksi->bku_saldo_akhir,
-                'bank_saldo_akhir' => $prevTransaksi->bank_saldo_akhir,
-            ]);
-        }
-
-        return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0]);
+        return response()->json([
+            'bku_saldo_akhir' => $prevTransaksi ? $prevTransaksi->bku_saldo_akhir : 0,
+            'bank_saldo_akhir' => $prevTransaksi ? $prevTransaksi->bank_saldo_akhir : 0,
+            'existing_months' => $existingMonths
+        ]);
     }
 
     public function index(Request $request)

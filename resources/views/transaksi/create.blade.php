@@ -340,13 +340,36 @@
             function fetchSaldoAwal() {
                 const skpdId = skpdSelect ? skpdSelect.value : '';
                 const rekeningId = rekeningSelect ? rekeningSelect.value : '';
-                const periodeBulan = document.querySelector('select[name="periode_bulan"]').value;
-                const periodeTahun = "{{ session('tahun_login') ?? date('Y') }}";
+                const bulanSelect = document.querySelector('select[name="periode_bulan"]');
+                const periodeBulan = bulanSelect.value;
+                const periodeTahun = document.querySelector('input[name="periode_tahun"]').value;
 
-                if (skpdId && rekeningId && periodeBulan) {
-                    fetch(`{{ route('transaksi.getSaldoAwal') }}?skpd_id=${skpdId}&rekening_id=${rekeningId}&periode_bulan=${periodeBulan}&periode_tahun=${periodeTahun}`)
+                if (skpdId && rekeningId) {
+                    fetch(`{{ route('transaksi.getSaldoAwal') }}?skpd_id=${skpdId}&rekening_id=${rekeningId}&periode_bulan=${periodeBulan || 1}&periode_tahun=${periodeTahun}`)
                         .then(response => response.json())
                         .then(data => {
+                            // Filter disabled months
+                            if (data.existing_months) {
+                                Array.from(bulanSelect.options).forEach(opt => {
+                                    if (data.existing_months.includes(parseInt(opt.value))) {
+                                        opt.disabled = true;
+                                        opt.text = opt.text.replace(' (Sudah Diinput)', '') + ' (Sudah Diinput)';
+                                    } else {
+                                        opt.disabled = false;
+                                        opt.text = opt.text.replace(' (Sudah Diinput)', '');
+                                    }
+                                });
+                                // Jika bulan yang saat ini dipilih ternyata disabled, otomatis ganti ke bulan pertama yang tidak disabled
+                                if (bulanSelect.selectedOptions[0]?.disabled) {
+                                    const firstEnabled = Array.from(bulanSelect.options).find(opt => !opt.disabled);
+                                    if (firstEnabled) {
+                                        bulanSelect.value = firstEnabled.value;
+                                    } else {
+                                        bulanSelect.value = '';
+                                    }
+                                }
+                            }
+
                             if(data.bku_saldo_akhir > 0 || data.bank_saldo_akhir > 0) {
                                 bkuAwal.value = data.bku_saldo_akhir;
                                 bankAwal.value = data.bank_saldo_akhir;
@@ -376,10 +399,12 @@
             }
             if (rekeningSelect) rekeningSelect.addEventListener('change', fetchSaldoAwal);
             document.querySelector('select[name="periode_bulan"]').addEventListener('change', fetchSaldoAwal);
+            document.querySelector('input[name="periode_tahun"]').addEventListener('change', fetchSaldoAwal);
 
             // Run on load
             filterRekenings();
             calculateBank();
+            fetchSaldoAwal();
         });
     </script>
 </x-app-layout>
