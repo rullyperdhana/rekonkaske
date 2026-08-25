@@ -790,7 +790,30 @@
                     confirmButtonColor: '#00346f', // primary color
                     width: '600px',
                     allowOutsideClick: false,
-                    allowEscapeKey: false
+                    allowEscapeKey: false,
+                    didOpen: () => {
+                        const confirmBtn = Swal.getConfirmButton();
+                        confirmBtn.disabled = true;
+                        confirmBtn.style.opacity = '0.5';
+                        confirmBtn.style.cursor = 'not-allowed';
+                        
+                        let secondsLeft = 5;
+                        const originalText = 'Saya Telah Membaca';
+                        confirmBtn.textContent = `${originalText} (${secondsLeft}s)`;
+                        
+                        const timer = setInterval(() => {
+                            secondsLeft--;
+                            if (secondsLeft <= 0) {
+                                clearInterval(timer);
+                                confirmBtn.disabled = false;
+                                confirmBtn.style.opacity = '1';
+                                confirmBtn.style.cursor = 'pointer';
+                                confirmBtn.textContent = originalText;
+                            } else {
+                                confirmBtn.textContent = `${originalText} (${secondsLeft}s)`;
+                            }
+                        }, 1000);
+                    }
                 }).then((result) => {
                     if (result.isConfirmed) {
                         sessionStorage.setItem('pengumuman_dibaca', 'true');
