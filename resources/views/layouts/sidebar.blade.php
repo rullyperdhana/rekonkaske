@@ -1,4 +1,4 @@
-<nav id="appSidebar" class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container docked full-height w-64 border-r border-outline-variant dark:border-outline shadow-md dark:shadow-none z-30 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+<nav id="appSidebar" class="fixed top-0 left-0 h-screen flex flex-col py-6 bg-primary dark:bg-primary-container w-72 shadow-2xl dark:shadow-none z-30 transform -translate-x-[120%] lg:translate-x-0 transition-transform duration-300 ease-in-out overflow-y-auto">
     @php
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first();
         $logoApp = ($pengaturanGlobal && $pengaturanGlobal->logo) 
@@ -18,165 +18,198 @@
             <p class="text-label-sm font-label-sm text-on-primary/80">Kabupaten Tapin</p>
         </div>
     </div>
+    
     <div class="px-4 mb-6">
         <a href="{{ route('transaksi.create') }}" class="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 py-3 rounded-lg text-label-sm font-label-sm flex items-center justify-center gap-2 shadow-sm transition-transform scale-95 active:scale-90">
             <span class="material-symbols-outlined" data-weight="fill">add_circle</span>
             Rekonsiliasi Baru
         </a>
     </div>
-    <ul class="flex-1 space-y-2">
+
+    <ul class="flex-1 space-y-1.5 px-3">
+        <!-- Dashboard -->
         <li>
-            <a class="bg-secondary-container text-on-secondary-container rounded-lg mx-2 flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform" href="{{ route('dashboard') }}">
-                <span class="material-symbols-outlined" data-weight="fill">dashboard</span>
-                <span class="text-label-sm font-label-sm">Dashboard</span>
+            <a class="group relative rounded-xl flex items-center gap-3 px-4 py-3 transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('dashboard') }}">
+                @if(request()->routeIs('dashboard'))
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
+                @endif
+                <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('dashboard') ? 'fill' : '300' }}">dashboard</span>
+                <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Dashboard</span>
             </a>
         </li>
-        <li class="group">
-            <button class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center justify-between px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+
+        <!-- Master Data -->
+        <li class="group/menu">
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined">database</span>
-                    <span class="text-label-sm font-label-sm">Master Data</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">database</span>
+                    <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Master Data</span>
                 </div>
-                <span class="material-symbols-outlined text-sm arrow transition-transform duration-200">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
             </button>
-            <ul class="hidden space-y-1 mt-1 ml-8 mr-4">
+            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 @if(auth()->user()->role === 'admin')
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('skpd.index') }}">
-                        <span class="text-label-sm font-label-sm">Master SKPD</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('skpd.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Master SKPD</span>
                     </a>
                 </li>
                 @endif
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('rekening.index') }}">
-                        <span class="text-label-sm font-label-sm">Master Rekening</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('rekening.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Master Rekening</span>
                     </a>
                 </li>
                 @if(auth()->user()->role === 'admin')
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('tahun.index') }}">
-                        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">calendar_month</span>
-                        <span class="text-label-sm font-label-sm">Tahun Anggaran</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('tahun.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Tahun Anggaran</span>
                     </a>
                 </li>
                 @endif
             </ul>
         </li>
+
+        <!-- Data Entri -->
         <li>
-            <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" href="{{ route('transaksi.index') }}">
-                <span class="material-symbols-outlined">swap_horiz</span>
-                <span class="text-label-sm font-label-sm">Data Entri</span>
+            <a class="group relative rounded-xl flex items-center gap-3 px-4 py-3 transition-all duration-300 {{ request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('transaksi.index') }}">
+                @if(request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create'))
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
+                @endif
+                <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="300">swap_horiz</span>
+                <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Data Entri</span>
             </a>
         </li>
-        <li class="group">
-            <button class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center justify-between px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+
+        <!-- Laporan -->
+        <li class="group/menu">
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined">assessment</span>
-                    <span class="text-label-sm font-label-sm">Laporan</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">assessment</span>
+                    <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Laporan</span>
                 </div>
-                <span class="material-symbols-outlined text-sm arrow transition-transform duration-200">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
             </button>
-            <ul class="hidden space-y-1 mt-1 ml-8 mr-4">
+            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('ba.index') }}">
-                        <span class="text-label-sm font-label-sm">Berita Acara (Bulanan)</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('ba.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Berita Acara (Bulanan)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.rekap') }}">
-                        <span class="text-label-sm font-label-sm">Rekapitulasi Tahunan</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.rekap') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Rekapitulasi Tahunan</span>
                     </a>
                 </li>
                 @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('dokumen.tree') }}">
-                        <span class="text-label-sm font-label-sm">Arsip Dokumen (Tree)</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('dokumen.tree') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Arsip Dokumen (Tree)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.konsolidasi') }}">
-                        <span class="text-label-sm font-label-sm">Konsolidasi Daerah</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.konsolidasi') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Konsolidasi Daerah</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.rekap-wa') }}">
-                        <span class="text-label-sm font-label-sm text-emerald-400 font-semibold">Broadcast Rekap WA</span>
+                    <a class="relative text-on-primary/70 hover:text-emerald-400 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.rekap-wa') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Broadcast Rekap WA</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.tunggakan') }}">
-                        <span class="text-label-sm font-label-sm">Tunggakan Kepatuhan</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.tunggakan') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Tunggakan Kepatuhan</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('laporan.ringkasan-selisih') }}">
-                        <span class="text-label-sm font-label-sm">Ringkasan Selisih Kas</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.ringkasan-selisih') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Ringkasan Selisih Kas</span>
                     </a>
                 </li>
                 @endif
             </ul>
         </li>
-        <li class="group">
-            <button class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center justify-between px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
+
+        <!-- Pengaturan -->
+        <li class="group/menu">
+            <button class="w-full relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50" onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('.arrow').classList.toggle('rotate-180')">
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined">settings</span>
-                    <span class="text-label-sm font-label-sm">Pengaturan</span>
+                    <span class="material-symbols-outlined group-hover/menu:scale-110 transition-transform duration-300" data-weight="300">settings</span>
+                    <span class="text-label-sm font-label-sm group-hover/menu:translate-x-1 transition-transform duration-300">Pengaturan</span>
                 </div>
-                <span class="material-symbols-outlined text-sm arrow transition-transform duration-200">expand_more</span>
+                <span class="material-symbols-outlined text-[18px] arrow transition-transform duration-300">expand_more</span>
             </button>
-            <ul class="hidden space-y-1 mt-1 ml-8 mr-4">
+            <ul class="hidden mt-1 mb-2 space-y-1 relative before:absolute before:inset-y-0 before:left-[1.35rem] before:w-[1px] before:bg-on-primary/20">
                 @if(auth()->user()->role === 'admin')
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('user.index') }}">
-                        <span class="text-label-sm font-label-sm">Pengaturan Pengguna</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('user.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengaturan Pengguna</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengaturan.maintenance.index') }}">
-                        <span class="text-label-sm font-label-sm text-error/90 hover:text-error">Maintenance Sistem</span>
+                    <a class="relative text-on-primary/70 hover:text-error rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('pengaturan.maintenance.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Maintenance Sistem</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200 {{ request()->routeIs('pengaturan.storage.*') ? 'bg-primary-container/30 text-on-primary font-bold' : '' }}" href="{{ route('pengaturan.storage.index') }}">
-                        <span class="text-label-sm font-label-sm text-emerald-300 font-medium flex items-center gap-1.5">
-                            <span>Manajemen Storage & NAS</span>
-                        </span>
+                    <a class="relative text-on-primary/70 hover:text-emerald-300 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('pengaturan.storage.*') ? 'text-emerald-300' : '' }}" href="{{ route('pengaturan.storage.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Manajemen Storage & NAS</span>
                     </a>
                 </li>
                 @endif
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengaturan.instansi.edit') }}">
-                        <span class="text-label-sm font-label-sm">Pengaturan Instansi (Kop)</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('pengaturan.instansi.edit') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengaturan Instansi (Kop)</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('password.edit') }}">
-                        <span class="text-label-sm font-label-sm">Ubah Password</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('password.edit') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Ubah Password</span>
                     </a>
                 </li>
                 @if(auth()->user()->role === 'admin')
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('log.index') }}">
-                        <span class="text-label-sm font-label-sm">Jejak Audit</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('log.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Jejak Audit</span>
                     </a>
                 </li>
                 <li>
-                    <a class="text-on-primary/70 hover:text-on-primary hover:bg-primary-container/30 rounded-lg flex items-center gap-3 px-4 py-2 transition-colors duration-200" href="{{ route('pengumuman.index') }}">
-                        <span class="text-label-sm font-label-sm">Pengumuman</span>
+                    <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('pengumuman.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengumuman</span>
                     </a>
                 </li>
                 @endif
             </ul>
         </li>
     </ul>
-    <div class="mt-auto px-4 space-y-2">
-        <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform" href="#">
+
+    <!-- Bottom Actions -->
+    <div class="mt-auto px-4 space-y-2 pb-4">
+        <a class="text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform" href="#">
             <span class="material-symbols-outlined">help</span>
             <span class="text-label-sm font-label-sm">Bantuan</span>
         </a>
         <form method="POST" action="{{ route('logout') }}" class="w-full">
             @csrf
-            <button type="submit" class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg mx-2 flex items-center gap-3 px-4 py-3 hover:bg-primary-container transition-colors duration-200 scale-95 active:scale-90 transition-transform">
+            <button type="submit" class="w-full text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50 rounded-lg flex items-center gap-3 px-4 py-3 scale-95 active:scale-90 transition-transform">
                 <span class="material-symbols-outlined">logout</span>
                 <span class="text-label-sm font-label-sm">Logout</span>
             </button>

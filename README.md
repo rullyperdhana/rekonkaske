@@ -122,3 +122,4 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 ## 📝 Changelog
 * **v2.0.1** - Perbaikan bug pada sistem paginasi tabel (Laporan BA & Transaksi) di mana filter pencarian/bulan kini tetap tersimpan (`withQueryString`) saat berpindah halaman.
 * **v2.0.2** - Perbaikan bug JS formatter rupiah yang menyebabkan angka saldo bertambah 2 digit (akibat salah baca desimal `.` dari database). Penambahan fitur penguncian Saldo Kas Awal otomatis secara *read-only* dengan opsi *bypass* di menu Pengaturan Instansi Admin.
+* **v2.0.3** - Peningkatan UI/UX struktural pada layout *Sidebar* (menu samping). Mengubah format *floating margin* menjadi tata letak *full-height* yang menempel (seamless) dengan tepi layar utama. Ditambahkan juga efek animasi mikro (slide & scale) dan garis struktur hierarki submenu untuk antarmuka yang lebih dinamis dan rapi dengan tetap mempertahankan warna identitas (brand color) aplikasi bawaan.
