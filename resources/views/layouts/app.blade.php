@@ -178,11 +178,15 @@
             const isMobile = window.innerWidth < 1024;
 
             if (isMobile) {
-                if (sidebar.classList.contains('-translate-x-full')) {
-                    sidebar.classList.remove('-translate-x-full');
+                const isClosed = sidebar.classList.contains('-translate-x-[120%]') || sidebar.classList.contains('-translate-x-full');
+                
+                if (isClosed) {
+                    sidebar.classList.remove('-translate-x-[120%]', '-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
                     overlay.classList.remove('hidden');
                 } else {
-                    sidebar.classList.add('-translate-x-full');
+                    sidebar.classList.remove('translate-x-0');
+                    sidebar.classList.add('-translate-x-[120%]');
                     overlay.classList.add('hidden');
                 }
             } else {
