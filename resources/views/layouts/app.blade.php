@@ -2,8 +2,16 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#00346f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SiReKa">
+    <link rel="apple-touch-icon" href="/icon.svg">
 
     <title>{{ config('app.name', 'SiReKa') }}</title>
 
@@ -115,7 +123,7 @@
     @include('layouts.topbar')
 
     <!-- Main Content -->
-    <main id="appMain" class="lg:ml-72 pt-24 px-4 lg:px-8 pb-20 max-w-container-max mx-auto transition-all duration-300">
+    <main id="appMain" class="lg:ml-72 pt-24 px-4 lg:px-8 pb-28 lg:pb-20 max-w-container-max mx-auto transition-all duration-300">
         @if(session('success'))
             <div class="mb-6 bg-secondary-container text-on-secondary-container px-4 py-3 rounded-lg flex items-center gap-3 shadow-sm" role="alert">
                 <span class="material-symbols-outlined">check_circle</span>
@@ -258,6 +266,20 @@
                 });
             });
         });
+
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js').then((registration) => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, (err) => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
     </script>
+
+    <!-- Mobile Bottom Navigation -->
+    @include('layouts.bottom-nav')
 </body>
 </html>

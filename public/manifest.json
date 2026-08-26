@@ -1,0 +1,17 @@
+{
+  "name": "SiReKa",
+  "short_name": "SiReKa",
+  "description": "Sistem Rekonsiliasi Kas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fb",
+  "theme_color": "#00346f",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
