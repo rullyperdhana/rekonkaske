@@ -21,6 +21,26 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- NProgress Loading Bar -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nprogress/0.2.0/nprogress.min.js"></script>
+    <style>
+        /* Customize NProgress bar color (menggunakan warna inverse-primary yang cerah) */
+        #nprogress .bar {
+            background: #abc7ff !important;
+            height: 4px !important;
+            z-index: 9999 !important;
+        }
+        #nprogress .peg {
+            box-shadow: 0 0 10px #abc7ff, 0 0 5px #abc7ff !important;
+        }
+        #nprogress .spinner-icon {
+            border-top-color: #abc7ff !important;
+            border-left-color: #abc7ff !important;
+        }
+    </style>
+
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -265,6 +285,34 @@
                     })
                 });
             });
+
+            // NProgress Initialization
+            NProgress.configure({ showSpinner: false, speed: 400, minimum: 0.1 });
+            
+            // Start progress bar when clicking a link
+            document.querySelectorAll('a').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    const target = this.getAttribute('target');
+                    
+                    // Trigger if it's a valid link and not a new tab
+                    if (href && !href.startsWith('#') && !href.startsWith('javascript') && target !== '_blank') {
+                        NProgress.start();
+                    }
+                });
+            });
+            
+            // Start progress bar on form submit (excluding GET forms which are usually instant searches, though we can trigger it too)
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', () => {
+                    NProgress.start();
+                });
+            });
+        });
+
+        // Hide progress bar when page is fully loaded or restored from bfcache
+        window.addEventListener('pageshow', function (event) {
+            NProgress.done();
         });
 
         // Register Service Worker for PWA
