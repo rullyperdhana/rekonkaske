@@ -46,7 +46,7 @@ class UpdateTransaksiRequest extends FormRequest
             'keterangan_selisih' => $isSelisih ? 'required|string|max:255' : 'nullable|string|max:255',
             'tanggal_ba' => 'nullable|date',
             'status_verifikasi' => 'nullable|in:draft,verified',
-            'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_bukti' => 'nullable|file|mimes:pdf,jpg,jpeg,png|extensions:pdf,jpg,jpeg,png|max:5120',
         ];
     }
 

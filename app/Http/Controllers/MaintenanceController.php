@@ -122,7 +122,7 @@ class MaintenanceController extends Controller
     public function restore(Request $request)
     {
         $request->validate([
-            'backup_file' => 'required|file',
+            'backup_file' => 'required|file|extensions:sql,sqlite',
         ]);
 
         try {

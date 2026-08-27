@@ -42,7 +42,7 @@ class PengaturanController extends Controller
         
         $validated = $request->validate([
             'isi_kop' => 'required|string',
-            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|max:2048',
+            'logo_file' => 'nullable|image|mimes:jpeg,png,jpg,svg,webp|extensions:jpeg,png,jpg,svg,webp|max:2048',
             'nama_kepala' => 'required|string|max:255',
             'nip_kepala' => 'required|string|max:255',
             'pangkat_kepala' => 'required|string|max:255',

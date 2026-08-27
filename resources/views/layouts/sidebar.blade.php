@@ -218,7 +218,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.1.1</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.1.2</p>
         </div>
     </div>
 </nav>
