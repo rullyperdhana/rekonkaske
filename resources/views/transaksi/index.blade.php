@@ -133,6 +133,19 @@
                             </td>
                             <td class="py-3 px-4 text-center">
                                 <div class="flex items-center justify-center gap-1">
+                                    @php
+                                        $globalPengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
+                                        $isDownloadAllowed = $globalPengaturan ? ($globalPengaturan->allow_skpd_download_bukti_digital ?? true) : true;
+                                        $canDownloadSlip = in_array(Auth::user()->role, ['admin', 'konsolidator']) || $isDownloadAllowed;
+                                    @endphp
+
+                                    <!-- Tombol Unduh Tanda Bukti Digital jika valid -->
+                                    @if($trx->status_konsolidator === 'valid' && $canDownloadSlip)
+                                    <a href="{{ route('transaksi.bukti-digital-pdf', $trx->id) }}" target="_blank" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all" title="Unduh Surat Tanda Bukti Digital (PDF)">
+                                        <span class="material-symbols-outlined text-[18px]">verified</span>
+                                    </a>
+                                    @endif
+
                                     <!-- Tombol Pemeriksaan Konsolidator & Admin -->
                                     @if(in_array(Auth::user()->role, ['admin', 'konsolidator']))
                                     <a href="{{ route('transaksi.pemeriksaan', $trx->id) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all" title="Pemeriksaan & Catatan Konsolidator">

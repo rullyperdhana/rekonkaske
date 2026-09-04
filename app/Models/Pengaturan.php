@@ -24,6 +24,7 @@ class Pengaturan extends Model
         'nama_bendahara', 'nip_bendahara', 'pangkat_bendahara', 'jabatan_bendahara',
         'nama_kasubag', 'nip_kasubag', 'pangkat_kasubag', 'jabatan_kasubag',
         'is_registration_open', 'allow_operator_reupload', 'is_livelog_active', 'allow_edit_saldo_awal',
+        'allow_skpd_download_bukti_digital',
     ];
 
     public function skpd()

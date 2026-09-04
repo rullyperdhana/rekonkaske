@@ -82,6 +82,22 @@
                             </p>
                         </div>
                         
+                        <div class="flex flex-col gap-1.5 p-4 bg-indigo-500/10 rounded-lg border border-indigo-500/30 mt-2">
+                            <label class="text-label-sm font-bold text-indigo-700 flex items-center justify-between cursor-pointer" for="allow_skpd_download_bukti_digital">
+                                <span class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-[18px] text-indigo-600">verified</span>
+                                    Izin Unduh Tanda Bukti Verifikasi Digital (Operator SKPD)
+                                </span>
+                                <div class="relative inline-flex items-center">
+                                  <input type="checkbox" id="allow_skpd_download_bukti_digital" name="allow_skpd_download_bukti_digital" class="sr-only peer" value="1" {{ old('allow_skpd_download_bukti_digital', $pengaturan->allow_skpd_download_bukti_digital ?? true) ? 'checked' : '' }}>
+                                  <div class="w-11 h-6 bg-outline-variant peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-500/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                </div>
+                            </label>
+                            <p class="text-[11px] text-on-surface-variant leading-relaxed mt-1">
+                                <b>Kontrol Akses Pengunduhan:</b> Jika diaktifkan (<b>ON</b>), Operator SKPD dapat mengunduh Surat Tanda Bukti Pemeriksaan Rekonsiliasi Digital (PDF) setelah berkas disahkan Valid oleh Konsolidator. Jika dinonaktifkan (<b>OFF</b>), tombol unduh bukti digital disembunyikan dari akun SKPD dan hanya dapat dicetak/diunduh oleh Admin BKAD &amp; Konsolidator.
+                            </p>
+                        </div>
+                        
                         <div class="flex flex-col gap-1.5 mt-2">
                             <label class="text-label-sm font-label-sm text-on-surface" for="logo_file">Logo Aplikasi (Hanya Admin) <span class="text-error">*</span></label>
                             <input class="h-10 p-1.5 rounded-lg border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 text-body-sm font-body-md w-full transition-all outline-none" 

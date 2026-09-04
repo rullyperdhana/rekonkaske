@@ -106,10 +106,25 @@
                                 </div>
                             </td>
                             <td class="py-3 px-4 text-center">
-                                <a href="{{ route('ba.show', $trx->id) }}" class="inline-block text-primary hover:text-primary-container px-3 py-1 border border-primary rounded text-label-sm font-label-sm transition-colors" title="Lihat BA">
-                                    <span class="material-symbols-outlined text-[16px] align-text-bottom mr-1">visibility</span>
-                                    Lihat BA
-                                </a>
+                                <div class="flex items-center justify-center gap-1.5 flex-wrap">
+                                    <a href="{{ route('ba.show', $trx->id) }}" class="inline-flex items-center gap-1 text-primary hover:text-primary-container px-2.5 py-1 border border-primary rounded-lg text-label-sm font-label-sm transition-colors shadow-xs" title="Lihat Berita Acara">
+                                        <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                        <span>Lihat BA</span>
+                                    </a>
+
+                                    @php
+                                        $globalPengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
+                                        $isDownloadAllowed = $globalPengaturan ? ($globalPengaturan->allow_skpd_download_bukti_digital ?? true) : true;
+                                        $canDownloadSlip = in_array(Auth::user()->role, ['admin', 'konsolidator']) || $isDownloadAllowed;
+                                    @endphp
+
+                                    @if($trx->status_konsolidator === 'valid' && $canDownloadSlip)
+                                        <a href="{{ route('transaksi.bukti-digital-pdf', $trx->id) }}" target="_blank" class="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white px-2.5 py-1 rounded-lg text-label-sm font-label-sm transition-all shadow-xs" title="Unduh Surat Tanda Bukti Digital (PDF)">
+                                            <span class="material-symbols-outlined text-[16px]">verified</span>
+                                            <span>Slip Digital</span>
+                                        </a>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                         @empty

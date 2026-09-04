@@ -145,4 +145,11 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Navigasi Cepat di Lembar Pemeriksaan:** Dilengkapi tombol *[← Prev]* / *[Next →]* dan indikator sisa antrean yang belum diperiksa.
   * **Indikator Dokumen & Selisih Saldo di Antrean:** Visualisasi langsung status kelengkapan 4 bukti dukung (X/4 Berkas) dan status saldo (KLOP / Rincian Selisih) langsung pada tabel antrean.
   * **Menu Antrean Verifikasi di Sidebar:** Menu langsung khusus Admin dan Konsolidator lengkap dengan *badge counter* (indikator angka berdenyut) jumlah berkas yang menunggu pemeriksaan.
+* **v2.4.0** - **Laporan Verifikasi Konsolidator, Tanda Bukti Digital (Slip PDF), Kontrol Unduh SKPD, & Stempel Digital BA:**
+  * **Modul Laporan Verifikasi Konsolidator (`/laporan/verifikasi-konsolidator`):** Rekapitulasi register pemeriksaan kas daerah tingkat SKPD untuk Admin & Konsolidator dengan 3 kartu metrik ringkasan, filter bulan/SKPD/status, cetak register PDF (Landscape), dan ekspor Excel (.xlsx).
+  * **Surat Tanda Bukti Pemeriksaan Rekonsiliasi Kas Daerah (Slip PDF A4):** Dokumen resmi 1 lembar ber-KOP BKAD dengan Nomor Register Digital unik (`REG-KONS/TAPIN/...`), checklist pengujian 4 bukti dukung fisik, identitas pemeriksa, waktu pemeriksaan (WITA), dan QR Code otentikasi.
+  * **Saklar Kontrol Izin Unduh SKPD (ON/OFF Toggle):** Tuas kontrol di Pengaturan Instansi bagi Admin BKAD untuk mengaktifkan atau menonaktifkan izin download Surat Tanda Bukti Digital bagi Operator SKPD (dengan proteksi keamanan 403 saat OFF).
+  * **Stempel Digital Pengesahan (*Digital e-Seal*) pada Berita Acara (BA) PDF:** Berita Acara bulanan otomatis mencetak cap stempel pengesahan Konsolidator BKAD ketika status rekonsiliasi telah disahkan *Valid*.
+  * **Peningkatan Laman Verifikasi Publik QR Code (`/verifikasi/{id}`):** Tampilan status ganda transparan yang memuat bukti pengesahan Konsolidator BKAD dan tombol unduh slip digital.
+
 

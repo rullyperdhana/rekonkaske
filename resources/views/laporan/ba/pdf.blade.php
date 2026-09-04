@@ -328,8 +328,24 @@
                     <li>Rekening Koran Bank</li>
                 </ol>
             </td>
+            @if($transaksi->status_konsolidator === 'valid')
+            <td style="vertical-align: bottom; text-align: center; width: 175px; border: none; padding-right: 12px;">
+                <div style="border: 1.5px dashed #059669; background-color: #f0fdf4; border-radius: 6px; padding: 5px 8px; text-align: center;">
+                    <div style="font-size: 8.5px; font-weight: 900; color: #047857; text-transform: uppercase; letter-spacing: 0.5px;">
+                        TELAH DIPERIKSA &amp; SAH
+                    </div>
+                    <div style="font-size: 8px; font-weight: bold; color: #065f46; margin-top: 2px;">
+                        KONSOLIDATOR BKAD TAPIN
+                    </div>
+                    <div style="font-size: 7.5px; color: #047857; font-family: monospace; margin-top: 3px; line-height: 1.2;">
+                        {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d/m/Y H:i') . ' WITA' : 'TERVERIFIKASI' }}<br>
+                        Oleh: {{ $transaksi->checker->name ?? 'Konsolidator' }}
+                    </div>
+                </div>
+            </td>
+            @endif
             @if($transaksi->status_verifikasi === 'verified')
-            <td style="vertical-align: bottom; text-align: center; width: 100px; border: none;">
+            <td style="vertical-align: bottom; text-align: center; width: 95px; border: none;">
                 @php
                     $signedUrl = \Illuminate\Support\Facades\URL::signedRoute('verifikasi.show', $transaksi->id);
                     $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=' . urlencode($signedUrl);
@@ -341,7 +357,7 @@
                 @else
                     <img src="data:image/svg+xml;base64,{!! base64_encode(\SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')->size(70)->generate($signedUrl)) !!}" width="70" height="70" style="border: 1px solid #000; padding: 2px;">
                 @endif
-                <div style="font-size: 9px; font-style: italic; font-weight: bold; margin-top: 2px;">Dokumen Terverifikasi</div>
+                <div style="font-size: 8.5px; font-style: italic; font-weight: bold; margin-top: 2px;">Verifikasi Digital</div>
             </td>
             @endif
         </tr>

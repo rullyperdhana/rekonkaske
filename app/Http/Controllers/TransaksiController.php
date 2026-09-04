@@ -539,6 +539,51 @@ class TransaksiController extends Controller
         return redirect()->back()->with('success', "Transaksi untuk {$transaksi->skpd->nama} berhasil dikembalikan menjadi DRAFT. SKPD sekarang dapat memperbaiki data dan bukti dukung.");
     }
 
+    public function cetakBuktiDigitalPdf(Transaksi $transaksi)
+    {
+        $user = Auth::user();
+
+        // Pemeriksaan Hak Akses
+        if (!in_array($user->role, ['admin', 'konsolidator'])) {
+            // Jika role Operator SKPD
+            if ($user->skpd_id && $user->skpd_id != $transaksi->skpd_id) {
+                abort(403, 'Anda tidak memiliki akses ke berkas instansi lain.');
+            }
+
+            // Periksa Saklar Pengaturan Admin
+            $globalPengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first();
+            $isDownloadAllowed = $globalPengaturan ? ($globalPengaturan->allow_skpd_download_bukti_digital ?? true) : true;
+
+            if (!$isDownloadAllowed) {
+                abort(403, 'Akses pengunduhan tanda bukti pemeriksaan digital saat ini dinonaktifkan oleh Administrator BKAD.');
+            }
+        }
+
+        if ($transaksi->status_konsolidator !== 'valid') {
+            return redirect()->back()->with('error', 'Tanda bukti pemeriksaan digital hanya dapat diunduh jika status rekonsiliasi telah disahkan VALID oleh Konsolidator.');
+        }
+
+        $transaksi->load(['skpd', 'rekening', 'checker']);
+
+        $pengaturan = $transaksi->skpd->pengaturan ?? \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? new \App\Models\Pengaturan([
+            'nama_pemerintah' => 'PEMERINTAH KABUPATEN TAPIN',
+            'nama_instansi' => 'BADAN KEUANGAN DAN ASET DAERAH',
+            'jalan' => 'Jalan Datu Nuraya Kawasan Perkantoran Rantau Baru',
+            'kecamatan' => 'RT. 01 Kelurahan Rangda Malingkung Kecamatan Tapin Utara Telp. 0517 2035173',
+            'kontak' => 'Kode Pos 71114 Email: bkad@tapinkab.go.id',
+            'kota' => 'RANTAU',
+        ]);
+
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('laporan.bukti_verifikasi_digital_pdf', compact('transaksi', 'pengaturan', 'namaBulan'))
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true]);
+
+        $pdf->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Bukti-Verifikasi-Digital-' . ($transaksi->skpd->nama ?? 'SKPD') . '-' . $transaksi->periode_bulan . '-' . $transaksi->periode_tahun . '.pdf');
+    }
+
     private static function getBytes($val): int
     {
         $val = trim((string) $val);

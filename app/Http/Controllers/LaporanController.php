@@ -558,4 +558,131 @@ class LaporanController extends Controller
 
         return view('laporan.rekap_wa', compact('sudahRekon', 'belumRekon', 'selectedBulan', 'tahunAktif', 'namaBulan', 'namaBulanTerpilih', 'kriteria', 'skpds'));
     }
+
+    /**
+     * Laporan Hasil Verifikasi & Pemeriksaan Konsolidator
+     */
+    public function verifikasiKonsolidator(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $skpds = Skpd::where('status', true)->orderBy('nama')->get();
+
+        // Hitung KPI
+        $baseKpiQuery = Transaksi::where('periode_tahun', $tahunAktif);
+        if (Auth::user()->skpd_id) {
+            $baseKpiQuery->where('skpd_id', Auth::user()->skpd_id);
+        }
+
+        $kpi = [
+            'valid' => (clone $baseKpiQuery)->where('status_konsolidator', 'valid')->count(),
+            'total_saldo' => (clone $baseKpiQuery)->where('status_konsolidator', 'valid')->sum('bku_saldo_akhir'),
+            'perlu_perbaikan' => (clone $baseKpiQuery)->where('status_konsolidator', 'perlu_perbaikan')->count(),
+        ];
+
+        // Query tabel
+        $query = Transaksi::with(['skpd', 'rekening', 'checker'])
+            ->where('periode_tahun', $tahunAktif);
+
+        if (Auth::user()->skpd_id) {
+            $query->where('skpd_id', Auth::user()->skpd_id);
+        } elseif ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_konsolidator', $request->status);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'asc')
+            ->orderBy('skpd_id', 'asc')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('laporan.verifikasi_konsolidator', compact('transaksis', 'kpi', 'skpds', 'namaBulan', 'tahunAktif'));
+    }
+
+    /**
+     * Cetak PDF Register Verifikasi Konsolidator
+     */
+    public function cetakVerifikasiKonsolidatorPdf(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        $query = Transaksi::with(['skpd', 'rekening', 'checker'])
+            ->where('periode_tahun', $tahunAktif);
+
+        if (Auth::user()->skpd_id) {
+            $query->where('skpd_id', Auth::user()->skpd_id);
+        } elseif ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_konsolidator', $request->status);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'asc')
+            ->orderBy('skpd_id', 'asc')
+            ->get();
+
+        $pengaturan = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? new \App\Models\Pengaturan();
+        $selectedBulan = $request->bulan;
+        $selectedStatus = $request->status;
+
+        $pdf = Pdf::loadView('laporan.verifikasi_konsolidator_pdf', compact('transaksis', 'pengaturan', 'namaBulan', 'tahunAktif', 'selectedBulan', 'selectedStatus'))
+            ->setOptions(['isRemoteEnabled' => true, 'isHtml5ParserEnabled' => true]);
+
+        // F4/Folio size landscape: 936 x 612 approx.
+        $pdf->setPaper([0, 0, 936.0, 612.0], 'landscape');
+
+        return $pdf->stream('Register-Verifikasi-Konsolidator-' . $tahunAktif . '.pdf');
+    }
+
+    /**
+     * Ekspor Excel Register Verifikasi Konsolidator
+     */
+    public function exportVerifikasiKonsolidatorExcel(Request $request)
+    {
+        $tahunAktif = session('tahun_login') ?? date('Y');
+
+        $query = Transaksi::with(['skpd', 'rekening', 'checker'])
+            ->where('periode_tahun', $tahunAktif);
+
+        if (Auth::user()->skpd_id) {
+            $query->where('skpd_id', Auth::user()->skpd_id);
+        } elseif ($request->filled('skpd_id')) {
+            $query->where('skpd_id', $request->skpd_id);
+        }
+
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_konsolidator', $request->status);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'asc')
+            ->orderBy('skpd_id', 'asc')
+            ->get();
+
+        $selectedBulan = $request->bulan;
+        $selectedStatus = $request->status;
+
+        return Excel::download(
+            new \App\Exports\VerifikasiKonsolidatorExport($transaksis, $selectedBulan, $selectedStatus, $tahunAktif),
+            'Register-Verifikasi-Konsolidator-' . $tahunAktif . '.xlsx'
+        );
+    }
 }

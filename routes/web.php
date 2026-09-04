@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/transaksi/antrean', [\App\Http\Controllers\TransaksiController::class, 'antrean'])->name('transaksi.antrean');
         Route::get('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanForm'])->name('transaksi.pemeriksaan');
         Route::post('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanStore'])->name('transaksi.pemeriksaan.store');
+        Route::get('/laporan/verifikasi-konsolidator', [\App\Http\Controllers\LaporanController::class, 'verifikasiKonsolidator'])->name('laporan.verifikasi-konsolidator');
+        Route::get('/laporan/verifikasi-konsolidator/pdf', [\App\Http\Controllers\LaporanController::class, 'cetakVerifikasiKonsolidatorPdf'])->name('laporan.verifikasi-konsolidator.pdf');
+        Route::get('/laporan/verifikasi-konsolidator/excel', [\App\Http\Controllers\LaporanController::class, 'exportVerifikasiKonsolidatorExcel'])->name('laporan.verifikasi-konsolidator.excel');
         Route::get('/laporan/rekap-wa', [\App\Http\Controllers\LaporanController::class, 'rekapWa'])->name('laporan.rekap-wa');
         Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
         Route::get('/laporan/tunggakan/excel', [\App\Http\Controllers\LaporanController::class, 'eksporTunggakan'])->name('laporan.tunggakan.excel');
@@ -79,6 +82,7 @@ Route::middleware('auth')->group(function () {
     Route::get('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadForm'])->name('transaksi.upload');
     Route::post('transaksi/{transaksi}/upload', [TransaksiController::class, 'uploadStore'])->name('transaksi.upload.store');
     Route::delete('transaksi/{transaksi}/hapus-dokumen/{field}', [TransaksiController::class, 'hapusDokumen'])->name('transaksi.hapus-dokumen');
+    Route::get('transaksi/{transaksi}/bukti-digital-pdf', [TransaksiController::class, 'cetakBuktiDigitalPdf'])->name('transaksi.bukti-digital-pdf');
     Route::resource('transaksi', TransaksiController::class)->where(['transaksi' => '[0-9]+'])->except(['show']);
     
     // Catch-all untuk transaksi yang tidak valid (misal: /transaksi/upload tanpa ID)
