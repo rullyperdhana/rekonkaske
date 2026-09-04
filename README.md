@@ -137,3 +137,12 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * Penambahan wewenang aksi 1-klik bagi Admin Pusat untuk mengembalikan status transaksi menjadi *Draft* (*Reset to Draft*) agar data terbuka kembali bagi SKPD untuk diperbaiki ulang.
   * Peningkatan indikator status ganda pada tabel transaksi: Status SKPD (*Diverifikasi SKPD* / *Draft*) dan Status Konsolidator (*Valid Konsolidator* / *Perlu Perbaikan* / *Menunggu Cek*).
   * Pembaruan hak akses form upload agar SKPD dapat mengunggah berkas bukti dukung sejak awal pengerjaan transaksi (sebelum verifikasi).
+* **v2.2.1** - Peningkatan Filter Pengguna: Penambahan fitur input pencarian nama lengkap, username, dan email pada menu Pengaturan Pengguna (*User Management*) serta tombol reset filter.
+* **v2.3.0** - **Antrean Verifikasi Terpusat & Mode Cek Cepat (Rapid Review Save & Next):**
+  * **Meja Kerja Antrean Verifikasi Terpusat (`/transaksi/antrean`):** Halaman verifikasi khusus bagi Konsolidator dan Administrator yang mengelompokkan data rekonsiliasi ke dalam 4 tab interaktif: *Menunggu Pemeriksaan*, *Perlu Perbaikan*, *Butuh Reset Draft*, dan *Telah Disetujui (Valid)*.
+  * **4 Kartu Metrik Ringkasan Real-Time:** Menampilkan jumlah berkas yang menunggu dicek, memerlukan perbaikan SKPD, butuh reset draft admin, dan yang telah berstatus sah pada tahun anggaran aktif.
+  * **Mode Pemeriksaan Cepat (Save & Next ⏩):** Tombol aksi *"Simpan & Lanjut ke BA Berikutnya"* yang otomatis membawa pemeriksa langsung ke berkas antrean berikutnya tanpa perlu bolak-balik ke tabel antrean berulang kali.
+  * **Navigasi Cepat di Lembar Pemeriksaan:** Dilengkapi tombol *[← Prev]* / *[Next →]* dan indikator sisa antrean yang belum diperiksa.
+  * **Indikator Dokumen & Selisih Saldo di Antrean:** Visualisasi langsung status kelengkapan 4 bukti dukung (X/4 Berkas) dan status saldo (KLOP / Rincian Selisih) langsung pada tabel antrean.
+  * **Menu Antrean Verifikasi di Sidebar:** Menu langsung khusus Admin dan Konsolidator lengkap dengan *badge counter* (indikator angka berdenyut) jumlah berkas yang menunggu pemeriksaan.
+

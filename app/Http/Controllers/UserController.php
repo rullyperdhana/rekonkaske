@@ -16,6 +16,15 @@ class UserController extends Controller
     {
         $query = User::with('skpd')->orderBy('name');
 
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('username', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
         if ($request->filled('skpd_id')) {
             $query->where('skpd_id', $request->skpd_id);
         }

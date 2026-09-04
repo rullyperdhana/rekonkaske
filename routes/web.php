@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
 
     // Laporan & Verifikasi (Admin & Konsolidator)
     Route::middleware(['admin.konsolidator'])->group(function () {
+        Route::get('/transaksi/antrean', [\App\Http\Controllers\TransaksiController::class, 'antrean'])->name('transaksi.antrean');
         Route::get('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanForm'])->name('transaksi.pemeriksaan');
         Route::post('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanStore'])->name('transaksi.pemeriksaan.store');
         Route::get('/laporan/rekap-wa', [\App\Http\Controllers\LaporanController::class, 'rekapWa'])->name('laporan.rekap-wa');

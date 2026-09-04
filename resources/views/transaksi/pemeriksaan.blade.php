@@ -3,7 +3,7 @@
         <!-- Page Header -->
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-[3px] border-primary pb-4">
             <div class="flex items-center gap-4">
-                <a href="{{ route('transaksi.index') }}" class="w-10 h-10 rounded-xl bg-surface-container-low border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors shadow-sm">
+                <a href="{{ route('transaksi.antrean') }}" class="w-10 h-10 rounded-xl bg-surface-container-low border border-outline-variant flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-surface-container transition-colors shadow-sm" title="Kembali ke Antrean Verifikasi">
                     <span class="material-symbols-outlined text-[22px]">arrow_back</span>
                 </a>
                 <div>
@@ -39,18 +39,49 @@
                 </div>
             </div>
 
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 flex-wrap">
+                <!-- Navigasi Cepat Antrean -->
+                <div class="flex items-center gap-1 bg-surface-container-low p-1 rounded-xl border border-outline-variant shadow-sm mr-1">
+                    @if($prevTrx)
+                        <a href="{{ route('transaksi.pemeriksaan', $prevTrx->id) }}" class="px-2.5 py-1 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface flex items-center gap-1 transition-colors" title="Sebelumnya: {{ $prevTrx->skpd->nama ?? '' }}">
+                            <span class="material-symbols-outlined text-[15px]">arrow_back_ios</span>
+                            <span>Prev</span>
+                        </a>
+                    @else
+                        <span class="px-2.5 py-1 text-xs text-on-surface-variant/40 flex items-center gap-1 cursor-not-allowed">
+                            <span class="material-symbols-outlined text-[15px]">arrow_back_ios</span>
+                            <span>Prev</span>
+                        </span>
+                    @endif
+
+                    <span class="px-2 py-0.5 text-[11px] font-mono font-bold text-primary bg-primary/10 rounded-md whitespace-nowrap">
+                        Sisa: {{ $sisaAntrean }}
+                    </span>
+
+                    @if($nextTrx)
+                        <a href="{{ route('transaksi.pemeriksaan', $nextTrx->id) }}" class="px-2.5 py-1 rounded-lg text-xs font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface flex items-center gap-1 transition-colors" title="Berikutnya: {{ $nextTrx->skpd->nama ?? '' }}">
+                            <span>Next</span>
+                            <span class="material-symbols-outlined text-[15px]">arrow_forward_ios</span>
+                        </a>
+                    @else
+                        <span class="px-2.5 py-1 text-xs text-on-surface-variant/40 flex items-center gap-1 cursor-not-allowed">
+                            <span>Next</span>
+                            <span class="material-symbols-outlined text-[15px]">arrow_forward_ios</span>
+                        </span>
+                    @endif
+                </div>
+
                 @if(Auth::user()->role === 'admin' && $transaksi->status_verifikasi === 'verified')
                 <form action="{{ route('transaksi.reset-draft', $transaksi->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin mengembalikan status transaksi ini ke DRAFT agar SKPD dapat memperbaikinya?');">
                     @csrf
-                    <button type="submit" class="px-3.5 py-2 rounded-xl bg-amber-500/10 text-amber-700 hover:bg-amber-500 hover:text-white border border-amber-500/30 transition-all font-label-sm text-label-sm font-bold flex items-center gap-1.5 shadow-sm">
-                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
-                        Reset ke Draft
+                    <button type="submit" class="px-3 py-2 rounded-xl bg-amber-500/10 text-amber-700 hover:bg-amber-500 hover:text-white border border-amber-500/30 transition-all font-label-sm text-xs font-bold flex items-center gap-1 shadow-sm">
+                        <span class="material-symbols-outlined text-[17px]">restart_alt</span>
+                        Reset Draft
                     </button>
                 </form>
                 @endif
-                <a href="{{ route('ba.show', $transaksi->id) }}" target="_blank" class="px-3.5 py-2 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container border border-outline-variant transition-all font-label-sm text-label-sm flex items-center gap-1.5 shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                <a href="{{ route('ba.show', $transaksi->id) }}" target="_blank" class="px-3 py-2 rounded-xl bg-surface-container-low text-on-surface hover:bg-surface-container border border-outline-variant transition-all font-label-sm text-xs flex items-center gap-1 shadow-sm">
+                    <span class="material-symbols-outlined text-[17px]">visibility</span>
                     Lihat BA
                 </a>
             </div>
@@ -353,11 +384,17 @@
                             <p class="text-[11px] text-on-surface-variant mt-1">Catatan ini akan otomatis tercatat ke dalam timeline riwayat audit dan tampak pada akun SKPD.</p>
                         </div>
 
-                        <!-- Submit Button -->
-                        <button type="submit" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow active:scale-95">
-                            <span class="material-symbols-outlined text-[18px]">save</span>
-                            <span>Simpan Hasil Pemeriksaan</span>
-                        </button>
+                        <!-- Action Buttons -->
+                        <div class="space-y-2 pt-1">
+                            <button type="submit" name="action" value="save_and_next" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md active:scale-95">
+                                <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+                                <span>Simpan &amp; Lanjut ke BA Berikutnya ⏩</span>
+                            </button>
+                            <button type="submit" name="action" value="save" class="w-full py-2.5 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-label-sm text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                                <span class="material-symbols-outlined text-[17px]">save</span>
+                                <span>Simpan Saja (Tetap di Halaman Ini)</span>
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Tombol Hubungi Admin via WhatsApp jika Perlu Perbaikan -->

@@ -351,6 +351,68 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.upload', $transaksi->id)->with('success', 'Dokumen berhasil dihapus. SKPD sekarang dapat mengunggah ulang dokumen tersebut.');
     }
 
+    public function antrean(Request $request)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403, 'Akses khusus Admin dan Konsolidator.');
+        }
+
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        // Hitung 4 Metrik Status Antrean di Tahun Aktif
+        $baseQuery = Transaksi::where('periode_tahun', $tahunAktif);
+
+        $counts = [
+            'menunggu' => (clone $baseQuery)->where('status_verifikasi', 'verified')->where('status_konsolidator', 'menunggu')->count(),
+            'perlu_perbaikan' => (clone $baseQuery)->where('status_konsolidator', 'perlu_perbaikan')->count(),
+            'siap_reset' => (clone $baseQuery)->where('status_verifikasi', 'verified')->where('status_konsolidator', 'perlu_perbaikan')->count(),
+            'valid' => (clone $baseQuery)->where('status_konsolidator', 'valid')->count(),
+        ];
+
+        $activeTab = $request->input('tab', 'menunggu');
+
+        $query = Transaksi::with(['skpd', 'rekening', 'user', 'checker', 'catatans.user'])
+            ->where('periode_tahun', $tahunAktif);
+
+        // Filter berdasarkan Tab Aktif
+        if ($activeTab === 'menunggu') {
+            $query->where('status_verifikasi', 'verified')->where('status_konsolidator', 'menunggu');
+        } elseif ($activeTab === 'perlu_perbaikan') {
+            $query->where('status_konsolidator', 'perlu_perbaikan');
+        } elseif ($activeTab === 'siap_reset') {
+            $query->where('status_verifikasi', 'verified')->where('status_konsolidator', 'perlu_perbaikan');
+        } elseif ($activeTab === 'valid') {
+            $query->where('status_konsolidator', 'valid');
+        }
+
+        // Filter Pencarian SKPD / Rekening
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('skpd', function($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%");
+                })->orWhereHas('rekening', function($q) use ($search) {
+                    $q->where('nama', 'like', "%{$search}%")
+                      ->orWhere('nomor', 'like', "%{$search}%")
+                      ->orWhere('bank', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        // Filter Bulan
+        if ($request->filled('bulan')) {
+            $query->where('periode_bulan', $request->bulan);
+        }
+
+        $transaksis = $query->orderBy('periode_bulan', 'asc')
+            ->orderBy('created_at', 'desc')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('transaksi.antrean', compact('transaksis', 'namaBulan', 'tahunAktif', 'counts', 'activeTab'));
+    }
+
     public function pemeriksaanForm(Transaksi $transaksi)
     {
         if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
@@ -367,7 +429,30 @@ class TransaksiController extends Controller
             ->first();
         $adminWa = $bkadSkpd ? $bkadSkpd->no_whatsapp : null;
 
-        return view('transaksi.pemeriksaan', compact('transaksi', 'namaBulan', 'adminWa'));
+        // Navigasi cepat: Cari transaksi berikutnya dan sebelumnya dalam antrean tahun aktif
+        $nextTrx = Transaksi::where('id', '!=', $transaksi->id)
+            ->where('periode_tahun', $transaksi->periode_tahun)
+            ->where('status_verifikasi', 'verified')
+            ->where('status_konsolidator', 'menunggu')
+            ->orderBy('periode_bulan', 'asc')
+            ->orderBy('id', 'asc')
+            ->first();
+
+        $prevTrx = Transaksi::where('id', '!=', $transaksi->id)
+            ->where('periode_tahun', $transaksi->periode_tahun)
+            ->where('status_verifikasi', 'verified')
+            ->where('status_konsolidator', 'menunggu')
+            ->where('id', '<', $transaksi->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        // Hitung sisa antrean yang belum diperiksa
+        $sisaAntrean = Transaksi::where('periode_tahun', $transaksi->periode_tahun)
+            ->where('status_verifikasi', 'verified')
+            ->where('status_konsolidator', 'menunggu')
+            ->count();
+
+        return view('transaksi.pemeriksaan', compact('transaksi', 'namaBulan', 'adminWa', 'nextTrx', 'prevTrx', 'sisaAntrean'));
     }
 
     public function pemeriksaanStore(Request $request, Transaksi $transaksi)
@@ -410,6 +495,25 @@ class TransaksiController extends Controller
         $msg = $status === 'valid' 
             ? 'Laporan berhasil diperiksa dan ditandai VALID & SAH oleh Konsolidator.' 
             : 'Hasil pemeriksaan berhasil disimpan sebagai PERLU PERBAIKAN. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.';
+
+        $isSaveAndNext = ($request->input('action') === 'save_and_next');
+
+        if ($isSaveAndNext) {
+            // Cari transaksi berikutnya dalam antrean yang menunggu pemeriksaan
+            $nextTrx = Transaksi::where('id', '!=', $transaksi->id)
+                ->where('periode_tahun', $transaksi->periode_tahun)
+                ->where('status_verifikasi', 'verified')
+                ->where('status_konsolidator', 'menunggu')
+                ->orderBy('periode_bulan', 'asc')
+                ->orderBy('id', 'asc')
+                ->first();
+
+            if ($nextTrx) {
+                return redirect()->route('transaksi.pemeriksaan', $nextTrx->id)->with('success', $msg . " Melanjutkan ke antrean berikutnya: " . ($nextTrx->skpd->nama ?? 'SKPD'));
+            } else {
+                return redirect()->route('transaksi.antrean')->with('success', $msg . " Hebat! Semua antrean rekonsiliasi yang menunggu saat ini telah selesai diperiksa.");
+            }
+        }
 
         return redirect()->route('transaksi.pemeriksaan', $transaksi->id)->with('success', $msg);
     }

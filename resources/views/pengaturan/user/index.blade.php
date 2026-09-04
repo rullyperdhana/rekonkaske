@@ -58,30 +58,42 @@
         @endif
         
         <!-- Filters -->
-        <form method="GET" action="{{ route('user.index') }}" class="bg-surface p-4 rounded border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-4">
+        <form method="GET" action="{{ route('user.index') }}" class="bg-surface p-4 rounded-xl border border-outline-variant shadow-sm flex flex-col md:flex-row gap-4">
             <div class="flex-1">
-                <label class="block font-body-md font-bold text-on-surface mb-1">Filter by SKPD</label>
-                <select id="skpd_id" name="skpd_id" class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+                <label class="block font-body-md font-bold text-on-surface mb-1">Cari Nama / Username</label>
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Ketik nama atau username pengguna..." class="w-full h-10 border border-outline-variant rounded-lg pl-9 pr-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+                    <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">search</span>
+                </div>
+            </div>
+            <div class="w-full md:w-64">
+                <label class="block font-body-md font-bold text-on-surface mb-1">Filter SKPD</label>
+                <select id="skpd_id" name="skpd_id" class="w-full h-10 border border-outline-variant rounded-lg px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
                     <option value="">Semua SKPD</option>
                     @foreach($skpds as $skpd)
                     <option value="{{ $skpd->id }}" {{ request('skpd_id') == $skpd->id ? 'selected' : '' }}>{{ $skpd->nama }}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="flex-1">
-                <label class="block font-body-md font-bold text-on-surface mb-1">Filter by Role</label>
-                <select name="role" class="w-full h-10 border border-outline-variant rounded px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
+            <div class="w-full md:w-44">
+                <label class="block font-body-md font-bold text-on-surface mb-1">Filter Peran</label>
+                <select name="role" class="w-full h-10 border border-outline-variant rounded-lg px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface">
                     <option value="">Semua Peran</option>
                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="konsolidator" {{ request('role') == 'konsolidator' ? 'selected' : '' }}>Konsolidator</option>
                     <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Operator</option>
                 </select>
             </div>
-            <div class="flex items-end">
-                <button type="submit" class="h-10 px-4 border border-outline-variant rounded bg-surface hover:bg-surface-container-low transition-colors font-label-sm text-label-sm flex items-center space-x-2 text-on-surface-variant">
-                    <span class="material-symbols-outlined text-[18px]">filter_list</span>
-                    <span>Apply Filters</span>
+            <div class="flex items-end gap-2">
+                <button type="submit" class="h-10 px-4 rounded-lg bg-primary text-on-primary hover:bg-primary-container hover:text-on-primary-container transition-colors font-label-sm text-label-sm font-bold flex items-center space-x-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">search</span>
+                    <span>Cari</span>
                 </button>
+                @if(request('search') || request('skpd_id') || request('role'))
+                <a href="{{ route('user.index') }}" class="h-10 px-3.5 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors font-label-sm text-label-sm flex items-center space-x-1.5 text-on-surface-variant">
+                    <span>Reset</span>
+                </a>
+                @endif
             </div>
         </form>
         

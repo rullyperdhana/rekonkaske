@@ -78,14 +78,40 @@
 
         <!-- Data Entri -->
         <li>
-            <a class="group relative rounded-xl flex items-center gap-3 px-4 py-3 transition-all duration-300 {{ request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('transaksi.index') }}">
-                @if(request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create'))
+            <a class="group relative rounded-xl flex items-center gap-3 px-4 py-3 transition-all duration-300 {{ request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') && !request()->routeIs('transaksi.antrean') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('transaksi.index') }}">
+                @if(request()->routeIs('transaksi.*') && !request()->routeIs('transaksi.create') && !request()->routeIs('transaksi.antrean'))
                     <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
                 @endif
                 <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="300">swap_horiz</span>
                 <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Data Entri</span>
             </a>
         </li>
+
+        @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
+        <!-- Antrean Verifikasi -->
+        @php
+            $pendingVerifikasiCount = \App\Models\Transaksi::where('periode_tahun', session('tahun_login') ?? date('Y'))
+                ->where('status_verifikasi', 'verified')
+                ->where('status_konsolidator', 'menunggu')
+                ->count();
+        @endphp
+        <li>
+            <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('transaksi.antrean') ? 'bg-secondary-container text-on-secondary-container' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('transaksi.antrean') }}">
+                <div class="flex items-center gap-3">
+                    @if(request()->routeIs('transaksi.antrean'))
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-secondary-container rounded-r-full"></div>
+                    @endif
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('transaksi.antrean') ? 'fill' : '300' }}">fact_check</span>
+                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Antrean Verifikasi</span>
+                </div>
+                @if($pendingVerifikasiCount > 0)
+                    <span class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-amber-400 text-slate-900 shadow-sm animate-pulse">
+                        {{ $pendingVerifikasiCount }}
+                    </span>
+                @endif
+            </a>
+        </li>
+        @endif
 
         <!-- Laporan -->
         <li class="group/menu">
@@ -220,7 +246,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.2.0</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.3.0</p>
         </div>
     </div>
 </nav>
