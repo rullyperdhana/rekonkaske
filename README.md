@@ -111,9 +111,9 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 ---
 
 ## 👥 Struktur Hak Akses (Role Base)
-1. **Admin Pusat (BKAD Tapin):** Kontrol penuh master data, manajemen storage NAS, proteksi audit (izin re-upload SKPD), audit log, buka/tutup registrasi operator, backup/restore DB, dan mode maintenance pengaman.
-2. **Konsolidator:** Melakukan validasi rekon, memantau EWS dan Leaderboard, melihat rekapitulasi, mengekspor laporan eksekutif PDF & ZIP Paket Audit BPK.
-3. **Operator SKPD:** Mengelola input saldo rekon tahun berjalan dan mencetak Berita Acara ber-QR Code untuk pengesahan pimpinan instansi.
+1. **Admin Pusat (BKAD Tapin):** Kontrol penuh master data, manajemen storage NAS, proteksi audit (izin re-upload SKPD), audit log, buka/tutup registrasi operator, backup/restore DB, mode maintenance pengaman, dan **wewenang khusus merubah status transaksi verified kembali ke draft (*Reset to Draft*) atas rekomendasi Konsolidator**.
+2. **Konsolidator:** Melakukan pemeriksaan (*fact-check*) laporan rekonsiliasi yang telah diverifikasi SKPD beserta 4 berkas bukti dukung fisik, memberikan tanda kelayakan (*Valid Konsolidator*), mencatat evaluasi/catatan kesalahan bertingkat (*multi-round revision timeline*), memicu koordinasi pemulihan draft ke Admin via integrasi WhatsApp otomatis, memantau EWS dan Leaderboard, serta mengekspor laporan eksekutif PDF & ZIP Paket Audit BPK.
+3. **Operator SKPD:** Mengelola input saldo rekonsiliasi, mengunggah 4 berkas bukti dukung (BA Manual, BKU, Pembantu Bank, Rekening Koran), melakukan verifikasi mandiri (*Verified*) untuk pengesahan awal, membaca riwayat catatan koreksi Konsolidator, dan memperbaiki data jika transaksi dikembalikan ke draft oleh Admin.
 
 ---
 *SiReKa - Solusi Digitalisasi Transparan & Akuntabel untuk Pengelolaan Keuangan Pemerintah Kabupaten Tapin.*
@@ -130,3 +130,10 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 * **v2.1.0** - Transformasi antarmuka Mobile menjadi *Progressive Web App* (PWA) murni. Pengguna HP dan Tablet kini dapat menginstal SiReKa ke *Home Screen* (layar penuh, layaknya aplikasi *native*). Penambahan fitur *Bottom Navigation Bar* modern bergaya iOS/Android yang lebih ergonomis, menggantikan peran menu hamburger konvensional di layar kecil, lengkap dengan *Active Route Detector* visual.
 * **v2.1.1** - Peningkatan UX dengan integrasi **NProgress Loading Bar**. Menambahkan garis animasi pemuatan data interaktif di bagian atas layar setiap kali pengguna mengklik navigasi atau mengirimkan form, memberikan transisi perpindahan halaman yang lebih mulus dan responsif layaknya aplikasi *Single Page Application* (SPA).
 * **v2.1.2** - Peningkatan Keamanan (*Security Hardening*): Implementasi validasi unggahan berlapis (*Anti-Malware Upload*) pada seluruh modul yang menerima file (Transaksi, Pengaturan Logo, dan *Maintenance Restore*). Sistem kini memeriksa ekstensi file yang diizinkan secara eksplisit (menggunakan aturan `extensions:pdf,jpg,...`) bersamaan dengan pemindaian tipe konten (MIME type inspection) untuk mencegah serangan manipulasi nama ekstensi berbahaya.
+* **v2.2.0** - **Fitur Pemeriksaan Konsolidator, Multi-Round Revision Timeline, & Reset Draft Admin:**
+  * Penambahan modul pemeriksaan berkas dan data rekonsiliasi khusus bagi Konsolidator BKAD (`transaksi.pemeriksaan`).
+  * Penambahan tabel riwayat koreksi bertingkat (`transaksi_catatans`) yang mencatat setiap putaran evaluasi (tanggal, jam, nama pemeriksa, status, dan teks catatan) secara kronologis tanpa saling menimpa.
+  * Penambahan tombol integrasi WhatsApp cepat pada layar Konsolidator yang otomatis memformat pesan ke Admin Pusat saat ditemukan selisih atau kesalahan dokumen.
+  * Penambahan wewenang aksi 1-klik bagi Admin Pusat untuk mengembalikan status transaksi menjadi *Draft* (*Reset to Draft*) agar data terbuka kembali bagi SKPD untuk diperbaiki ulang.
+  * Peningkatan indikator status ganda pada tabel transaksi: Status SKPD (*Diverifikasi SKPD* / *Draft*) dan Status Konsolidator (*Valid Konsolidator* / *Perlu Perbaikan* / *Menunggu Cek*).
+  * Pembaruan hak akses form upload agar SKPD dapat mengunggah berkas bukti dukung sejak awal pengerjaan transaksi (sebelum verifikasi).

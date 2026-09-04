@@ -19,12 +19,14 @@
         </div>
     </div>
     
+    @if(auth()->user()->role !== 'konsolidator')
     <div class="px-4 mb-6">
         <a href="{{ route('transaksi.create') }}" class="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 py-3 rounded-lg text-label-sm font-label-sm flex items-center justify-center gap-2 shadow-sm transition-transform scale-95 active:scale-90">
             <span class="material-symbols-outlined" data-weight="fill">add_circle</span>
             Rekonsiliasi Baru
         </a>
     </div>
+    @endif
 
     <ul class="flex-1 space-y-1.5 px-3">
         <!-- Dashboard -->
@@ -218,7 +220,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.1.2</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.2.0</p>
         </div>
     </div>
 </nav>

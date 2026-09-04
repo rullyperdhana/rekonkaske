@@ -52,7 +52,7 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
-        $query = Transaksi::with(['skpd', 'rekening', 'user'])->orderBy('created_at', 'desc');
+        $query = Transaksi::with(['skpd', 'rekening', 'user', 'checker', 'catatans.user'])->orderBy('created_at', 'desc');
 
         // Retrieve active year from login session
         $tahunAktif = session('tahun_login') ?? date('Y');
@@ -106,11 +106,8 @@ class TransaksiController extends Controller
 
         $validated = $request->validated();
 
-        if (Auth::user()->role === 'operator') {
-            $validated['status_verifikasi'] = 'draft';
-        } else {
-            $validated['status_verifikasi'] = $request->status_verifikasi ?? 'draft';
-        }
+        $validated['status_verifikasi'] = $request->status_verifikasi ?? 'draft';
+        $validated['status_konsolidator'] = 'menunggu';
 
         if ($request->hasFile('file_bukti')) {
             $validated['file_bukti'] = $request->file('file_bukti')->store('bukti_rekonsiliasi', 'public');
@@ -127,6 +124,13 @@ class TransaksiController extends Controller
             $validated[$field] = $validated[$field] ?? 0;
         }
 
+        // Snapshot BA jika diverifikasi
+        if (isset($validated['status_verifikasi']) && $validated['status_verifikasi'] === 'verified') {
+            $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
+            $validated['snapshot_pengantar_ba'] = $pengaturanGlobal->teks_pengantar_ba ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :';
+            $validated['snapshot_penutup_ba'] = $pengaturanGlobal->teks_penutup_ba ?? '** Rincian terlampir';
+        }
+
         Transaksi::create($validated);
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan.');
@@ -136,7 +140,7 @@ class TransaksiController extends Controller
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
-            abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah.');
+            abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.');
         }
 
         $skpds = Skpd::where('status', true)->orderBy('nama')->get();
@@ -153,11 +157,18 @@ class TransaksiController extends Controller
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
+        if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
+            abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD.');
+        }
 
         $validated = $request->validated();
 
-        if (Auth::user()->role === 'admin') {
-            $validated['status_verifikasi'] = $request->status_verifikasi ?? 'draft';
+        if ($request->has('status_verifikasi')) {
+            $validated['status_verifikasi'] = $request->status_verifikasi;
+            // Jika disimpan sebagai verified, reset status konsolidator ke 'menunggu' untuk diperiksa ulang
+            if ($validated['status_verifikasi'] === 'verified') {
+                $validated['status_konsolidator'] = 'menunggu';
+            }
         }
         
         if ($request->hasFile('file_bukti')) {
@@ -178,7 +189,6 @@ class TransaksiController extends Controller
 
         // Snapshot BA jika diverifikasi
         if (isset($validated['status_verifikasi']) && $validated['status_verifikasi'] === 'verified') {
-            // Hanya snapshot jika sebelumnya belum verified atau kalau mau ditimpa update
             $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
             $validated['snapshot_pengantar_ba'] = $pengaturanGlobal->teks_pengantar_ba ?? 'Pada hari ini [HARI] Tanggal [TANGGAL] Bulan [BULAN] Tahun [TAHUN], telah dilakukan rekonsiliasi Saldo Kas Bendahara Pengeluaran per [AKHIR_BULAN] pada [NAMA_INSTANSI] [NAMA_PEMDA].<br><br>Dengan mencocokkan BKU Bendahara Pengeluaran per [AKHIR_BULAN] pada Aplikasi SIPANDA dengan Rekening Koran Bank Kalsel per [AKHIR_BULAN] dengan hasil sebagai berikut :';
             $validated['snapshot_penutup_ba'] = $pengaturanGlobal->teks_penutup_ba ?? '** Rincian terlampir';
@@ -210,26 +220,27 @@ class TransaksiController extends Controller
 
     public function uploadForm(Transaksi $transaksi)
     {
-        if ($transaksi->status_verifikasi !== 'verified') {
-            return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
-        }
-
         // Check operator access
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
             abort(403);
         }
 
+        $transaksi->load('catatans.user');
+
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
         $allowReupload = $pengaturanGlobal ? (bool) ($pengaturanGlobal->allow_operator_reupload ?? false) : false;
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
 
-        return view('transaksi.upload', compact('transaksi', 'allowReupload'));
+        return view('transaksi.upload', compact('transaksi', 'allowReupload', 'namaBulan'));
     }
 
     public function uploadStore(UploadTransaksiRequest $request, Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
-        if ($transaksi->status_verifikasi !== 'verified') {
-            return redirect()->route('transaksi.index')->with('error', 'Upload dokumen hanya tersedia untuk transaksi yang sudah diverifikasi.');
+
+        // Check operator access
+        if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
+            abort(403);
         }
 
         $validated = $request->validated();
@@ -338,6 +349,90 @@ class TransaksiController extends Controller
         }
 
         return redirect()->route('transaksi.upload', $transaksi->id)->with('success', 'Dokumen berhasil dihapus. SKPD sekarang dapat mengunggah ulang dokumen tersebut.');
+    }
+
+    public function pemeriksaanForm(Transaksi $transaksi)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403, 'Akses khusus Admin dan Konsolidator.');
+        }
+
+        $transaksi->load(['skpd', 'rekening', 'user', 'checker', 'catatans.user']);
+
+        $namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+
+        // Cari nomor WhatsApp Admin BKAD untuk tombol hubungi Admin
+        $bkadSkpd = \App\Models\Skpd::where('nama', 'like', '%BADAN KEUANGAN%')
+            ->orWhere('nama', 'like', '%BKAD%')
+            ->first();
+        $adminWa = $bkadSkpd ? $bkadSkpd->no_whatsapp : null;
+
+        return view('transaksi.pemeriksaan', compact('transaksi', 'namaBulan', 'adminWa'));
+    }
+
+    public function pemeriksaanStore(Request $request, Transaksi $transaksi)
+    {
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
+            abort(403, 'Akses khusus Admin dan Konsolidator.');
+        }
+
+        $request->validate([
+            'status_konsolidator' => 'required|in:valid,perlu_perbaikan',
+            'catatan' => 'required_if:status_konsolidator,perlu_perbaikan|nullable|string|max:1000',
+        ], [
+            'status_konsolidator.required' => 'Pilih hasil status pemeriksaan laporan.',
+            'catatan.required_if' => 'Catatan koreksi/kesalahan wajib diisi jika status memerlukan perbaikan.',
+            'catatan.max' => 'Catatan maksimal 1000 karakter.',
+        ]);
+
+        $status = $request->status_konsolidator;
+        $catatanText = trim($request->catatan ?? '');
+
+        // Simpan catatan ke riwayat transaksi_catatans jika ada catatan atau status perlu_perbaikan
+        if (!empty($catatanText) || $status === 'perlu_perbaikan') {
+            \App\Models\TransaksiCatatan::create([
+                'transaksi_id' => $transaksi->id,
+                'user_id' => Auth::id(),
+                'status_pemeriksaan' => $status,
+                'catatan' => !empty($catatanText) ? $catatanText : ($status === 'valid' ? 'Laporan dan dokumen bukti telah diperiksa dan disetujui sah.' : 'Terdapat perbedaan/kesalahan yang memerlukan perbaikan.'),
+            ]);
+
+            $transaksi->catatan_konsolidator_terakhir = $catatanText;
+        }
+
+        $transaksi->status_konsolidator = $status;
+        $transaksi->checked_by = Auth::id();
+        $transaksi->checked_at = now();
+        $transaksi->save();
+
+        \Illuminate\Support\Facades\Log::info("Pemeriksaan Konsolidator SiReKa: Transaksi ID #{$transaksi->id} ({$transaksi->skpd->nama}) diperiksa oleh User #" . Auth::id() . " (" . Auth::user()->name . ") dengan status: {$status}");
+
+        $msg = $status === 'valid' 
+            ? 'Laporan berhasil diperiksa dan ditandai VALID & SAH oleh Konsolidator.' 
+            : 'Hasil pemeriksaan berhasil disimpan sebagai PERLU PERBAIKAN. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.';
+
+        return redirect()->route('transaksi.pemeriksaan', $transaksi->id)->with('success', $msg);
+    }
+
+    public function resetToDraft(Transaksi $transaksi)
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Hanya Administrator Pusat yang berhak merubah status transaksi menjadi Draft.');
+        }
+
+        $transaksi->status_verifikasi = 'draft';
+        $transaksi->save();
+
+        \App\Models\TransaksiCatatan::create([
+            'transaksi_id' => $transaksi->id,
+            'user_id' => Auth::id(),
+            'status_pemeriksaan' => 'reset_draft',
+            'catatan' => 'Status transaksi dikembalikan ke DRAFT oleh Administrator Pusat (' . Auth::user()->name . ') untuk diperbaiki ulang oleh SKPD.',
+        ]);
+
+        \Illuminate\Support\Facades\Log::info("Audit Trail SiReKa: Transaksi ID #{$transaksi->id} ({$transaksi->skpd->nama}) diubah ke Draft oleh Admin #" . Auth::id() . " (" . Auth::user()->name . ")");
+
+        return redirect()->back()->with('success', "Transaksi untuk {$transaksi->skpd->nama} berhasil dikembalikan menjadi DRAFT. SKPD sekarang dapat memperbaiki data dan bukti dukung.");
     }
 
     private static function getBytes($val): int

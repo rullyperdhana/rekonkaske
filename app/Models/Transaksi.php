@@ -14,7 +14,9 @@ use Spatie\Activitylog\Support\LogOptions;
     'bku_saldo_awal', 'bku_penerimaan', 'bku_pengeluaran', 'bku_saldo_akhir',
     'bank_saldo_awal', 'bank_penerimaan', 'bank_pengeluaran', 'bank_saldo_akhir',
     'keterangan_selisih', 'tanggal_ba', 'status_verifikasi', 'file_bukti', 'user_id',
-    'file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran'
+    'file_ba_manual', 'file_buku_kas', 'file_buku_pembantu_bank', 'file_rekening_koran',
+    'snapshot_pengantar_ba', 'snapshot_penutup_ba',
+    'status_konsolidator', 'catatan_konsolidator_terakhir', 'checked_by', 'checked_at'
 ])]
 class Transaksi extends Model
 {
@@ -39,4 +41,15 @@ class Transaksi extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function checker()
+    {
+        return $this->belongsTo(User::class, 'checked_by');
+    }
+
+    public function catatans()
+    {
+        return $this->hasMany(TransaksiCatatan::class)->orderBy('created_at', 'desc');
+    }
 }
+

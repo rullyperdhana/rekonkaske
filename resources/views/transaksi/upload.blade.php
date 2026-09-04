@@ -31,6 +31,21 @@
             </div>
         @endif
 
+        @if($transaksi->catatan_konsolidator_terakhir)
+            <div class="bg-rose-500/10 border border-rose-500/30 p-4 rounded-xl mb-6 shadow-sm">
+                <div class="flex items-center gap-2.5 text-rose-700 font-bold text-body-md mb-1">
+                    <span class="material-symbols-outlined text-[20px]">feedback</span>
+                    <span>Catatan Evaluasi / Koreksi dari Konsolidator BKAD:</span>
+                </div>
+                <p class="text-body-md text-on-surface whitespace-pre-line pl-7">
+                    {{ $transaksi->catatan_konsolidator_terakhir }}
+                </p>
+                <p class="text-[11px] text-on-surface-variant pl-7 mt-2">
+                    Silakan perbaiki data saldo atau unggah ulang dokumen yang diminta sesuai petunjuk di atas, kemudian hubungi Konsolidator/Admin setelah selesai diperbaiki.
+                </p>
+            </div>
+        @endif
+
         <form action="{{ route('transaksi.upload.store', $transaksi->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -220,7 +235,7 @@
                 @php
                     $canUpload = Auth::user()->role === 'admin' || 
                                  (Auth::user()->role === 'operator' && 
-                                  (($allowReupload ?? false) || !$transaksi->file_ba_manual || !$transaksi->file_buku_kas || !$transaksi->file_buku_pembantu_bank || !$transaksi->file_rekening_koran));
+                                  ($transaksi->status_verifikasi === 'draft' || ($allowReupload ?? false) || !$transaksi->file_ba_manual || !$transaksi->file_buku_kas || !$transaksi->file_buku_pembantu_bank || !$transaksi->file_rekening_koran));
                 @endphp
                 @if($canUpload)
                 <button type="submit" class="px-8 py-2 bg-primary text-on-primary rounded-lg font-label-sm font-bold shadow hover:bg-primary/90 transition-colors flex items-center gap-2">

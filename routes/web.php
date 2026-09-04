@@ -47,10 +47,15 @@ Route::middleware('auth')->group(function () {
         Route::post('pengaturan/storage', [\App\Http\Controllers\StorageConfigController::class, 'update'])->name('pengaturan.storage.update');
         Route::post('pengaturan/storage/test', [\App\Http\Controllers\StorageConfigController::class, 'testConnection'])->name('pengaturan.storage.test');
         Route::post('pengaturan/storage/sync', [\App\Http\Controllers\StorageConfigController::class, 'syncFiles'])->name('pengaturan.storage.sync');
+
+        // Reset Status Transaksi ke Draft oleh Admin Pusat
+        Route::post('/transaksi/{transaksi}/reset-draft', [\App\Http\Controllers\TransaksiController::class, 'resetToDraft'])->name('transaksi.reset-draft');
     });
 
-    // Laporan (Admin & Konsolidator)
+    // Laporan & Verifikasi (Admin & Konsolidator)
     Route::middleware(['admin.konsolidator'])->group(function () {
+        Route::get('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanForm'])->name('transaksi.pemeriksaan');
+        Route::post('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanStore'])->name('transaksi.pemeriksaan.store');
         Route::get('/laporan/rekap-wa', [\App\Http\Controllers\LaporanController::class, 'rekapWa'])->name('laporan.rekap-wa');
         Route::get('/laporan/tunggakan', [\App\Http\Controllers\LaporanController::class, 'tunggakan'])->name('laporan.tunggakan');
         Route::get('/laporan/tunggakan/excel', [\App\Http\Controllers\LaporanController::class, 'eksporTunggakan'])->name('laporan.tunggakan.excel');
