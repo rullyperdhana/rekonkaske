@@ -208,12 +208,14 @@
                     </a>
                 </li>
                 @endif
+                @if(auth()->user()->role !== 'konsolidator')
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('pengaturan.instansi.*') ? 'text-white font-bold bg-white/10' : '' }}" href="{{ route('pengaturan.instansi.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Pengaturan Instansi (Kop)</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('profile.*') ? 'text-white font-bold bg-white/10' : '' }}" href="{{ route('profile.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>

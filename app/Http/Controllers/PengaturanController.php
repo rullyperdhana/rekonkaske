@@ -10,6 +10,10 @@ class PengaturanController extends Controller
 {
     public function edit()
     {
+        if (auth()->user()->role === 'konsolidator') {
+            abort(403, 'Akses ditolak: Menu Pengaturan Instansi (Kop) hanya diperuntukkan bagi Operator SKPD dan Administrator BKAD.');
+        }
+
         $skpdId = auth()->user()->skpd_id;
         $skpdName = auth()->user()->skpd ? auth()->user()->skpd->nama : 'BADAN KEUANGAN DAN ASET DAERAH';
         
@@ -37,6 +41,10 @@ class PengaturanController extends Controller
 
     public function update(Request $request)
     {
+        if (auth()->user()->role === 'konsolidator') {
+            abort(403, 'Akses ditolak: Menu Pengaturan Instansi (Kop) hanya diperuntukkan bagi Operator SKPD dan Administrator BKAD.');
+        }
+
         $skpdId = auth()->user()->skpd_id;
         $pengaturan = Pengaturan::firstOrCreate(['skpd_id' => $skpdId]);
         
