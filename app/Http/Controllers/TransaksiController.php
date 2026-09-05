@@ -461,6 +461,12 @@ class TransaksiController extends Controller
             abort(403, 'Akses khusus Admin dan Konsolidator.');
         }
 
+        // Proteksi Opsi 1: Jika sudah disahkan VALID, laporan dikunci total
+        if ($transaksi->status_konsolidator === 'valid') {
+            return redirect()->route('transaksi.pemeriksaan', $transaksi->id)
+                ->with('error', 'Aksi Ditolak: Laporan ini telah disahkan VALID dan terkunci permanen. Keputusan tidak dapat diubah.');
+        }
+
         $request->validate([
             'status_konsolidator' => 'required|in:valid,perlu_perbaikan',
             'catatan' => 'required_if:status_konsolidator,perlu_perbaikan|nullable|string|max:1000',
@@ -525,6 +531,7 @@ class TransaksiController extends Controller
         }
 
         $transaksi->status_verifikasi = 'draft';
+        $transaksi->status_konsolidator = 'menunggu';
         $transaksi->save();
 
         \App\Models\TransaksiCatatan::create([

@@ -341,85 +341,168 @@
                 </div>
 
                 <!-- Form Keputusan & Catatan Konsolidator -->
-                <div class="bg-surface rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
-                    <div class="p-5 bg-surface-container-low border-b border-outline-variant flex items-center gap-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[20px]">fact_check</span>
-                        </div>
-                        <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Keputusan Pemeriksaan</h2>
-                    </div>
-
-                    <form action="{{ route('transaksi.pemeriksaan.store', $transaksi->id) }}" method="POST" class="p-5 space-y-5">
-                        @csrf
-
-                        <!-- Radio Pilihan Status -->
-                        <div>
-                            <label class="block text-label-sm font-bold text-on-surface mb-2">Hasil Pemeriksaan Konsolidator:</label>
-                            <div class="grid grid-cols-1 gap-2.5">
-                                <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant hover:bg-surface-container-lowest cursor-pointer transition-colors">
-                                    <input type="radio" name="status_konsolidator" value="valid" {{ old('status_konsolidator', $transaksi->status_konsolidator) === 'valid' ? 'checked' : '' }} class="text-primary focus:ring-primary w-4 h-4">
-                                    <div class="flex items-center gap-2 text-emerald-700 font-bold text-body-md">
-                                        <span class="material-symbols-outlined text-[20px]">check_circle</span>
-                                        <span>Laporan Sesuai & Valid (Sah)</span>
-                                    </div>
-                                </label>
-
-                                <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant hover:bg-surface-container-lowest cursor-pointer transition-colors">
-                                    <input type="radio" name="status_konsolidator" value="perlu_perbaikan" {{ old('status_konsolidator', $transaksi->status_konsolidator) === 'perlu_perbaikan' ? 'checked' : '' }} class="text-rose-600 focus:ring-rose-500 w-4 h-4">
-                                    <div class="flex items-center gap-2 text-rose-700 font-bold text-body-md">
-                                        <span class="material-symbols-outlined text-[20px]">error</span>
-                                        <span>Terdapat Kesalahan / Perlu Perbaikan</span>
-                                    </div>
-                                </label>
+                <div class="bg-surface rounded-2xl border {{ $transaksi->status_konsolidator === 'valid' ? 'border-emerald-500/30' : 'border-outline-variant' }} shadow-sm overflow-hidden">
+                    
+                    @if($transaksi->status_konsolidator === 'valid')
+                        <!-- TAMPILAN TERKUNCI: Status Sudah Disahkan VALID -->
+                        <div class="p-5 bg-emerald-50 dark:bg-emerald-950/30 border-b border-emerald-500/20 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center shadow-sm">
+                                    <span class="material-symbols-outlined text-[20px]">verified</span>
+                                </div>
+                                <div>
+                                    <h2 class="font-headline-sm text-headline-sm font-bold text-emerald-900 dark:text-emerald-200">Sah &amp; Terkunci</h2>
+                                    <p class="text-[11px] text-emerald-700 dark:text-emerald-400">Pemeriksaan telah disahkan oleh Konsolidator</p>
+                                </div>
                             </div>
+                            <span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300 font-bold text-xs flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">lock</span>
+                                TERKUNCI
+                            </span>
                         </div>
 
-                        <!-- Textarea Catatan -->
-                        <div>
-                            <div class="flex items-center justify-between mb-1.5">
-                                <label class="text-label-sm font-bold text-on-surface">Catatan Kesalahan / Catatan Konsolidator:</label>
-                                <span class="text-[11px] text-on-surface-variant font-medium">(Bisa multi-catatan/riwayat)</span>
-                            </div>
-                            <textarea name="catatan" rows="4" maxlength="1000" placeholder="Tuliskan rincian kesalahan saldo, halaman bukti yang buram, atau petunjuk perbaikan bagi SKPD..." class="w-full p-3 text-body-md rounded-xl border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none">{{ old('catatan') }}</textarea>
-                            <p class="text-[11px] text-on-surface-variant mt-1">Catatan ini akan otomatis tercatat ke dalam timeline riwayat audit dan tampak pada akun SKPD.</p>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="space-y-2 pt-1">
-                            <button type="submit" name="action" value="save_and_next" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md active:scale-95">
-                                <span class="material-symbols-outlined text-[20px]">fast_forward</span>
-                                <span>Simpan &amp; Lanjut ke BA Berikutnya ⏩</span>
-                            </button>
-                            <button type="submit" name="action" value="save" class="w-full py-2.5 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-label-sm text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95">
-                                <span class="material-symbols-outlined text-[17px]">save</span>
-                                <span>Simpan Saja (Tetap di Halaman Ini)</span>
-                            </button>
-                        </div>
-                    </form>
-
-                    <!-- Tombol Hubungi Admin via WhatsApp jika Perlu Perbaikan -->
-                    @if($transaksi->status_konsolidator === 'perlu_perbaikan')
-                        @php
-                            $pesanWaAdmin = "Halo Admin SiReKa BKAD,\n\nTerdapat laporan rekonsiliasi yang perlu diubah kembali ke status DRAFT untuk diperbaiki ulang oleh SKPD:\n• SKPD: " . ($transaksi->skpd->nama ?? '-') . "\n• Periode: " . $namaBulan[$transaksi->periode_bulan - 1] . " " . $transaksi->periode_tahun . "\n• Rekening: " . ($transaksi->rekening->nomor ?? '-') . " (" . ($transaksi->rekening->bank ?? '-') . ")\n• Catatan Kesalahan Konsolidator:\n\"" . ($transaksi->catatan_konsolidator_terakhir ?? 'Mohon periksa data laporan') . "\"\n\nMohon bantuan Admin Pusat untuk merubah status transaksi ID #" . $transaksi->id . " menjadi DRAFT agar SKPD dapat memperbaikinya. Terima kasih.";
-                            
-                            $waUrl = !empty($adminWa) 
-                                ? 'https://api.whatsapp.com/send?phone=' . preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $adminWa)) . '&text=' . urlencode($pesanWaAdmin)
-                                : 'https://api.whatsapp.com/send?text=' . urlencode($pesanWaAdmin);
-                        @endphp
-                        <div class="p-5 border-t border-outline-variant bg-rose-500/5 space-y-3">
-                            <div class="flex items-start gap-2.5">
-                                <span class="material-symbols-outlined text-rose-600 text-[20px] shrink-0 mt-0.5">contact_support</span>
-                                <div class="text-xs text-on-surface">
-                                    <p class="font-bold text-rose-800">Langkah Selanjutnya:</p>
-                                    <p class="text-on-surface-variant">Hubungi Admin Pusat agar mereset transaksi ini menjadi <strong>Draft</strong> sehingga SKPD dapat memperbaiki data.</p>
+                        <div class="p-5 space-y-4">
+                            <!-- Info Identitas Pemeriksa -->
+                            <div class="p-4 rounded-xl bg-surface-container-low border border-outline-variant/60 space-y-2 text-xs">
+                                <div class="flex justify-between items-center text-on-surface-variant">
+                                    <span>Konsolidator Pemeriksa:</span>
+                                    <span class="font-bold text-on-surface uppercase">{{ $transaksi->checker->name ?? 'Konsolidator BKAD' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-on-surface-variant">
+                                    <span>NIP:</span>
+                                    <span class="font-mono font-bold text-on-surface">{{ $transaksi->checker->nip ?? '-' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center text-on-surface-variant">
+                                    <span>Waktu Disahkan:</span>
+                                    <span class="font-medium text-on-surface">
+                                        {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d F Y, H:i:s') . ' WITA' : '-' }}
+                                    </span>
                                 </div>
                             </div>
 
-                            <a href="{{ $waUrl }}" target="_blank" class="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95">
-                                <span class="material-symbols-outlined text-[20px]">chat</span>
-                                <span>Hubungi Admin via WhatsApp</span>
-                            </a>
+                            <!-- Alert Proteksi Data -->
+                            <div class="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
+                                <span class="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">shield</span>
+                                <p class="leading-relaxed">
+                                    <strong>Proteksi Berkas:</strong> Laporan ini telah berstatus <strong>VALID</strong> dan dikunci permanen untuk menjaga integritas akuntansi daerah. Formulir tidak dapat diubah-ubah lagi oleh Konsolidator.
+                                </p>
+                            </div>
+
+                            <!-- Tombol Berkas Cetak -->
+                            <div class="space-y-2 pt-1">
+                                <a href="{{ route('transaksi.bukti-digital-pdf', $transaksi->id) }}" target="_blank" class="w-full py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-sm">
+                                    <span class="material-symbols-outlined text-[18px]">verified</span>
+                                    <span>Lihat Tanda Bukti Digital (PDF)</span>
+                                </a>
+                                <a href="{{ route('ba.pdf', $transaksi->id) }}" target="_blank" class="w-full py-2 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-label-sm text-xs font-semibold transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]">print</span>
+                                    <span>Lihat Berita Acara (BA)</span>
+                                </a>
+                            </div>
+
+                            <!-- Wewenang Khusus Admin: Reset ke Draft jika ada kesalahan fatal -->
+                            @if(auth()->user()->role === 'admin')
+                                <div class="pt-4 mt-2 border-t border-outline-variant/60">
+                                    <div class="p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl space-y-2">
+                                        <div class="flex items-center gap-1.5 text-xs font-bold text-rose-800 dark:text-rose-300">
+                                            <span class="material-symbols-outlined text-[16px]">admin_panel_settings</span>
+                                            <span>Wewenang Administrator Pusat</span>
+                                        </div>
+                                        <p class="text-[11px] text-on-surface-variant leading-relaxed">
+                                            Jika ditemukan kesalahan lampiran atau ada instruksi revisi ulang dari BPK/Inspektorat, Admin dapat membuka kunci laporan ini dengan meresetnya menjadi <strong>Draft</strong>.
+                                        </p>
+                                        <form action="{{ route('transaksi.reset-draft', $transaksi->id) }}" method="POST" onsubmit="return confirm('PERINGATAN: Apakah Anda yakin ingin MEMBUKA KUNCI dan mengembalikan laporan ini ke status DRAFT? SKPD akan dapat mengubah saldo dan dokumen kembali.')">
+                                            @csrf
+                                            <button type="submit" class="w-full py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                                                <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                                                <span>Buka Kunci &amp; Reset ke Draft</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endif
                         </div>
+                    @else
+                        <!-- TAMPILAN INTERAKTIF: Status Masih Menunggu / Perlu Perbaikan -->
+                        <div class="p-5 bg-surface-container-low border-b border-outline-variant flex items-center gap-2.5">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[20px]">fact_check</span>
+                            </div>
+                            <h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Keputusan Pemeriksaan</h2>
+                        </div>
+
+                        <form action="{{ route('transaksi.pemeriksaan.store', $transaksi->id) }}" method="POST" class="p-5 space-y-5">
+                            @csrf
+
+                            <!-- Radio Pilihan Status -->
+                            <div>
+                                <label class="block text-label-sm font-bold text-on-surface mb-2">Hasil Pemeriksaan Konsolidator:</label>
+                                <div class="grid grid-cols-1 gap-2.5">
+                                    <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant hover:bg-surface-container-lowest cursor-pointer transition-colors">
+                                        <input type="radio" name="status_konsolidator" value="valid" {{ old('status_konsolidator', $transaksi->status_konsolidator) === 'valid' ? 'checked' : '' }} class="text-primary focus:ring-primary w-4 h-4">
+                                        <div class="flex items-center gap-2 text-emerald-700 font-bold text-body-md">
+                                            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+                                            <span>Laporan Sesuai & Valid (Sah)</span>
+                                        </div>
+                                    </label>
+
+                                    <label class="flex items-center gap-3 p-3 rounded-xl border border-outline-variant hover:bg-surface-container-lowest cursor-pointer transition-colors">
+                                        <input type="radio" name="status_konsolidator" value="perlu_perbaikan" {{ old('status_konsolidator', $transaksi->status_konsolidator) === 'perlu_perbaikan' ? 'checked' : '' }} class="text-rose-600 focus:ring-rose-500 w-4 h-4">
+                                        <div class="flex items-center gap-2 text-rose-700 font-bold text-body-md">
+                                            <span class="material-symbols-outlined text-[20px]">error</span>
+                                            <span>Terdapat Kesalahan / Perlu Perbaikan</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Textarea Catatan -->
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <label class="text-label-sm font-bold text-on-surface">Catatan Kesalahan / Catatan Konsolidator:</label>
+                                    <span class="text-[11px] text-on-surface-variant font-medium">(Bisa multi-catatan/riwayat)</span>
+                                </div>
+                                <textarea name="catatan" rows="4" maxlength="1000" placeholder="Tuliskan rincian kesalahan saldo, halaman bukti yang buram, atau petunjuk perbaikan bagi SKPD..." class="w-full p-3 text-body-md rounded-xl border border-outline-variant bg-surface focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all resize-none">{{ old('catatan') }}</textarea>
+                                <p class="text-[11px] text-on-surface-variant mt-1">Catatan ini akan otomatis tercatat ke dalam timeline riwayat audit dan tampak pada akun SKPD.</p>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="space-y-2 pt-1">
+                                <button type="submit" name="action" value="save_and_next" class="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md active:scale-95">
+                                    <span class="material-symbols-outlined text-[20px]">fast_forward</span>
+                                    <span>Simpan &amp; Lanjut ke BA Berikutnya ⏩</span>
+                                </button>
+                                <button type="submit" name="action" value="save" class="w-full py-2.5 px-4 rounded-xl bg-surface-container hover:bg-surface-container-high text-on-surface border border-outline-variant font-label-sm text-xs font-semibold transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                                    <span class="material-symbols-outlined text-[17px]">save</span>
+                                    <span>Simpan Saja (Tetap di Halaman Ini)</span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Tombol Hubungi Admin via WhatsApp jika Perlu Perbaikan -->
+                        @if($transaksi->status_konsolidator === 'perlu_perbaikan')
+                            @php
+                                $pesanWaAdmin = "Halo Admin SiReKa BKAD,\n\nTerdapat laporan rekonsiliasi yang perlu diubah kembali ke status DRAFT untuk diperbaiki ulang oleh SKPD:\n• SKPD: " . ($transaksi->skpd->nama ?? '-') . "\n• Periode: " . $namaBulan[$transaksi->periode_bulan - 1] . " " . $transaksi->periode_tahun . "\n• Rekening: " . ($transaksi->rekening->nomor ?? '-') . " (" . ($transaksi->rekening->bank ?? '-') . ")\n• Catatan Kesalahan Konsolidator:\n\"" . ($transaksi->catatan_konsolidator_terakhir ?? 'Mohon periksa data laporan') . "\"\n\nMohon bantuan Admin Pusat untuk merubah status transaksi ID #" . $transaksi->id . " menjadi DRAFT agar SKPD dapat memperbaikinya. Terima kasih.";
+                                
+                                $waUrl = !empty($adminWa) 
+                                    ? 'https://api.whatsapp.com/send?phone=' . preg_replace('/^0/', '62', preg_replace('/[^0-9]/', '', $adminWa)) . '&text=' . urlencode($pesanWaAdmin)
+                                    : 'https://api.whatsapp.com/send?text=' . urlencode($pesanWaAdmin);
+                            @endphp
+                            <div class="p-5 border-t border-outline-variant bg-rose-500/5 space-y-3">
+                                <div class="flex items-start gap-2.5">
+                                    <span class="material-symbols-outlined text-rose-600 text-[20px] shrink-0 mt-0.5">contact_support</span>
+                                    <div class="text-xs text-on-surface">
+                                        <p class="font-bold text-rose-800">Langkah Selanjutnya:</p>
+                                        <p class="text-on-surface-variant">Hubungi Admin Pusat agar mereset transaksi ini menjadi <strong>Draft</strong> sehingga SKPD dapat memperbaiki data.</p>
+                                    </div>
+                                </div>
+
+                                <a href="{{ $waUrl }}" target="_blank" class="w-full py-2.5 px-4 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-label-sm font-bold transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-95">
+                                    <span class="material-symbols-outlined text-[20px]">chat</span>
+                                    <span>Hubungi Admin via WhatsApp</span>
+                                </a>
+                            </div>
+                        @endif
                     @endif
                 </div>
 

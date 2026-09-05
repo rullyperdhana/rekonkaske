@@ -32,6 +32,11 @@
                 </div>
                 
                 <div>
+                    <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">NIP (Nomor Induk Pegawai)</label>
+                    <input type="text" name="nip" value="{{ old('nip', $user->nip) }}" placeholder="contoh: 19850115 201001 1 002" class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md font-mono focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                </div>
+                
+                <div>
                     <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">Username</label>
                     <input type="text" name="username" value="{{ old('username', $user->username) }}" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                 </div>

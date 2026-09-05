@@ -151,5 +151,13 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Saklar Kontrol Izin Unduh SKPD (ON/OFF Toggle):** Tuas kontrol di Pengaturan Instansi bagi Admin BKAD untuk mengaktifkan atau menonaktifkan izin download Surat Tanda Bukti Digital bagi Operator SKPD (dengan proteksi keamanan 403 saat OFF).
   * **Stempel Digital Pengesahan (*Digital e-Seal*) pada Berita Acara (BA) PDF:** Berita Acara bulanan otomatis mencetak cap stempel pengesahan Konsolidator BKAD ketika status rekonsiliasi telah disahkan *Valid*.
   * **Peningkatan Laman Verifikasi Publik QR Code (`/verifikasi/{id}`):** Tampilan status ganda transparan yang memuat bukti pengesahan Konsolidator BKAD dan tombol unduh slip digital.
+* **v2.5.0** - **Submenu & Halaman Profil Bento Modern, Dukungan NIP Pegawai, & Proteksi Penguncian Pemeriksaan Konsolidator:**
+  * **Navigasi Submenu & Topbar Dropdown:** Penambahan menu **"Profil Saya"** pada submenu Pengaturan Sidebar dengan deteksi rute aktif, serta peningkatan popover profil akun di Topbar (lengkap dengan inisial avatar, profil akun, ubah password, dan manajemen user).
+  * **Desain Ulang Halaman Profil Bento Grid (`/profile`):** Tampilan modern Material Design 3 dengan kartu identitas pengguna (Avatar inisial, status aktif, badge Role, unit kerja SKPD BKAD Tapin, tanggal bergabung), form pembaruan data diri (Nama, NIP, Username, Email), dan tautan cepat ke ubah password.
+  * **Dukungan NIP (Nomor Induk Pegawai):** Penambahan kolom `nip` pada database pengguna (`users`), validasi FormRequest, serta form input pada profil akun dan menu Pengaturan Pengguna.
+  * **Pencetakan NIP Otomatis pada Dokumen Verifikasi:** Nomor NIP pemeriksa kini otomatis tercetak resmi di bawah nama pejabat Konsolidator pada Surat Tanda Bukti Pemeriksaan Rekonsiliasi Digital (PDF), stempel Berita Acara (BA), dan landing page QR code otentikasi.
+  * **Proteksi Penguncian Pemeriksaan Konsolidator (Anti-Tampering Lock):** Formulir pemeriksaan laporan rekonsiliasi otomatis dikunci (*Locked & Read-Only*) saat status transaksi telah disahkan **VALID** guna mencegah perubahan data sembarangan.
+  * **Panel Pengesahan Resmi:** Panel keputusan pemeriksaan digantikan dengan tampilan status **"Sah & Terkunci"** berbadge `TERKUNCI` dengan ringkasan pemeriksa (Nama, NIP, Waktu Disahkan) dan tombol unduh langsung slip digital PDF & BA.
+  * **Wewenang Khusus Buka Kunci Admin:** Administrator Pusat memiliki tombol wewenang khusus *"Buka Kunci & Reset ke Draft"* yang secara otomatis mengembalikan status transaksi dan konsolidator ke tahap awal jika terdapat instruksi revisi resmi.
 
 

@@ -23,6 +23,7 @@ class StoreUserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:30',
             'username' => 'required|string|max:255|unique:users',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', \Illuminate\Validation\Rules\Password::defaults(), 'confirmed'],

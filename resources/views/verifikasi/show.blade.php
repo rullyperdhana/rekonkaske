@@ -50,7 +50,7 @@
                 <div class="text-xs">
                     <p class="font-bold text-emerald-900 text-sm">Pengesahan Konsolidator BKAD:</p>
                     <p class="text-emerald-700 mt-0.5">
-                        Diperiksa oleh <strong>{{ $transaksi->checker->name ?? 'Konsolidator BKAD' }}</strong> pada {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d F Y, H:i') . ' WITA' : '-' }}.
+                        Diperiksa oleh <strong>{{ $transaksi->checker->name ?? 'Konsolidator BKAD' }}</strong>{{ !empty($transaksi->checker->nip) ? ' (NIP. ' . $transaksi->checker->nip . ')' : '' }} pada {{ $transaksi->checked_at ? \Carbon\Carbon::parse($transaksi->checked_at)->timezone('Asia/Makassar')->format('d F Y, H:i') . ' WITA' : '-' }}.
                     </p>
                     <div class="mt-2 flex items-center gap-1 text-[11px] font-semibold text-emerald-800">
                         <span class="material-symbols-outlined text-[14px]">check</span>

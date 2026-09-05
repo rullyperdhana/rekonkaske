@@ -26,6 +26,7 @@ class UpdateUserRequest extends FormRequest
         
         $rules = [
             'name' => 'required|string|max:255',
+            'nip' => 'nullable|string|max:30',
             'username' => 'required|string|max:255|unique:users,username,' . $userId,
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
             'role' => 'required|in:admin,konsolidator,operator',

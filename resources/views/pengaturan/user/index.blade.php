@@ -114,7 +114,12 @@
                     <tbody class="divide-y divide-outline-variant">
                         @forelse($users as $user)
                         <tr class="hover:bg-surface-container-lowest transition-colors">
-                            <td class="py-3 px-4 font-body-md text-on-surface">{{ $user->name }}</td>
+                            <td class="py-3 px-4 font-body-md text-on-surface">
+                                <div class="font-bold">{{ $user->name }}</div>
+                                @if($user->nip)
+                                    <div class="text-[11px] font-mono text-on-surface-variant">NIP. {{ $user->nip }}</div>
+                                @endif
+                            </td>
                             <td class="py-3 px-4 font-data-tabular text-data-tabular text-on-surface-variant">{{ $user->username }}</td>
                             <td class="py-3 px-4 font-body-md text-on-surface">{{ $user->skpd ? $user->skpd->nama : 'BKAD Pusat' }}</td>
                             <td class="py-3 px-4 font-body-md text-on-surface">{{ ucfirst($user->role) }}</td>

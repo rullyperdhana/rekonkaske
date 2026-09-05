@@ -25,17 +25,48 @@
                     <span class="text-[11px] text-primary font-bold leading-tight uppercase">{{ Auth::user()->role === 'operator' ? 'Operator: ' . (Auth::user()->skpd->nama ?? 'SKPD') : Auth::user()->role }}</span>
                 </div>
             </button>
-            <div class="absolute right-0 top-full mt-2 w-64 bg-white border border-outline-variant rounded shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
-                <div class="p-4 text-left">
-                    <p class="text-sm font-semibold">{{ Auth::user()->name ?? 'User' }}</p>
-                    <p class="text-xs text-gray-500">{{ Auth::user()->email ?? 'user@example.com' }}</p>
-                    <p class="text-[11px] font-bold text-primary mt-2 uppercase">{{ Auth::user()->role === 'operator' ? 'Operator: ' . (Auth::user()->skpd->nama ?? 'SKPD') : Auth::user()->role }}</p>
+            <div class="absolute right-0 top-full mt-2 w-72 bg-surface-container-lowest border border-outline-variant rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 overflow-hidden">
+                <div class="p-4 bg-surface-container-low/50 border-b border-outline-variant/60">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-sm border border-primary/20">
+                            {{ strtoupper(substr(Auth::user()->name ?? 'U', 0, 2)) }}
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-on-surface truncate">{{ Auth::user()->name ?? 'User' }}</p>
+                            <p class="text-xs text-on-surface-variant truncate font-mono">{{ Auth::user()->email ?? 'user@example.com' }}</p>
+                            <span class="inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary">
+                                {{ Auth::user()->role === 'operator' ? (Auth::user()->skpd->nama ?? 'Operator SKPD') : Auth::user()->role }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <hr>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">Log Out</button>
-                </form>
+                
+                <div class="py-2">
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[20px] text-on-surface-variant">account_circle</span>
+                        <span>Profil Saya</span>
+                    </a>
+                    <a href="{{ route('password.edit') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[20px] text-on-surface-variant">key</span>
+                        <span>Ubah Password</span>
+                    </a>
+                    @if(Auth::user()->role === 'admin')
+                    <a href="{{ route('user.index') }}" class="flex items-center gap-3 px-4 py-2.5 text-sm text-on-surface hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-[20px] text-on-surface-variant">manage_accounts</span>
+                        <span>Pengaturan Pengguna</span>
+                    </a>
+                    @endif
+                </div>
+
+                <div class="border-t border-outline-variant/60 p-2 bg-surface-container-low/30">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:bg-error/10 rounded-lg transition-colors font-medium">
+                            <span class="material-symbols-outlined text-[20px]">logout</span>
+                            <span>Keluar Sistem</span>
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
