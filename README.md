@@ -159,5 +159,9 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Proteksi Penguncian Pemeriksaan Konsolidator (Anti-Tampering Lock):** Formulir pemeriksaan laporan rekonsiliasi otomatis dikunci (*Locked & Read-Only*) saat status transaksi telah disahkan **VALID** guna mencegah perubahan data sembarangan.
   * **Panel Pengesahan Resmi:** Panel keputusan pemeriksaan digantikan dengan tampilan status **"Sah & Terkunci"** berbadge `TERKUNCI` dengan ringkasan pemeriksa (Nama, NIP, Waktu Disahkan) dan tombol unduh langsung slip digital PDF & BA.
   * **Wewenang Khusus Buka Kunci Admin:** Administrator Pusat memiliki tombol wewenang khusus *"Buka Kunci & Reset ke Draft"* yang secara otomatis mengembalikan status transaksi dan konsolidator ke tahap awal jika terdapat instruksi revisi resmi.
+* **v2.5.1** - **Animasi Bioluminescent Fireflies Interaktif & Desain Modern Login Page:**
+  * **Animasi Latar Belakang Interaktif (*Bioluminescent Golden Fireflies*):** Implementasi canvas HTML5 60 FPS dengan partikel cahaya lembut berpendar emas, amber, dan hijau zamrud yang meliuk dinamis serta menghindari pergerakan kursor mouse (*swirling evasion & organic wandering*).
+  * **Top Navigation Bar Glassmorphism:** Bilah navigasi atas transparan dengan identitas resmi Pemkab Tapin, jam digital real-time Waktu Indonesia Tengah (**Live WITA Clock**), dan tautan cepat kembali ke halaman Beranda (*Landing*).
+  * **Peningkatan Visual Kartu Login:** Desain kartu minimalis berbasis font *Plus Jakarta Sans*, ikon *Material Symbols*, tombol intip kata sandi (*toggle eye visibility*), penataan kartu *Math Captcha* yang proporsional, serta tombol aksi bersudut halus dengan gradasi warna khas brand.
 
 
