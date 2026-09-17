@@ -14,7 +14,7 @@
 <body class="min-h-screen flex items-center justify-center p-4 py-8">
     @php
         $selisih = abs($transaksi->bku_saldo_akhir - $transaksi->bank_saldo_akhir);
-        $hasSelisih = $selisih > 0.01;
+        $hasSelisih = round($selisih, 2) > 0;
         $isValidKonsolidator = ($transaksi->status_konsolidator === 'valid');
         
         $regNo = 'REG-KONS/TAPIN/' . $transaksi->periode_tahun . '/' . str_pad($transaksi->periode_bulan, 2, '0', STR_PAD_LEFT) . '/' . str_pad($transaksi->id, 5, '0', STR_PAD_LEFT);
@@ -103,7 +103,7 @@
                         <span class="flex items-center gap-1">
                             <span class="material-symbols-outlined text-[15px]">check_circle</span> Status Selisih:
                         </span>
-                        <span class="font-bold">SESUAI / KLOP (Rp 0)</span>
+                        <span class="font-bold">SESUAI / KLOP (Rp 0,00)</span>
                     </div>
                     @endif
                 </div>

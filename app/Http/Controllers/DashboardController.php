@@ -46,7 +46,7 @@ class DashboardController extends Controller
                 $summary['bku'] = $latestTransaksi->bku_saldo_akhir;
                 $summary['bank'] = $latestTransaksi->bank_saldo_akhir;
                 $summary['info'] = 'Periode aktif: ' . $namaBulan[$latestTransaksi->periode_bulan - 1] . ' ' . $latestTransaksi->periode_tahun . ' | ' . ($latestTransaksi->skpd->nama ?? '');
-                $summary['is_matched'] = abs($latestTransaksi->bku_saldo_akhir - $latestTransaksi->bank_saldo_akhir) < 0.01;
+                $summary['is_matched'] = round(abs($latestTransaksi->bku_saldo_akhir - $latestTransaksi->bank_saldo_akhir), 2) == 0;
             }
         } else {
             $allTransactions = (clone $query)->orderBy('periode_bulan', 'asc')->orderBy('created_at', 'asc')->get();
@@ -61,7 +61,7 @@ class DashboardController extends Controller
                     $summary['bku'] += $trx->bku_saldo_akhir;
                     $summary['bank'] += $trx->bank_saldo_akhir;
                 }
-                $summary['is_matched'] = abs($summary['bku'] - $summary['bank']) < 0.01;
+                $summary['is_matched'] = round(abs($summary['bku'] - $summary['bank']), 2) == 0;
             }
         }
 
@@ -170,7 +170,7 @@ class DashboardController extends Controller
                 }
                 
                 // Selisih
-                if (abs($trxAdv->bku_saldo_akhir - $trxAdv->bank_saldo_akhir) > 0.01) {
+                if (round(abs($trxAdv->bku_saldo_akhir - $trxAdv->bank_saldo_akhir), 2) > 0) {
                     $advChartData['selisih'][$mIndex]++;
                 }
                 
@@ -239,7 +239,7 @@ class DashboardController extends Controller
                 $skpdPatuhCount = Transaksi::where('periode_tahun', $tahunAktif)
                     ->where('periode_bulan', $targetMonth)
                     ->where('status_verifikasi', 'verified')
-                    ->whereRaw('ABS(bku_saldo_akhir - bank_saldo_akhir) < 0.01')
+                    ->whereRaw('ROUND(ABS(bku_saldo_akhir - bank_saldo_akhir), 2) = 0')
                     ->distinct('skpd_id')
                     ->count('skpd_id');
             } else {
@@ -272,7 +272,7 @@ class DashboardController extends Controller
                 $selisihCount = 0;
                 
                 foreach ($transaksis as $trx) {
-                    if (abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) > 0.01) {
+                    if (round(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2) > 0) {
                         $selisihCount++;
                     }
                     
@@ -288,7 +288,7 @@ class DashboardController extends Controller
                         $totalScore += 40;  // Terlambat (> Tgl 15)
                     }
 
-                    if ($trx->status_verifikasi == 'verified' && abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) < 0.01) {
+                    if ($trx->status_verifikasi == 'verified' && round(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2) == 0) {
                         $totalScore += 20;
                     }
                 }
@@ -347,7 +347,7 @@ class DashboardController extends Controller
             $selisihCount = 0;
             
             foreach ($transaksis as $trx) {
-                if (abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) > 0.01) {
+                if (round(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2) > 0) {
                     $selisihCount++;
                 }
                 
@@ -362,7 +362,7 @@ class DashboardController extends Controller
                     $totalScore += 40;
                 }
 
-                if ($trx->status_verifikasi == 'verified' && abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir) < 0.01) {
+                if ($trx->status_verifikasi == 'verified' && round(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 2) == 0) {
                     $totalScore += 20;
                 }
             }

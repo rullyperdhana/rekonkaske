@@ -163,5 +163,11 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Animasi Latar Belakang Interaktif (*Bioluminescent Golden Fireflies*):** Implementasi canvas HTML5 60 FPS dengan partikel cahaya lembut berpendar emas, amber, dan hijau zamrud yang meliuk dinamis serta menghindari pergerakan kursor mouse (*swirling evasion & organic wandering*).
   * **Top Navigation Bar Glassmorphism:** Bilah navigasi atas transparan dengan identitas resmi Pemkab Tapin, jam digital real-time Waktu Indonesia Tengah (**Live WITA Clock**), dan tautan cepat kembali ke halaman Beranda (*Landing*).
   * **Peningkatan Visual Kartu Login:** Desain kartu minimalis berbasis font *Plus Jakarta Sans*, ikon *Material Symbols*, tombol intip kata sandi (*toggle eye visibility*), penataan kartu *Math Captcha* yang proporsional, serta tombol aksi bersudut halus dengan gradasi warna khas brand.
+* **v2.5.2** - **Dukungan Penuh Presisi Data Sen (2 Angka di Belakang Koma) & Anti-Floating Point Precision:**
+  * **Input Masking Cerdas & Responsif:** Pembaruan logika JavaScript pada form transaksi (`/transaksi/create` & `/transaksi/{id}/edit`) agar pengguna dapat mengetik koma `,` atau titik desimal numpad `.` secara langsung tanpa terhapus otomatis, serta mempertahankan angka desimal sen (contoh: `,50` atau `,75`).
+  * **Normalisasi Otomatis Saat Blur:** Format nominal otomatis dirapikan ke standar 2 desimal (`Rp xx.xxx,xx`) ketika berpindah kolom input.
+  * **Kalkulasi Akurat Bebas Floating-Point Noise:** Perhitungan otomatis saldo akhir BKU, Bank, dan Selisih kini menggunakan pembulatan presisi `Math.round((awal + terima - keluar) * 100) / 100` dan disimpan dalam format `.toFixed(2)` untuk mencegah desimal tak berhingga bawaan JavaScript.
+  * **Penyempurnaan Validasi FormRequest:** Pengujian kondisi selisih pada `StoreTransaksiRequest` dan `UpdateTransaksiRequest` kini menggunakan `round(abs($bku - $bank), 2) > 0` guna mencegah penolakan form palsu (*false-positive* selisih).
+  * **Ambang Batas Selisih Terkalibrasi pada Dashboard & Laporan:** Mengeliminasi *dead-zone* fixed `0.01` pada `DashboardController`, halaman Antrean, Pemeriksaan, dan Verifikasi QR Code, sehingga selisih sekecil Rp 0,01 (1 sen) sah dan presisi terhitung ke dalam riwayat selisih kas maupun rapor kepatuhan.
 
 

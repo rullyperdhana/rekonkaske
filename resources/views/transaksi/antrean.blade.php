@@ -199,7 +199,7 @@
                         @forelse($transaksis as $trx)
                             @php
                                 $selisih = abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir);
-                                $isBalance = $selisih < 0.01;
+                                $isBalance = round($selisih, 2) == 0;
                                 
                                 // Hitung jumlah dokumen terupload
                                 $docsCount = 0;
@@ -235,7 +235,7 @@
                                     <div class="mt-1">
                                         @if($isBalance)
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
-                                                <span class="material-symbols-outlined text-[13px]">check_circle</span> KLOP (Rp 0)
+                                                <span class="material-symbols-outlined text-[13px]">check_circle</span> KLOP (Rp 0,00)
                                             </span>
                                         @else
                                             <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700 border border-rose-500/20">

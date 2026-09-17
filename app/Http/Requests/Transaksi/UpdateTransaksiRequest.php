@@ -16,7 +16,7 @@ class UpdateTransaksiRequest extends FormRequest
     {
         $bku = (float) $this->bku_saldo_akhir;
         $bank = (float) $this->bank_saldo_akhir;
-        $isSelisih = abs($bku - $bank) > 0;
+        $isSelisih = round(abs($bku - $bank), 2) > 0;
         $transaksiId = $this->route('transaksi')->id;
 
         return [

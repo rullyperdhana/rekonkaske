@@ -115,7 +115,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="font-data-tabular font-bold text-on-surface-variant">Rp</span>
                                         <input type="hidden" name="bku_saldo_akhir" id="bku_saldo_akhir" value="{{ old('bku_saldo_akhir', $transaksi->bku_saldo_akhir) }}">
-                                        <span id="bku_saldo_akhir_display" class="font-data-tabular font-bold text-[16px]">0</span>
+                                        <span id="bku_saldo_akhir_display" class="font-data-tabular font-bold text-[16px]">0,00</span>
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@
                                     <div class="flex items-center gap-2">
                                         <span class="font-data-tabular font-bold text-on-surface-variant">Rp</span>
                                         <input type="hidden" name="bank_saldo_akhir" id="bank_saldo_akhir" value="{{ old('bank_saldo_akhir', $transaksi->bank_saldo_akhir) }}">
-                                        <span id="bank_saldo_akhir_display" class="font-data-tabular font-bold text-[16px]">0</span>
+                                        <span id="bank_saldo_akhir_display" class="font-data-tabular font-bold text-[16px]">0,00</span>
                                     </div>
                                 </div>
                             </div>
@@ -180,7 +180,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="font-data-tabular font-bold text-error">Rp</span>
-                        <span class="font-data-tabular font-bold text-[20px] text-error" id="selisih_value">0.00</span>
+                        <span class="font-data-tabular font-bold text-[20px] text-error" id="selisih_value">0,00</span>
                     </div>
                 </div>
                 
@@ -224,16 +224,52 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // --- Rupiah Formatter ---
-            function formatRupiah(angka) {
-                if (angka === null || angka === undefined || angka === '') return '0';
+            function formatRupiahDisplay(angka) {
+                if (angka === null || angka === undefined || angka === '') return '0,00';
                 let num = parseFloat(angka);
-                if (isNaN(num)) return '0';
-                return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(num);
+                if (isNaN(num)) return '0,00';
+                return new Intl.NumberFormat('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(num);
             }
-            function parseRupiah(str) {
-                if (!str) return 0;
-                let cleaned = String(str).replace(/\./g, '').replace(/,/g, '.');
-                return parseFloat(cleaned) || 0;
+
+            function formatRupiahInput(val) {
+                if (val === null || val === undefined) return { display: '0', raw: 0 };
+                let str = String(val).trim();
+                if (!str) return { display: '', raw: 0 };
+
+                // Handle numpad decimal dot: if user typed dot, and there's no comma, treat last dot as comma
+                let commaCount = (str.match(/,/g) || []).length;
+                let dotCount = (str.match(/\./g) || []).length;
+
+                if (commaCount === 0 && dotCount === 1) {
+                    let lastDot = str.lastIndexOf('.');
+                    if (str.length - lastDot <= 3) {
+                        str = str.slice(0, lastDot) + ',' + str.slice(lastDot + 1);
+                    }
+                }
+
+                let hasComma = str.includes(',');
+                let parts = str.split(',');
+                let intDigits = parts[0].replace(/\D/g, '');
+                let decDigits = parts.length > 1 ? parts.slice(1).join('').replace(/\D/g, '').slice(0, 2) : '';
+
+                if (!intDigits && !hasComma) {
+                    return { display: '', raw: 0 };
+                }
+
+                if (intDigits.length > 1) {
+                    intDigits = intDigits.replace(/^0+/, '') || '0';
+                }
+
+                let formattedInt = intDigits ? intDigits.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : '0';
+                let display = formattedInt;
+                if (hasComma) {
+                    display += ',' + decDigits;
+                }
+
+                let rawStr = (intDigits || '0') + (decDigits ? '.' + decDigits : '');
+                let raw = parseFloat(rawStr) || 0;
+
+                return { display, raw };
             }
 
             // --- Hidden Inputs (raw values) ---
@@ -253,19 +289,26 @@
             // --- Attach formatter to all display inputs ---
             document.querySelectorAll('input[data-target]').forEach(displayInput => {
                 const rawVal = parseFloat(displayInput.value) || 0;
-                displayInput.value = formatRupiah(rawVal);
+                displayInput.value = formatRupiahDisplay(rawVal);
+                document.getElementById(displayInput.dataset.target).value = rawVal.toFixed(2);
 
                 displayInput.addEventListener('input', function() {
                     const cursorPos = this.selectionStart;
-                    const oldLen = this.value.length;
+                    const oldVal = this.value;
+                    const charsFromRight = oldVal.length - cursorPos;
 
-                    let raw = parseRupiah(this.value);
-                    document.getElementById(this.dataset.target).value = raw;
-                    this.value = formatRupiah(raw);
+                    const res = formatRupiahInput(this.value);
+                    document.getElementById(this.dataset.target).value = res.raw.toFixed(2);
+                    this.value = res.display;
 
-                    const newLen = this.value.length;
-                    const newCursorPos = cursorPos + (newLen - oldLen);
-                    this.setSelectionRange(newCursorPos, newCursorPos);
+                    const newPos = Math.max(0, this.value.length - charsFromRight);
+                    this.setSelectionRange(newPos, newPos);
+                });
+
+                displayInput.addEventListener('blur', function() {
+                    let raw = parseFloat(document.getElementById(this.dataset.target).value) || 0;
+                    this.value = formatRupiahDisplay(raw);
+                    document.getElementById(this.dataset.target).value = raw.toFixed(2);
                 });
             });
 
@@ -274,9 +317,9 @@
                 const awal = parseFloat(bkuAwal.value) || 0;
                 const terima = parseFloat(bkuTerima.value) || 0;
                 const keluar = parseFloat(bkuKeluar.value) || 0;
-                const akhir = awal + terima - keluar;
-                bkuAkhir.value = akhir;
-                document.getElementById('bku_saldo_akhir_display').textContent = formatRupiah(akhir);
+                const akhir = Math.round((awal + terima - keluar) * 100) / 100;
+                bkuAkhir.value = akhir.toFixed(2);
+                document.getElementById('bku_saldo_akhir_display').textContent = formatRupiahDisplay(akhir);
                 calculateSelisih();
             }
 
@@ -284,17 +327,17 @@
                 const awal = parseFloat(bankAwal.value) || 0;
                 const terima = parseFloat(bankTerima.value) || 0;
                 const keluar = parseFloat(bankKeluar.value) || 0;
-                const akhir = awal + terima - keluar;
-                bankAkhir.value = akhir;
-                document.getElementById('bank_saldo_akhir_display').textContent = formatRupiah(akhir);
+                const akhir = Math.round((awal + terima - keluar) * 100) / 100;
+                bankAkhir.value = akhir.toFixed(2);
+                document.getElementById('bank_saldo_akhir_display').textContent = formatRupiahDisplay(akhir);
                 calculateSelisih();
             }
 
             function calculateSelisih() {
                 const bku = parseFloat(bkuAkhir.value) || 0;
                 const bank = parseFloat(bankAkhir.value) || 0;
-                const selisih = bku - bank;
-                selisihValue.textContent = formatRupiah(selisih);
+                const selisih = Math.round(Math.abs(bku - bank) * 100) / 100;
+                selisihValue.textContent = formatRupiahDisplay(selisih);
                 selisihContainer.classList.remove('hidden');
             }
 

@@ -111,7 +111,7 @@
 
         @php
             $selisih = abs($transaksi->bku_saldo_akhir - $transaksi->bank_saldo_akhir);
-            $isBalance = $selisih < 0.01;
+            $isBalance = round($selisih, 2) == 0;
         @endphp
 
         <!-- Main Grid -->

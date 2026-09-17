@@ -55,7 +55,7 @@
                 <div>
                     <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Total Kas Tervalidasi</span>
                     <div class="mt-1">
-                        <span class="text-2xl font-extrabold text-on-surface tracking-tight font-mono">Rp {{ number_format($kpi['total_saldo'], 0, ',', '.') }}</span>
+                        <span class="text-2xl font-extrabold text-on-surface tracking-tight font-mono">Rp {{ number_format($kpi['total_saldo'], 2, ',', '.') }}</span>
                     </div>
                     <p class="text-[11px] text-on-surface-variant mt-1">
                         Akumulasi saldo kas tervalidasi sah
