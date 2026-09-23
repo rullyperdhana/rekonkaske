@@ -131,7 +131,12 @@ class TransaksiController extends Controller
             $validated['snapshot_penutup_ba'] = $pengaturanGlobal->teks_penutup_ba ?? '** Rincian terlampir';
         }
 
-        Transaksi::create($validated);
+        $transaksi = Transaksi::create($validated);
+
+        // Kirim notifikasi Telegram otomatis jika status verified (Posting Final)
+        if (($transaksi->status_verifikasi ?? '') === 'verified') {
+            app(\App\Services\TelegramService::class)->notifyPostingFinal($transaksi);
+        }
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil disimpan.');
     }
@@ -194,7 +199,15 @@ class TransaksiController extends Controller
             $validated['snapshot_penutup_ba'] = $pengaturanGlobal->teks_penutup_ba ?? '** Rincian terlampir';
         }
 
+        $wasDraft = ($transaksi->status_verifikasi !== 'verified');
+
         $transaksi->update($validated);
+
+        // Kirim notifikasi Telegram otomatis jika posisi verified (Posting Final)
+        // Terpicu jika status baru adalah verified dan sebelumnya bukan verified, atau disimpan oleh Operator
+        if (($transaksi->status_verifikasi ?? '') === 'verified' && ($wasDraft || Auth::user()->role === 'operator')) {
+            app(\App\Services\TelegramService::class)->notifyPostingFinal($transaksi);
+        }
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil diperbarui.');
     }

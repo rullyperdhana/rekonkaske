@@ -54,6 +54,14 @@
 * **Pencarian SKPD Real-time:** Memudahkan publik atau kepala instansi untuk langsung mencari nama SKPD (tanpa merusak susunan halaman) melalui bilah pencarian cerdas yang langsung memotong data tanpa perlu pusing beralih halaman (*pagination*).
 * **Indikator Visual Organik:** Status kemajuan rekonsiliasi per instansi tidak lagi menggunakan sekadar teks, namun direpresentasikan melalui warna status lencana dinamis (Badge) dan bulatan-bulatan (Circles) indikator tiap bulan, menampilkan data dengan cara yang ramah bagi mata masyarakat/auditor.
 
+### 8. 🤖 Integrasi Notifikasi Telegram Otomatis & Pusat Dokumentasi Sistem (`v2.6.0`)
+* **Siaran Notifikasi Telegram Instan ke HP Admin:** Aplikasi secara otomatis mengirimkan notifikasi langsung ke smartphone Administrator dan Konsolidator via Bot Telegram saat SKPD menyelesaikan rekonsiliasi kas (*Posting Final / Diverifikasi SKPD*). Admin tidak perlu bolak-balik membuka aplikasi web untuk mengetahui berkas yang siap diperiksa.
+* **Format Pesan Informatif & Elegan:** Notifikasi memuat ringkasan lengkap: Nama & Kode SKPD, periode bulan/tahun, nominal Saldo Akhir BKU, Saldo Akhir Bank, status KLOP/Selisih kas, jumlah berkas fisik yang terunggah (X/4 Berkas), nama Operator penginput, dan waktu posting (WITA).
+* **Dukungan Multi-Chat ID (Pribadi & Grup):** Fleksibilitas pengiriman ke chat pribadi admin maupun ke grup koordinasi tim konsolidator BKAD sekaligus (cukup pisahkan Chat ID dengan koma).
+* **Alat Uji Koneksi Langsung (Test Connection):** Administrator dapat menguji kredensial Token Bot dan Chat ID langsung dari dasbor web dengan respons instan dan pratinjau pesan di layar.
+* **Arsitektur Fail-Safe Anti-Macet:** Proses penyimpanan transaksi SKPD dijamin tetap berjalan lancar dan sukses 100% tanpa gangguan error meskipun koneksi API Telegram sedang mengalami gangguan jaringan atau timeout.
+* **Pusat Dokumentasi & Log Pembaruan Administrator (`/pengaturan/dokumentasi`):** Halaman internal terpadu khusus admin yang menyajikan katalog 10 modul unggulan SiReKa, riwayat versi (changelog) interaktif ber-filter kategori, dan ringkasan arsitektur spesifikasi teknis server.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
@@ -169,5 +177,13 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Kalkulasi Akurat Bebas Floating-Point Noise:** Perhitungan otomatis saldo akhir BKU, Bank, dan Selisih kini menggunakan pembulatan presisi `Math.round((awal + terima - keluar) * 100) / 100` dan disimpan dalam format `.toFixed(2)` untuk mencegah desimal tak berhingga bawaan JavaScript.
   * **Penyempurnaan Validasi FormRequest:** Pengujian kondisi selisih pada `StoreTransaksiRequest` dan `UpdateTransaksiRequest` kini menggunakan `round(abs($bku - $bank), 2) > 0` guna mencegah penolakan form palsu (*false-positive* selisih).
   * **Ambang Batas Selisih Terkalibrasi pada Dashboard & Laporan:** Mengeliminasi *dead-zone* fixed `0.01` pada `DashboardController`, halaman Antrean, Pemeriksaan, dan Verifikasi QR Code, sehingga selisih sekecil Rp 0,01 (1 sen) sah dan presisi terhitung ke dalam riwayat selisih kas maupun rapor kepatuhan.
+* **v2.6.0** - **Integrasi Notifikasi Telegram Otomatis saat SKPD Posting Final & Pusat Dokumentasi Administrator:**
+  * **Modul Pengaturan Notifikasi Telegram (`/pengaturan/telegram`):** Panel administrasi untuk mengonfigurasi Token Bot Telegram dari @BotFather, Target Chat ID / Grup ID BKAD, switch aktifasi siaran, simulasi notifikasi di layar smartphone, dan kartu panduan step-by-step.
+  * **Fitur Uji Coba Ganda & Penjelasan Tombol:** Tersedia 2 tombol pengujian: *Tes Koneksi Bot* (menguji sambungan bot) dan *Tes Kirim Data SKPD* (mengirim contoh riil rekonsiliasi kas dengan nominal KLOP Rp 0,00 ke HP Admin), dilengkapi kartu keterangan fungsi tombol serta indikator loading interaktif.
+  * **Pemicu Notifikasi Otomatis (Auto-Broadcast Posting Final):** Sistem otomatis mendeteksi dan mengirim pesan siaran Telegram saat transaksi disimpan dalam posisi diverifikasi (`status_verifikasi = verified`), lengkap dengan rincian saldo BKU, bank, selisih kas, kelengkapan berkas bukti dukung, operator pelapor, dan waktu pencatatan (WITA).
+  * **Dukungan Multi-Penerima (Multi-Chat ID):** Kemampuan mengirim pesan sekaligus ke beberapa akun atau grup tim pemeriksa BKAD dengan pemisah tanda koma.
+  * **Mekanisme Proteksi Fail-Safe:** Kegagalan jaringan atau timeout API Telegram ditangani secara anggun melalui log sistem tanpa pernah membatalkan atau memicu error pada penyimpanan data transaksi SKPD.
+  * **Modul Dokumentasi & Log Pembaruan Internal (`/pengaturan/dokumentasi`):** Meja kerja dokumentasi sistem khusus Administrator BKAD yang menyajikan 3 tab utama: *Log Update (Changelog)* bertimeline interaktif dengan filter kategori pembaruan, *Katalog Modul & Fitur Unggulan SiReKa* dengan ringkasan wewenang hak akses dan tombol aksi cepat, serta *Spesifikasi Arsitektur Sistem* lengkap dengan panduan SOP deployment server.
+  * **Integrasi Menu Sidebar Pengaturan:** Penambahan tautan menu *Notifikasi Telegram* dan *Dokumentasi & Log Fitur* pada kelompok navigasi Pengaturan Administrator serta pembaruan penanda versi footer menjadi *SiReKa v2.6.0*.
 
 

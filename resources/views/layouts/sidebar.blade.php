@@ -230,6 +230,18 @@
                 </li>
                 @if(auth()->user()->role === 'admin')
                 <li>
+                    <a class="relative text-on-primary/70 hover:text-sky-300 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('pengaturan.telegram.*') ? 'text-sky-300 font-bold bg-white/10' : '' }}" href="{{ route('pengaturan.telegram.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Notifikasi Telegram</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="relative text-on-primary/70 hover:text-amber-300 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('pengaturan.dokumentasi.*') ? 'text-amber-300 font-bold bg-white/10' : '' }}" href="{{ route('pengaturan.dokumentasi.index') }}">
+                        <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
+                        <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Dokumentasi & Log Fitur</span>
+                    </a>
+                </li>
+                <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('log.index') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Jejak Audit</span>
@@ -260,7 +272,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.5.2</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.6.0</p>
         </div>
     </div>
 </nav>

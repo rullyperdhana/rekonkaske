@@ -48,6 +48,15 @@ Route::middleware('auth')->group(function () {
         Route::post('pengaturan/storage/test', [\App\Http\Controllers\StorageConfigController::class, 'testConnection'])->name('pengaturan.storage.test');
         Route::post('pengaturan/storage/sync', [\App\Http\Controllers\StorageConfigController::class, 'syncFiles'])->name('pengaturan.storage.sync');
 
+        // Notifikasi Telegram
+        Route::get('pengaturan/telegram', [\App\Http\Controllers\TelegramConfigController::class, 'index'])->name('pengaturan.telegram.index');
+        Route::post('pengaturan/telegram', [\App\Http\Controllers\TelegramConfigController::class, 'update'])->name('pengaturan.telegram.update');
+        Route::post('pengaturan/telegram/test', [\App\Http\Controllers\TelegramConfigController::class, 'test'])->name('pengaturan.telegram.test');
+        Route::post('pengaturan/telegram/test-data', [\App\Http\Controllers\TelegramConfigController::class, 'testData'])->name('pengaturan.telegram.test-data');
+
+        // Dokumentasi & Log Update Fitur
+        Route::get('pengaturan/dokumentasi', [\App\Http\Controllers\DokumentasiController::class, 'index'])->name('pengaturan.dokumentasi.index');
+
         // Reset Status Transaksi ke Draft oleh Admin Pusat
         Route::post('/transaksi/{transaksi}/reset-draft', [\App\Http\Controllers\TransaksiController::class, 'resetToDraft'])->name('transaksi.reset-draft');
     });

@@ -25,6 +25,7 @@ class Pengaturan extends Model
         'nama_kasubag', 'nip_kasubag', 'pangkat_kasubag', 'jabatan_kasubag',
         'is_registration_open', 'allow_operator_reupload', 'is_livelog_active', 'allow_edit_saldo_awal',
         'allow_skpd_download_bukti_digital',
+        'telegram_bot_token', 'telegram_chat_id', 'telegram_notif_aktif', 'telegram_template',
     ];
 
     public function skpd()
