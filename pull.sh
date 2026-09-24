@@ -19,6 +19,7 @@ echo "3. Menjalankan Migrasi Database..."
 /www/server/php/84/bin/php artisan migrate --force
 
 echo "4. Mengoptimalkan Kinerja (Cache & Routes)..."
+/www/server/php/84/bin/php artisan view:clear
 /www/server/php/84/bin/php artisan optimize
 
 echo "5. Mengamankan Hak Akses Server (aaPanel)..."
