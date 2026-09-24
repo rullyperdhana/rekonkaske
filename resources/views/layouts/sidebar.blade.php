@@ -41,17 +41,17 @@
         </li>
 
         @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
-        <!-- Command Center KDH / Sekda -->
+        <!-- Analitik Eksekutif (KDH / Sekda) -->
         <li>
-            <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('eksekutif.*') ? 'bg-gradient-to-r from-amber-500/25 to-amber-600/20 text-amber-200 border border-amber-500/30 font-bold shadow-xs' : 'text-on-primary/80 hover:text-amber-300 hover:bg-primary-container/50' }}" href="{{ route('eksekutif.index') }}">
+            <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('eksekutif.*') ? 'bg-primary-container text-on-primary font-bold shadow-xs' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('eksekutif.index') }}">
                 @if(request()->routeIs('eksekutif.*'))
-                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-amber-400 rounded-r-full"></div>
+                    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-on-primary rounded-r-full"></div>
                 @endif
                 <div class="flex items-center gap-3">
-                    <span class="material-symbols-outlined text-amber-400 group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('eksekutif.*') ? 'fill' : '300' }}">query_stats</span>
-                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Command Center</span>
+                    <span class="material-symbols-outlined group-hover:scale-110 transition-transform duration-300" data-weight="{{ request()->routeIs('eksekutif.*') ? 'fill' : '300' }}">query_stats</span>
+                    <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Analitik Eksekutif</span>
                 </div>
-                <span class="px-1.5 py-0.5 text-[9px] font-bold uppercase rounded bg-amber-400/20 text-amber-300 border border-amber-400/30 font-mono tracking-wider">KDH/SEKDA</span>
+                <span class="px-1.5 py-0.5 text-[9px] font-semibold uppercase rounded bg-white/10 text-white/90 border border-white/15 font-mono tracking-wider">KDH/SEKDA</span>
             </a>
         </li>
         @endif
