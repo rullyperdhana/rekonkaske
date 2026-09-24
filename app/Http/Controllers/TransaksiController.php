@@ -106,6 +106,11 @@ class TransaksiController extends Controller
 
         $validated = $request->validated();
 
+        // Proteksi Anti-IDOR: Operator hanya dapat membuat transaksi untuk SKPD-nya sendiri
+        if (Auth::user()->role === 'operator') {
+            $validated['skpd_id'] = Auth::user()->skpd_id;
+        }
+
         $validated['status_verifikasi'] = $request->status_verifikasi ?? 'draft';
         $validated['status_konsolidator'] = 'menunggu';
 
@@ -144,6 +149,12 @@ class TransaksiController extends Controller
     public function edit(Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
+
+        // Proteksi Anti-IDOR: Operator hanya boleh mengakses transaksi SKPD miliknya sendiri
+        if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki wewenang untuk mengubah data instansi lain.');
+        }
+
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD. Silakan hubungi Admin Pusat untuk mengubah status menjadi Draft.');
         }
@@ -162,11 +173,21 @@ class TransaksiController extends Controller
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
+
+        // Proteksi Anti-IDOR: Operator hanya boleh mengubah transaksi SKPD miliknya sendiri
+        if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki wewenang untuk mengubah data instansi lain.');
+        }
+
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat diubah oleh SKPD.');
         }
 
         $validated = $request->validated();
+
+        if (Auth::user()->role === 'operator') {
+            $validated['skpd_id'] = Auth::user()->skpd_id;
+        }
 
         if ($request->has('status_verifikasi')) {
             $validated['status_verifikasi'] = $request->status_verifikasi;
@@ -215,6 +236,12 @@ class TransaksiController extends Controller
     public function destroy(Transaksi $transaksi)
     {
         if (Auth::user()->role === 'konsolidator') abort(403);
+
+        // Proteksi Anti-IDOR: Operator hanya boleh menghapus transaksi SKPD miliknya sendiri
+        if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki wewenang untuk menghapus data instansi lain.');
+        }
+
         if ($transaksi->status_verifikasi === 'verified' && Auth::user()->role === 'operator') {
             abort(403, 'Transaksi yang sudah diverifikasi tidak dapat dihapus.');
         }

@@ -19,9 +19,39 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.0',
+                'version' => 'v2.7.1',
                 'date' => '24 September 2026',
                 'badge' => 'VERSI AKTIF',
+                'badge_color' => 'emerald',
+                'title' => 'Security Hardening: Patch CVE Dependensi, Proteksi Path Traversal & Anti-IDOR',
+                'summary' => 'Peningkatan keamanan komprehensif: pembaruan dependensi (0 CVE advisories di composer audit), eliminasi potensi celah Path Traversal pada storage stream, serta pengetatan otorisasi transaksi anti-IDOR.',
+                'items' => [
+                    [
+                        'type' => 'security',
+                        'label' => 'Keamanan',
+                        'desc' => 'Patch CVE-2026-84374 pada maatwebsite/excel (diperbarui ke v3.1.70) dan patch DoS CVE pada league/commonmark (v2.10.3). Status composer audit bersih 100%.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Keamanan',
+                        'desc' => 'Proteksi Path Traversal pada /storage-stream/{path}: Memblokir seluruh pola traversal (../), null byte, berkas sistem (.env, storage_nas_config.json), serta membatasi akses berkas rahasia hanya untuk user terotentikasi.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Keamanan',
+                        'desc' => 'Proteksi Anti-IDOR pada Transaksi: Memastikan operator SKPD hanya berwenang menyimpan, mengedit, memperbarui, atau menghapus transaksi milik SKPD-nya sendiri.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Keamanan',
+                        'desc' => 'Validasi Berkas Berlapis (Defense-in-Depth): Penambahan aturan ekstensi eksplisit (extensions:pdf,jpg,jpeg,png) di samping MIME-type magic byte check.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.0',
+                'date' => '24 September 2026',
+                'badge' => 'STABLE',
                 'badge_color' => 'indigo',
                 'title' => 'Dashboard Analitik Eksekutif / KDH & Sekda View (Executive Command Center)',
                 'summary' => 'Pusat komando eksekutif satu layar untuk Bupati, Wakil Bupati, dan Sekda yang menyajikan 4 KPI fiskal makro, sistem rekomendasi kebijakan cerdas (DSS), visualisasi tren likuiditas kas 12 bulan, matriks status instansi, dan lembar brief eksekutif 1 halaman.',

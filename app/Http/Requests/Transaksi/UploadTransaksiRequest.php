@@ -14,10 +14,10 @@ class UploadTransaksiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_ba_manual' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_buku_kas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_buku_pembantu_bank' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
-            'file_rekening_koran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:5120',
+            'file_ba_manual' => 'nullable|file|mimes:pdf,jpg,jpeg,png|extensions:pdf,jpg,jpeg,png|max:5120',
+            'file_buku_kas' => 'nullable|file|mimes:pdf,jpg,jpeg,png|extensions:pdf,jpg,jpeg,png|max:5120',
+            'file_buku_pembantu_bank' => 'nullable|file|mimes:pdf,jpg,jpeg,png|extensions:pdf,jpg,jpeg,png|max:5120',
+            'file_rekening_koran' => 'nullable|file|mimes:pdf,jpg,jpeg,png|extensions:pdf,jpg,jpeg,png|max:5120',
         ];
     }
 }

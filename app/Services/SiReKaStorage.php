@@ -32,6 +32,7 @@ class SiReKaStorage
     public static function exists($path): bool
     {
         if (empty($path)) return false;
+        if (str_contains($path, '..') || str_contains($path, "\0") || str_contains($path, '\\')) return false;
         $path = ltrim($path, '/');
 
         // 1. Cek langsung ke folder fisik NAS jika mode NAS aktif
@@ -65,6 +66,7 @@ class SiReKaStorage
     public static function read($path)
     {
         if (empty($path)) return null;
+        if (str_contains($path, '..') || str_contains($path, "\0") || str_contains($path, '\\')) return null;
         $path = ltrim($path, '/');
 
         // 1. Baca langsung dari folder fisik NAS jika mode NAS aktif dan ada
@@ -115,6 +117,7 @@ class SiReKaStorage
     public static function delete($path): bool
     {
         if (empty($path)) return false;
+        if (str_contains($path, '..') || str_contains($path, "\0") || str_contains($path, '\\')) return false;
         $path = ltrim($path, '/');
 
         $deleted = false;

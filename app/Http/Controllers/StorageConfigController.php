@@ -221,10 +221,46 @@ class StorageConfigController extends Controller
     }
 
     /**
-     * Layari (stream) file dokumen dengan dukungan Smart Auto-Fallback dan Auto-Heal
+     * Layari (stream) file dokumen dengan dukungan Smart Auto-Fallback, Auto-Heal, dan Proteksi Keamanan
      */
     public function streamFile($path)
     {
+        // 1. Proteksi Path Traversal: Cegah '../', '..\\', null bytes, atau karakter traversal
+        if (str_contains($path, '..') || str_contains($path, "\0") || str_contains($path, '\\')) {
+            abort(403, 'Akses Ditolak: Pola direktori berkas tidak valid.');
+        }
+
+        // 2. Cegah akses file sensitif sistem
+        $base = basename($path);
+        if (str_starts_with($base, '.') || in_array(strtolower($base), ['storage_nas_config.json', 'composer.json', 'composer.lock', 'artisan', 'web.php'])) {
+            abort(403, 'Akses Ditolak: Akses berkas sistem dilarang.');
+        }
+
+        // 3. Hak Akses: Dokumen rekonsiliasi kas adalah dokumen rahasia keuangan negara
+        $isPublicLogo = str_starts_with($path, 'logo_') || str_contains(strtolower($path), 'logo');
+        if (!$isPublicLogo) {
+            if (!Auth::check()) {
+                return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu untuk mengakses berkas rekonsiliasi.');
+            }
+
+            // Proteksi IDOR: Operator SKPD hanya boleh melihat berkas milik instansinya sendiri
+            if (Auth::user()->role === 'operator') {
+                $userSkpdId = Auth::user()->skpd_id;
+                $isOwned = \App\Models\Transaksi::where('skpd_id', $userSkpdId)
+                    ->where(function ($q) use ($path) {
+                        $q->where('file_bukti', $path)
+                          ->orWhere('file_ba_manual', $path)
+                          ->orWhere('file_buku_kas', $path)
+                          ->orWhere('file_buku_pembantu_bank', $path)
+                          ->orWhere('file_rekening_koran', $path);
+                    })->exists();
+
+                if (!$isOwned) {
+                    abort(403, 'Akses Ditolak: Anda tidak memiliki wewenang untuk melihat berkas rekonsiliasi instansi lain.');
+                }
+            }
+        }
+
         if (!SiReKaStorage::exists($path)) {
             abort(404, 'Dokumen tidak ditemukan pada server.');
         }

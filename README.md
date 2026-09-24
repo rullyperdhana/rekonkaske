@@ -200,7 +200,12 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Tren Fluktuasi Kas 12 Bulan & Donut Kepatuhan:** Grafik analitik Chart.js melacak fluktuasi pergerakan saldo BKU vs Rekening Koran Bank Kalsel sepanjang tahun anggaran aktif serta distribusi status seluruh SKPD.
   * **Matriks Status Seluruh SKPD Kabupaten Tapin:** Grid bento interaktif untuk seluruh instansi dengan status warna dinamis (Klop, Draft, Selisih, Belum Lapor), fitur pencarian instan teks, dan tombol kontak langsung WhatsApp ke Bendahara SKPD.
   * **Cetak Ringkasan Eksekutif 1 Halaman (`/eksekutif/cetak-brief`):** Dokumen formal berkop resmi Pemerintah Kabupaten Tapin dan bertanda tangan Sekretaris Daerah / Kepala BKAD yang siap cetak atau disimpan sebagai PDF untuk bahan rapat pimpinan (Rapim).
-  * **Integrasi Menu Navigasi Sidebar:** Penambahan menu prestisius *Command Center (KDH/SEKDA)* pada bilah samping dan pembaruan versi rilis aplikasi menjadi *SiReKa v2.7.0*.
+  * **Integrasi Menu Navigasi Sidebar:** Penambahan menu *Analitik Eksekutif (KDH/SEKDA)* pada bilah samping dan pembaruan versi rilis aplikasi menjadi *SiReKa v2.7.0*.
+* **v2.7.1** - **Security Hardening, CVE Dependency Patching & Anti-IDOR Authorization:**
+  * **Patch CVE Dependensi (0 Advisories):** Pembaruan paket `maatwebsite/excel` ke versi 3.1.70 untuk menutup celah kritis `CVE-2026-84374` (arbitrary path traversal export), serta pembaruan `league/commonmark` ke versi 2.10.3 untuk menutup celah Denial of Service (DoS). Status pemindaian `composer audit` bersih 100%.
+  * **Proteksi Path Traversal pada Storage Stream:** Pengetatan keamanan rute `/storage-stream/{path}` dengan memblokir karakter traversal (`../`, null byte, backslash), menolak akses berkas konfigurasi sistem (`.env`, `storage_nas_config.json`, `composer.json`), serta mewajibkan autentikasi login untuk mengakses dokumen keuangan daerah.
+  * **Proteksi Anti-IDOR (Insecure Direct Object Reference) Transaksi:** Pengetatan wewenang pada `TransaksiController` (`store`, `edit`, `update`, `destroy`) yang memastikan akun Operator SKPD tidak dapat memanipulasi, mengedit, ataupun menghapus transaksi milik instansi/SKPD lain.
+  * **Validasi Ekstensi Berkas Berlapis (Defense-in-Depth):** Penambahan aturan validasi `extensions:pdf,jpg,jpeg,png` pada `UploadTransaksiRequest` di samping pengecekan tipe MIME asli berkas.
 
 
 
