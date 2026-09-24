@@ -62,6 +62,14 @@
 * **Arsitektur Fail-Safe Anti-Macet:** Proses penyimpanan transaksi SKPD dijamin tetap berjalan lancar dan sukses 100% tanpa gangguan error meskipun koneksi API Telegram sedang mengalami gangguan jaringan atau timeout.
 * **Pusat Dokumentasi & Log Pembaruan Administrator (`/pengaturan/dokumentasi`):** Halaman internal terpadu khusus admin yang menyajikan katalog 10 modul unggulan SiReKa, riwayat versi (changelog) interaktif ber-filter kategori, dan ringkasan arsitektur spesifikasi teknis server.
 
+### 9. 🏛️ Executive Command Center & KDH / Sekda View (`v2.7.0`)
+* **Mode Kiosk & Big Screen Display TV:** Dirancang khusus untuk monitor ruang kerja pimpinan (Bupati, Wakil Bupati, Sekretaris Daerah, Kepala BKAD) dengan tata letak satu layar penuh (*One-Screen Helicopter View*), tombol mode layar penuh (*Fullscreen*), serta mesin penyegaran otomatis (*Auto-Refresh Kiosk Engine*) tiap 60 detik yang dapat dijeda/dilanjutkan.
+* **4 Indikator Makro Fiskal Daerah:** Menampilkan ringkasan likuiditas kas pemda di Bank Kalsel, Indeks Kepatuhan Rekonsiliasi Daerah (%), Akumulasi Nominal Selisih Kas, dan Tingkat Ketepatan Waktu Pelaporan (&le; tgl 10) beserta kesiapan berkas pemeriksaan BPK.
+* **Decision Support System (Rekomendasi Kebijakan Cerdas):** Mesin telaah cerdas yang otomatis merumuskan rekomendasi tindakan konkret bagi pimpinan daerah (misal instruksi audit penelusuran jika ada selisih kas, atau penerbitan surat peringatan/teguran pimpinan bagi SKPD yang menunggak).
+* **Tren Likuiditas Kas Pemda 12 Bulan:** Grafik interaktif Chart.js yang melacak fluktuasi total saldo kas bendahara pengeluaran se-Kabupaten Tapin dari Januari s.d. Desember.
+* **Matriks Status Seluruh SKPD se-Kabupaten Tapin:** Grid visual interaktif yang memetakan seluruh instansi dengan kode warna status (Klop, Draft, Selisih, Belum Lapor), pencarian instan, dan tautan langsung WhatsApp ke Bendahara SKPD.
+* **Cetak Ringkasan Eksekutif 1-Halaman (`/eksekutif/cetak-brief`):** Dokumen formal berkop resmi Pemerintah Kabupaten Tapin siap cetak/unduh PDF untuk bahan rapat pimpinan (Rapim) mingguan.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
@@ -185,5 +193,14 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Mekanisme Proteksi Fail-Safe:** Kegagalan jaringan atau timeout API Telegram ditangani secara anggun melalui log sistem tanpa pernah membatalkan atau memicu error pada penyimpanan data transaksi SKPD.
   * **Modul Dokumentasi & Log Pembaruan Internal (`/pengaturan/dokumentasi`):** Meja kerja dokumentasi sistem khusus Administrator BKAD yang menyajikan 3 tab utama: *Log Update (Changelog)* bertimeline interaktif dengan filter kategori pembaruan, *Katalog Modul & Fitur Unggulan SiReKa* dengan ringkasan wewenang hak akses dan tombol aksi cepat, serta *Spesifikasi Arsitektur Sistem* lengkap dengan panduan SOP deployment server.
   * **Integrasi Menu Sidebar Pengaturan:** Penambahan tautan menu *Notifikasi Telegram* dan *Dokumentasi & Log Fitur* pada kelompok navigasi Pengaturan Administrator serta pembaruan penanda versi footer menjadi *SiReKa v2.6.0*.
+* **v2.7.0** - **Executive Command Center & KDH / Sekda View (One-Screen Big Display Monitoring):**
+  * **Modul Dashboard Eksekutif (`/eksekutif`):** Antarmuka terpadu satu layar (*Helicopter View*) yang memvisualisasikan 4 indikator makro fiskal daerah (Likuiditas Kas di SKPD, Indeks Kepatuhan Pemda %, Akumulasi Selisih Kas, dan Tingkat Ketepatan Waktu Pelaporan).
+  * **Mode Kiosk & TV Monitor Pimpinan:** Dilengkapi tombol *Fullscreen* (Layar Penuh), jam digital real-time Waktu Indonesia Tengah (WITA), serta mesin penyegaran otomatis (*Auto-Refresh Kiosk Engine*) tiap 60 detik yang dapat dijeda/dilanjutkan tanpa perlu sentuhan manual.
+  * **Decision Support System (Rekomendasi Kebijakan Cerdas):** Algoritma penelaah cerdas yang otomatis merumuskan rekomendasi kebijakan bagi Bupati dan Sekretaris Daerah (perintah audit penelusuran jika ada selisih kas, surat peringatan/teguran keterlambatan bagi SKPD menunggak, dan evaluasi likuiditas kas mengendap).
+  * **Tren Fluktuasi Kas 12 Bulan & Donut Kepatuhan:** Grafik analitik Chart.js melacak fluktuasi pergerakan saldo BKU vs Rekening Koran Bank Kalsel sepanjang tahun anggaran aktif serta distribusi status seluruh SKPD.
+  * **Matriks Status Seluruh SKPD Kabupaten Tapin:** Grid bento interaktif untuk seluruh instansi dengan status warna dinamis (Klop, Draft, Selisih, Belum Lapor), fitur pencarian instan teks, dan tombol kontak langsung WhatsApp ke Bendahara SKPD.
+  * **Cetak Ringkasan Eksekutif 1 Halaman (`/eksekutif/cetak-brief`):** Dokumen formal berkop resmi Pemerintah Kabupaten Tapin dan bertanda tangan Sekretaris Daerah / Kepala BKAD yang siap cetak atau disimpan sebagai PDF untuk bahan rapat pimpinan (Rapim).
+  * **Integrasi Menu Navigasi Sidebar:** Penambahan menu prestisius *Command Center (KDH/SEKDA)* pada bilah samping dan pembaruan versi rilis aplikasi menjadi *SiReKa v2.7.0*.
+
 
 

@@ -19,9 +19,49 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
+                'version' => 'v2.7.0',
+                'date' => '24 September 2026',
+                'badge' => 'VERSI AKTIF',
+                'badge_color' => 'indigo',
+                'title' => 'Dashboard Analitik Eksekutif / KDH & Sekda View (Executive Command Center)',
+                'summary' => 'Pusat komando eksekutif satu layar untuk Bupati, Wakil Bupati, dan Sekda yang menyajikan 4 KPI fiskal makro, sistem rekomendasi kebijakan cerdas (DSS), visualisasi tren likuiditas kas 12 bulan, matriks status instansi, dan lembar brief eksekutif 1 halaman.',
+                'items' => [
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Dashboard Command Center Eksekutif (/eksekutif) dengan mode tampilan layar penuh (Kiosk / Smart TV BKAD) dan auto-refresh 60 detik beranimasi countdown.'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => '4 KPI Fiskal Makro: Likuiditas Kas Pemda di Bank Kalsel, Indeks Kepatuhan Rekonsiliasi Pemda (%), Akumulasi Selisih Kas, dan Ketepatan Waktu Pelaporan (<= tgl 10).'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Decision Support System (DSS): Kartu rekomendasi kebijakan cerdas yang otomatis menganalisis anomali selisih kas, SKPD yang butuh pendampingan audit, dan idle cash.'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Grafik Tren Likuiditas 12 Bulan (BKU vs Bank Kalsel), Donut Status Rekon, serta Leaderboard Early Warning System (Top 5 Tertib vs Bottom 5 Butuh Perhatian).'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Matriks Visual Status SKPD interaktif dengan pencarian langsung (live search), filter chip status, dan tombol WhatsApp instan ke Bendahara SKPD.'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Cetak Lembar Briefing Eksekutif 1 Halaman (/eksekutif/cetak-brief) ber-KOP resmi Pemkab Tapin untuk bahan rapat pimpinan KDH & Sekda.'
+                    ]
+                ]
+            ],
+            [
                 'version' => 'v2.6.0',
                 'date' => '23 September 2026',
-                'badge' => 'VERSI AKTIF',
+                'badge' => 'STABLE',
                 'badge_color' => 'emerald',
                 'title' => 'Integrasi Notifikasi Telegram Otomatis & Pusat Dokumentasi Administrator',
                 'summary' => 'Penambahan modul integrasi Bot Telegram untuk siaran instan ke ponsel admin saat SKPD Posting Final, serta pusat dokumentasi internal & changelog sistem.',
@@ -262,6 +302,22 @@ class DokumentasiController extends Controller
 
         // 2. Katalog Modul & Fitur Unggulan SiReKa
         $modulKatalog = [
+            [
+                'id' => 'command_center',
+                'nama' => 'Executive Command Center (KDH & Sekda View)',
+                'icon' => 'analytics',
+                'color' => 'indigo',
+                'roles' => ['Admin', 'Konsolidator'],
+                'url' => route('eksekutif.index'),
+                'url_label' => 'Buka Command Center',
+                'deskripsi' => 'Pusat komando eksekutif satu layar untuk pimpinan daerah (KDH & Sekda) dengan 4 KPI makro kas pemda, grafik tren likuiditas 12 bulan, DSS rekomendasi kebijakan cerdas, matriks instansi interaktif, dan lembar briefing 1 halaman siap cetak.',
+                'fitur_kunci' => [
+                    'Mode TV Kiosk Display dengan auto-refresh 60 detik & live WITA clock',
+                    'Kalkulasi Likuiditas Kas Pemda (Bank Kalsel) & Indeks Kepatuhan Fiskal',
+                    'Decision Support System (DSS) rekomendasi cerdas pimpinan daerah',
+                    'Cetak Lembar Briefing Eksekutif 1 Lembar siap tanda tangan KDH/Sekda'
+                ]
+            ],
             [
                 'id' => 'telegram',
                 'nama' => 'Notifikasi Telegram Otomatis',

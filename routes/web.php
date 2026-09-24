@@ -63,6 +63,10 @@ Route::middleware('auth')->group(function () {
 
     // Laporan & Verifikasi (Admin & Konsolidator)
     Route::middleware(['admin.konsolidator'])->group(function () {
+        // Executive Command Center (KDH & Sekda View)
+        Route::get('/eksekutif', [\App\Http\Controllers\EksekutifController::class, 'index'])->name('eksekutif.index');
+        Route::get('/eksekutif/cetak-brief', [\App\Http\Controllers\EksekutifController::class, 'cetakBrief'])->name('eksekutif.cetak-brief');
+
         Route::get('/transaksi/antrean', [\App\Http\Controllers\TransaksiController::class, 'antrean'])->name('transaksi.antrean');
         Route::get('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanForm'])->name('transaksi.pemeriksaan');
         Route::post('/transaksi/{transaksi}/pemeriksaan', [\App\Http\Controllers\TransaksiController::class, 'pemeriksaanStore'])->name('transaksi.pemeriksaan.store');
