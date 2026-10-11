@@ -210,6 +210,9 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Badge Identitas Khusus:** Penyematan lencana amber/emas terverifikasi (*Auditor Pengawas*) pada tabel daftar pengguna dan laporan cetak kepemilikan akun non-SKPD.
   * **Hak Akses Pengawasan Terpadu (Read-Only Audit Privileges):** Akun Auditor secara otomatis diberikan wewenang melihat seluruh data rekonsiliasi kas se-Kabupaten Tapin, Analitik Eksekutif KDH/Sekda, Laporan Verifikasi Konsolidator, Konsolidasi Daerah, Ringkasan Selisih Kas, Tunggakan Kepatuhan, Berita Acara, serta akses unduh arsip berkas bukti dan paket ZIP massal BPK pada Brankas Digital (`/dokumen/tree`).
   * **Strict Data Integrity Lockdown (Anti-Manipulasi Data Audit):** Perlindungan tingkat controller yang secara ketat memblokir Auditor dari aksi mutasi data (dilarang membuat, mengedit, menghapus, atau mengunggah bukti transaksi, dilarang melakukan verifikasi/pemeriksaan laporan, serta dilarang merubah master rekening dan kop instansi).
+* **v2.7.3** - **Eksklusi Fitur Komunikasi WhatsApp untuk Peran Auditor (Anti-Interferensi & Independensi Audit):**
+  * **Penyembunyian Modul Broadcast WhatsApp:** Rute dan menu sidebar `/laporan/rekap-wa` disembunyikan dari navigasi Auditor dan diproteksi ketat pada controller level (`403 Forbidden`).
+  * **Eksklusi Tombol Kirim WhatsApp pada Laporan:** Menghilangkan kolom aksi WhatsApp pada tabel Laporan Konsolidasi Daerah, ketiga tab Laporan Tunggakan Kepatuhan, serta tombol kontak langsung Bendahara pada Dashboard Analitik Eksekutif khusus saat akun yang login adalah Auditor.
 
 
 

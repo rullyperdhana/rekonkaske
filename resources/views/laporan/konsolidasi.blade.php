@@ -59,7 +59,9 @@
                     <th class="px-4 py-3 text-label-md font-label-md font-semibold text-on-surface text-right">Saldo Bank (Rp)</th>
                     <th class="px-4 py-3 text-label-md font-label-md font-semibold text-on-surface text-right">Selisih (Rp)</th>
                     <th class="px-4 py-3 text-label-md font-label-md font-semibold text-on-surface text-center">Status</th>
+                    @if(auth()->user()->role !== 'auditor')
                     <th class="px-4 py-3 text-label-md font-label-md font-semibold text-on-surface text-center w-16">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline-variant/50">
@@ -86,6 +88,7 @@
                                 <span class="inline-flex items-center px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant text-xs font-bold uppercase tracking-wider">Draft</span>
                             @endif
                         </td>
+                        @if(auth()->user()->role !== 'auditor')
                         <td class="px-4 py-3 text-center">
                             @if($data['skpd']->no_whatsapp)
                                 @php
@@ -103,8 +106,10 @@
                                 <span class="text-xs text-outline italic" title="Nomor WA belum disetting">No WA</span>
                             @endif
                         </td>
+                        @endif
                     @else
                         <td colspan="4" class="px-4 py-3 text-body-md text-error text-center italic opacity-70">Belum Lapor / Tidak Ada Transaksi</td>
+                        @if(auth()->user()->role !== 'auditor')
                         <td class="px-4 py-3 text-center">
                             @if($data['skpd']->no_whatsapp)
                                 @php
@@ -117,6 +122,7 @@
                                 <span class="text-xs text-outline italic" title="Nomor WA belum disetting">No WA</span>
                             @endif
                         </td>
+                        @endif
                     @endif
                 </tr>
                 @endforeach
@@ -129,7 +135,7 @@
                     <td class="px-4 py-4 text-title-sm font-bold text-right font-data-tabular {{ abs($totalBku - $totalBank) > 0 ? 'text-error' : 'text-secondary' }}">
                         Rp {{ number_format(abs($totalBku - $totalBank), 2, ',', '.') }}
                     </td>
-                    <td colspan="2"></td>
+                    <td colspan="{{ auth()->user()->role === 'auditor' ? 1 : 2 }}"></td>
                 </tr>
             </tfoot>
         </table>

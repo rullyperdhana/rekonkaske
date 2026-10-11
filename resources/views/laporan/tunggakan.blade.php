@@ -41,7 +41,9 @@
                     <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface">Nama SKPD</th>
                     <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface text-center">Lapor Terakhir</th>
                     <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface text-center">Menunggak (Bulan)</th>
+                    @if(auth()->user()->role !== 'auditor')
                     <th class="px-6 py-4 text-label-md font-label-md font-semibold text-on-surface text-center w-20">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody class="divide-y divide-outline-variant/50">
@@ -64,6 +66,7 @@
                             {{ $item['tunggakan_bulan'] }} Bulan
                         </span>
                     </td>
+                    @if(auth()->user()->role !== 'auditor')
                     <td class="px-6 py-4 text-center">
                         @if($item['skpd']->no_whatsapp)
                             @php
@@ -76,10 +79,11 @@
                             <span class="text-xs text-outline italic" title="Nomor WA belum disetting">No WA</span>
                         @endif
                     </td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-12 text-center text-on-surface-variant">
+                    <td colspan="{{ auth()->user()->role === 'auditor' ? 4 : 5 }}" class="px-6 py-12 text-center text-on-surface-variant">
                         <span class="material-symbols-outlined text-5xl mb-2 text-outline">check_circle</span>
                         <p class="text-body-lg">Luar biasa! Tidak ada SKPD yang menunggak pelaporan.</p>
                     </td>
@@ -136,7 +140,7 @@
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <a href="{{ route('transaksi.edit', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
-                                        @if($item['skpd']->no_whatsapp)
+                                        @if($item['skpd']->no_whatsapp && auth()->user()->role !== 'auditor')
                                             @php
                                                 $nilaiSelisih = number_format(abs($trx->bku_saldo_akhir - $trx->bank_saldo_akhir), 0, ',', '.');
                                                 $pesanWa = "Yth. Admin SKPD {$item['skpd']->nama}.\nKami menemukan adanya SELISIH SALDO pada pelaporan Anda di Bulan {$trx->periode_bulan}. Terdapat selisih sebesar Rp {$nilaiSelisih} antara saldo BKU dan saldo Bank. Mohon segera diperiksa dan diperbaiki di aplikasi SiReKa. Terima kasih.";
@@ -218,7 +222,7 @@
                                     </div>
                                     <div class="flex items-center gap-3">
                                         <a href="{{ route('transaksi.edit', $trx->id) }}" class="text-primary hover:underline text-label-sm font-label-sm">Lihat Detail &rarr;</a>
-                                        @if($item['skpd']->no_whatsapp)
+                                        @if($item['skpd']->no_whatsapp && auth()->user()->role !== 'auditor')
                                             @php
                                                 $kurang = [];
                                                 if(!$trx->file_ba_manual) $kurang[] = "Berita Acara";

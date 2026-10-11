@@ -19,10 +19,30 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.2',
+                'version' => 'v2.7.3',
                 'date' => '11 Oktober 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'emerald',
+                'title' => 'Eksklusi Fitur Komunikasi WhatsApp untuk Peran Auditor',
+                'summary' => 'Penonaktifan seluruh integrasi aksi WhatsApp bagi akun Auditor, termasuk generator broadcast rekapitulasi WA, tombol kirim peringatan, dan tautan kontak langsung ke Bendahara SKPD guna menjaga independensi audit.',
+                'items' => [
+                    [
+                        'type' => 'security',
+                        'label' => 'Independensi Audit',
+                        'desc' => 'Penyembunyian Menu Broadcast WA: Rute dan menu /laporan/rekap-wa disembunyikan dari sidebar navigasi Auditor dan diproteksi dengan HTTP 403 Forbidden.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Antarmuka Laporan',
+                        'desc' => 'Eksklusi Tombol Kirim WhatsApp: Menghilangkan kolom aksi WhatsApp pada tabel Laporan Konsolidasi, ketiga tab Laporan Tunggakan, serta matriks instansi Dashboard Eksekutif khusus saat diakses oleh akun Auditor.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.2',
+                'date' => '11 Oktober 2026',
+                'badge' => 'STABLE',
+                'badge_color' => 'slate',
                 'title' => 'Grup Peran Baru: Auditor (Inspektorat / BPK) & Read-Only Audit Privileges',
                 'summary' => 'Penambahan peran pengguna khusus Auditor pada modul Manajemen Pengguna (/pengaturan/user), dilengkapi hak akses pengawasan penuh (read-only) terhadap seluruh data rekonsiliasi, analitik eksekutif, serta brankas berkas digital BPK tanpa izin mutasi data.',
                 'items' => [

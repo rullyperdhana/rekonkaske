@@ -501,6 +501,10 @@ class LaporanController extends Controller
      */
     public function rekapWa(Request $request)
     {
+        if (Auth::user()->role === 'auditor') {
+            abort(403, 'Akses ditolak: Fitur broadcast WhatsApp tidak diperuntukkan bagi akun Auditor.');
+        }
+
         $tahunAktif = session('tahun_login') ?? date('Y');
         $currentMonth = (int)date('n');
         $defaultMonth = $currentMonth > 1 ? $currentMonth - 1 : 12;

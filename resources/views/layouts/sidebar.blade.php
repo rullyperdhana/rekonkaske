@@ -171,12 +171,14 @@
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Konsolidasi Daerah</span>
                     </a>
                 </li>
+                @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
                 <li>
                     <a class="relative text-on-primary/70 hover:text-emerald-400 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.rekap-wa') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Broadcast Rekap WA</span>
                     </a>
                 </li>
+                @endif
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1" href="{{ route('laporan.tunggakan') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
@@ -288,7 +290,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.2</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.3</p>
         </div>
     </div>
 </nav>

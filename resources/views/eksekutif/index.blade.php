@@ -362,7 +362,7 @@
                                 </span>
                                 <span class="text-[10px] text-rose-600 block mt-0.5">{{ $s->verified_count }} bln lapor</span>
                             </div>
-                            @if($s->no_whatsapp)
+                            @if($s->no_whatsapp && auth()->user()->role !== 'auditor')
                                 <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', str_starts_with($s->no_whatsapp, '08') ? '628' . substr($s->no_whatsapp, 2) : $s->no_whatsapp) }}?text={{ urlencode('Pemberitahuan Pimpinan BKAD Tapin: Mohon percepatan penyelesaian rekonsiliasi kas SKPD ' . $s->nama . '.') }}"
                                    target="_blank" class="px-2 py-1 rounded bg-white hover:bg-emerald-50 text-emerald-700 border border-emerald-300 font-medium text-xs flex items-center gap-1 shadow-xs transition-colors" title="Kirim Teguran via WhatsApp">
                                     <span class="material-symbols-outlined text-[14px]">chat</span>
@@ -490,7 +490,7 @@
                     <!-- Footer Info & Direct WA Action -->
                     <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
                         <span>{{ $item['status'] !== 'belum' ? 'Berkas: ' . $item['berkas_persen'] . '%' : 'Menunggu Pelaporan' }}</span>
-                        @if($item['no_wa'])
+                        @if($item['no_wa'] && auth()->user()->role !== 'auditor')
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', str_starts_with($item['no_wa'], '08') ? '628' . substr($item['no_wa'], 2) : $item['no_wa']) }}?text={{ urlencode('Halo Bendahara ' . $item['nama'] . ', mohon konfirmasi status rekonsiliasi kas periode ' . $namaBulan[$bulanAktif - 1] . ' ' . $tahunAktif . '.') }}"
                                target="_blank" class="text-emerald-700 hover:text-emerald-800 font-semibold flex items-center gap-1" title="Hubungi via WhatsApp">
                                 <span class="material-symbols-outlined text-[14px]">chat</span>
