@@ -88,7 +88,7 @@ class TransaksiController extends Controller
 
     public function create()
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
         $skpds = Skpd::where('status', true)->orderBy('nama')->get();
         // Get all active rekenings. If user is operator, filter by their SKPD.
         $rekeningQuery = Rekening::where('status', true);
@@ -102,7 +102,7 @@ class TransaksiController extends Controller
 
     public function store(StoreTransaksiRequest $request)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
 
         $validated = $request->validated();
 
@@ -148,7 +148,7 @@ class TransaksiController extends Controller
 
     public function edit(Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
 
         // Proteksi Anti-IDOR: Operator hanya boleh mengakses transaksi SKPD miliknya sendiri
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
@@ -172,7 +172,7 @@ class TransaksiController extends Controller
 
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
 
         // Proteksi Anti-IDOR: Operator hanya boleh mengubah transaksi SKPD miliknya sendiri
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
@@ -235,7 +235,7 @@ class TransaksiController extends Controller
 
     public function destroy(Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
 
         // Proteksi Anti-IDOR: Operator hanya boleh menghapus transaksi SKPD miliknya sendiri
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {
@@ -276,7 +276,7 @@ class TransaksiController extends Controller
 
     public function uploadStore(UploadTransaksiRequest $request, Transaksi $transaksi)
     {
-        if (Auth::user()->role === 'konsolidator') abort(403);
+        if (in_array(Auth::user()->role, ['konsolidator', 'auditor'])) abort(403, 'Akses ditolak: Akun Auditor hanya memiliki izin baca (Read-Only).');
 
         // Check operator access
         if (Auth::user()->role === 'operator' && Auth::user()->skpd_id != $transaksi->skpd_id) {

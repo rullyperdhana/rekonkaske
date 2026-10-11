@@ -323,8 +323,8 @@ class DashboardController extends Controller
      */
     public function cetakRaporKepatuhan(Request $request)
     {
-        if (!in_array(Auth::user()->role, ['admin', 'konsolidator'])) {
-            abort(403, 'Akses khusus Admin dan Konsolidator');
+        if (!in_array(Auth::user()->role, ['admin', 'konsolidator', 'auditor'])) {
+            abort(403, 'Akses khusus Admin, Konsolidator, dan Auditor.');
         }
 
         $tahunAktif = session('tahun_login') ?? date('Y');

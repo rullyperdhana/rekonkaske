@@ -19,7 +19,7 @@
         </div>
     </div>
     
-    @if(auth()->user()->role !== 'konsolidator')
+    @if(!in_array(auth()->user()->role, ['konsolidator', 'auditor']))
     <div class="px-4 mb-6">
         <a href="{{ route('transaksi.create') }}" class="w-full bg-secondary-container text-on-secondary-container hover:bg-secondary-container/90 py-3 rounded-lg text-label-sm font-label-sm flex items-center justify-center gap-2 shadow-sm transition-transform scale-95 active:scale-90">
             <span class="material-symbols-outlined" data-weight="fill">add_circle</span>
@@ -40,7 +40,7 @@
             </a>
         </li>
 
-        @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
+        @if(in_array(auth()->user()->role, ['admin', 'konsolidator', 'auditor']))
         <!-- Analitik Eksekutif (KDH / Sekda) -->
         <li>
             <a class="group relative rounded-xl flex items-center justify-between px-4 py-3 transition-all duration-300 {{ request()->routeIs('eksekutif.*') ? 'bg-primary-container text-on-primary font-bold shadow-xs' : 'text-on-primary/80 hover:text-on-primary hover:bg-primary-container/50' }}" href="{{ route('eksekutif.index') }}">
@@ -152,7 +152,7 @@
                         <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Rekapitulasi Tahunan</span>
                     </a>
                 </li>
-                @if(in_array(auth()->user()->role, ['admin', 'konsolidator']))
+                @if(in_array(auth()->user()->role, ['admin', 'konsolidator', 'auditor']))
                 <li>
                     <a class="relative text-on-primary/70 hover:text-emerald-400 rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('laporan.verifikasi-konsolidator*') ? 'text-emerald-300 font-bold' : '' }}" href="{{ route('laporan.verifikasi-konsolidator') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
@@ -224,7 +224,7 @@
                     </a>
                 </li>
                 @endif
-                @if(auth()->user()->role !== 'konsolidator')
+                @if(!in_array(auth()->user()->role, ['konsolidator', 'auditor']))
                 <li>
                     <a class="relative text-on-primary/70 hover:text-on-primary rounded-lg flex items-center gap-3 px-4 py-2 ml-8 transition-all duration-300 group-hover:translate-x-1 {{ request()->routeIs('pengaturan.instansi.*') ? 'text-white font-bold bg-white/10' : '' }}" href="{{ route('pengaturan.instansi.edit') }}">
                         <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
@@ -288,7 +288,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.1</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.2</p>
         </div>
     </div>
 </nav>

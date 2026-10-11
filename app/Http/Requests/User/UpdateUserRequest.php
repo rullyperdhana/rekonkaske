@@ -29,7 +29,7 @@ class UpdateUserRequest extends FormRequest
             'nip' => 'nullable|string|max:30',
             'username' => 'required|string|max:255|unique:users,username,' . $userId,
             'email' => 'required|string|email|max:255|unique:users,email,' . $userId,
-            'role' => 'required|in:admin,konsolidator,operator',
+            'role' => 'required|in:admin,konsolidator,operator,auditor',
             'skpd_id' => 'nullable|exists:skpds,id',
             'status' => 'boolean',
         ];

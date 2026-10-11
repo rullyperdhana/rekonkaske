@@ -205,7 +205,11 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Patch CVE Dependensi (0 Advisories):** Pembaruan paket `maatwebsite/excel` ke versi 3.1.70 untuk menutup celah kritis `CVE-2026-84374` (arbitrary path traversal export), serta pembaruan `league/commonmark` ke versi 2.10.3 untuk menutup celah Denial of Service (DoS). Status pemindaian `composer audit` bersih 100%.
   * **Proteksi Path Traversal pada Storage Stream:** Pengetatan keamanan rute `/storage-stream/{path}` dengan memblokir karakter traversal (`../`, null byte, backslash), menolak akses berkas konfigurasi sistem (`.env`, `storage_nas_config.json`, `composer.json`), serta mewajibkan autentikasi login untuk mengakses dokumen keuangan daerah.
   * **Proteksi Anti-IDOR (Insecure Direct Object Reference) Transaksi:** Pengetatan wewenang pada `TransaksiController` (`store`, `edit`, `update`, `destroy`) yang memastikan akun Operator SKPD tidak dapat memanipulasi, mengedit, ataupun menghapus transaksi milik instansi/SKPD lain.
-  * **Validasi Ekstensi Berkas Berlapis (Defense-in-Depth):** Penambahan aturan validasi `extensions:pdf,jpg,jpeg,png` pada `UploadTransaksiRequest` di samping pengecekan tipe MIME asli berkas.
+* **v2.7.2** - **Penambahan Peran Grup Auditor (Inspektorat / BPK) & Read-Only Audit Privileges:**
+  * **Grup & Peran Pengguna Baru (`auditor`):** Penambahan opsi peran *Auditor (Inspektorat / BPK)* pada modul Manajemen Pengguna (`/pengaturan/user`), validasi form request (`StoreUserRequest` & `UpdateUserRequest`), serta filter pencarian peran pengguna.
+  * **Badge Identitas Khusus:** Penyematan lencana amber/emas terverifikasi (*Auditor Pengawas*) pada tabel daftar pengguna dan laporan cetak kepemilikan akun non-SKPD.
+  * **Hak Akses Pengawasan Terpadu (Read-Only Audit Privileges):** Akun Auditor secara otomatis diberikan wewenang melihat seluruh data rekonsiliasi kas se-Kabupaten Tapin, Analitik Eksekutif KDH/Sekda, Laporan Verifikasi Konsolidator, Konsolidasi Daerah, Ringkasan Selisih Kas, Tunggakan Kepatuhan, Berita Acara, serta akses unduh arsip berkas bukti dan paket ZIP massal BPK pada Brankas Digital (`/dokumen/tree`).
+  * **Strict Data Integrity Lockdown (Anti-Manipulasi Data Audit):** Perlindungan tingkat controller yang secara ketat memblokir Auditor dari aksi mutasi data (dilarang membuat, mengedit, menghapus, atau mengunggah bukti transaksi, dilarang melakukan verifikasi/pemeriksaan laporan, serta dilarang merubah master rekening dan kop instansi).
 
 
 

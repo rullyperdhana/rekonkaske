@@ -57,16 +57,20 @@
                 <div>
                     <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">Peran (Role)</label>
                     <select name="role" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-                        <option value="operator" {{ old('role') == 'operator' ? 'selected' : '' }}>Operator</option>
-                        <option value="konsolidator" {{ old('role') == 'konsolidator' ? 'selected' : '' }}>Konsolidator</option>
-                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                        <option value="operator" {{ old('role') == 'operator' ? 'selected' : '' }}>Operator (Bendahara Pengeluaran SKPD)</option>
+                        <option value="konsolidator" {{ old('role') == 'konsolidator' ? 'selected' : '' }}>Konsolidator (Verifikator BKAD Pusat)</option>
+                        <option value="auditor" {{ old('role') == 'auditor' ? 'selected' : '' }}>Auditor (Inspektorat Daerah / BPK - Read Only)</option>
+                        <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin (Administrator Sistem)</option>
                     </select>
+                    <p class="text-[11px] text-on-surface-variant mt-1.5 leading-relaxed">
+                        <span class="font-semibold text-primary">Info Peran Auditor:</span> Memiliki hak akses pantau & unduh (Read-Only) ke seluruh rekonsiliasi, laporan keuangan, dan brankas arsip ZIP BPK tanpa izin manipulasi atau verifikasi data.
+                    </p>
                 </div>
 
                 <div>
-                    <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">SKPD (Kosongkan jika Admin Pusat / Konsolidator)</label>
+                    <label class="block font-label-sm text-label-sm text-on-surface font-semibold mb-1">SKPD (Kosongkan jika Admin Pusat / Konsolidator / Auditor)</label>
                     <select name="skpd_id" class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-                        <option value="">-- Pilih SKPD --</option>
+                        <option value="">-- Kosongkan / Pengawas Pusat (Semua SKPD) --</option>
                         @foreach($skpds as $skpd)
                             <option value="{{ $skpd->id }}" {{ old('skpd_id') == $skpd->id ? 'selected' : '' }}>{{ $skpd->nama }}</option>
                         @endforeach

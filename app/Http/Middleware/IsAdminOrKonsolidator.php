@@ -15,7 +15,7 @@ class IsAdminOrKonsolidator
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->check() && (auth()->user()->role === 'admin' || auth()->user()->role === 'konsolidator')) {
+        if (auth()->check() && in_array(auth()->user()->role, ['admin', 'konsolidator', 'auditor'])) {
             return $next($request);
         }
 

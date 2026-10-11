@@ -81,6 +81,7 @@
                     <option value="">Semua Peran</option>
                     <option value="admin" {{ request('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="konsolidator" {{ request('role') == 'konsolidator' ? 'selected' : '' }}>Konsolidator</option>
+                    <option value="auditor" {{ request('role') == 'auditor' ? 'selected' : '' }}>Auditor</option>
                     <option value="operator" {{ request('role') == 'operator' ? 'selected' : '' }}>Operator</option>
                 </select>
             </div>
@@ -117,12 +118,38 @@
                             <td class="py-3 px-4 font-body-md text-on-surface">
                                 <div class="font-bold">{{ $user->name }}</div>
                                 @if($user->nip)
-                                    <div class="text-[11px] font-mono text-on-surface-variant">NIP. {{ $user->nip }}</div>
+                                     <div class="text-[11px] font-mono text-on-surface-variant">NIP. {{ $user->nip }}</div>
                                 @endif
                             </td>
                             <td class="py-3 px-4 font-data-tabular text-data-tabular text-on-surface-variant">{{ $user->username }}</td>
-                            <td class="py-3 px-4 font-body-md text-on-surface">{{ $user->skpd ? $user->skpd->nama : 'BKAD Pusat' }}</td>
-                            <td class="py-3 px-4 font-body-md text-on-surface">{{ ucfirst($user->role) }}</td>
+                            <td class="py-3 px-4 font-body-md text-on-surface">
+                                @if($user->skpd)
+                                    {{ $user->skpd->nama }}
+                                @elseif($user->role === 'auditor')
+                                    <span class="text-amber-800 dark:text-amber-300 font-medium">Inspektorat / BPK (Pengawas)</span>
+                                @else
+                                    <span class="text-on-surface-variant">BKAD Pusat</span>
+                                @endif
+                            </td>
+                            <td class="py-3 px-4 font-body-md">
+                                @if($user->role === 'admin')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-100 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300 border border-purple-200 dark:border-purple-800">
+                                        <span class="material-symbols-outlined text-[13px] mr-1">admin_panel_settings</span> Admin
+                                    </span>
+                                @elseif($user->role === 'konsolidator')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                                        <span class="material-symbols-outlined text-[13px] mr-1">verified_user</span> Konsolidator
+                                    </span>
+                                @elseif($user->role === 'auditor')
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-100 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300 border border-amber-300 dark:border-amber-700">
+                                        <span class="material-symbols-outlined text-[13px] mr-1">policy</span> Auditor (Pengawas)
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                        <span class="material-symbols-outlined text-[13px] mr-1">person</span> Operator
+                                    </span>
+                                @endif
+                            </td>
                             <td class="py-3 px-4">
                                 @if($user->status)
                                 <span class="inline-flex items-center px-2 py-1 rounded bg-secondary/10 text-secondary font-label-sm text-label-sm">

@@ -19,10 +19,40 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.1',
-                'date' => '24 September 2026',
+                'version' => 'v2.7.2',
+                'date' => '11 Oktober 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'emerald',
+                'title' => 'Grup Peran Baru: Auditor (Inspektorat / BPK) & Read-Only Audit Privileges',
+                'summary' => 'Penambahan peran pengguna khusus Auditor pada modul Manajemen Pengguna (/pengaturan/user), dilengkapi hak akses pengawasan penuh (read-only) terhadap seluruh data rekonsiliasi, analitik eksekutif, serta brankas berkas digital BPK tanpa izin mutasi data.',
+                'items' => [
+                    [
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Grup & Peran Auditor: Penambahan peran "Auditor (Inspektorat Daerah / BPK)" pada form Tambah & Edit Pengguna, filter pencarian peran, serta lencana status khusus di tabel pengguna.'
+                    ],
+                    [
+                        'type' => 'feature',
+                        'label' => 'Hak Akses',
+                        'desc' => 'Read-Only Audit Privileges: Akun Auditor diberikan akses melihat seluruh transaksi kas SKPD se-Kabupaten Tapin, Analitik Eksekutif KDH/Sekda, Laporan Verifikasi, Rekapitulasi Tahunan, Konsolidasi Daerah, Ringkasan Selisih Kas, Tunggakan, serta Brankas Dokumen Tree.'
+                    ],
+                    [
+                        'type' => 'feature',
+                        'label' => 'Arsip & Audit',
+                        'desc' => 'Akses Unduh Massal ZIP Audit BPK: Auditor memiliki izin mengunduh paket arsip digital rekonsiliasi kas per transaksi maupun paket ZIP massal skala kabupaten.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Keamanan',
+                        'desc' => 'Strict Data Integrity Lockdown: Perlindungan controller berlapis yang memblokir akun Auditor dari membuat, mengedit, menghapus, atau mengunggah bukti transaksi, memverifikasi laporan, serta mengubah pengaturan instansi.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.1',
+                'date' => '24 September 2026',
+                'badge' => 'STABLE',
+                'badge_color' => 'slate',
                 'title' => 'Security Hardening: Patch CVE Dependensi, Proteksi Path Traversal & Anti-IDOR',
                 'summary' => 'Peningkatan keamanan komprehensif: pembaruan dependensi (0 CVE advisories di composer audit), eliminasi potensi celah Path Traversal pada storage stream, serta pengetatan otorisasi transaksi anti-IDOR.',
                 'items' => [

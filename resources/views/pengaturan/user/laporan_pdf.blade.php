@@ -204,7 +204,7 @@
     </table>
 
     <!-- Bagian II: Daftar Pengguna Non-SKPD (Pusat) -->
-    <div class="section-title" style="margin-top: 10px;">II. DAFTAR PENGGUNA NON-SKPD (ADMIN & KONSOLIDATOR BKAD PUSAT)</div>
+    <div class="section-title" style="margin-top: 10px;">II. DAFTAR PENGGUNA NON-SKPD (ADMIN, KONSOLIDATOR & AUDITOR PENGAWAS PUSAT)</div>
     <table class="data">
         <thead>
             <tr>
