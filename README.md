@@ -213,6 +213,18 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
 * **v2.7.3** - **Eksklusi Fitur Komunikasi WhatsApp untuk Peran Auditor (Anti-Interferensi & Independensi Audit):**
   * **Penyembunyian Modul Broadcast WhatsApp:** Rute dan menu sidebar `/laporan/rekap-wa` disembunyikan dari navigasi Auditor dan diproteksi ketat pada controller level (`403 Forbidden`).
   * **Eksklusi Tombol Kirim WhatsApp pada Laporan:** Menghilangkan kolom aksi WhatsApp pada tabel Laporan Konsolidasi Daerah, ketiga tab Laporan Tunggakan Kepatuhan, serta tombol kontak langsung Bendahara pada Dashboard Analitik Eksekutif khusus saat akun yang login adalah Auditor.
+* **v2.7.4** - **Pusat Informasi & Log Update Aplikasi serta SOP Prosedur Update Server VPS Production:**
+  * **Pusat Informasi & Log Update Aplikasi Khusus Admin (`/pengaturan/dokumentasi` & `/pengaturan/update-aplikasi`):** Halaman komprehensif Material Design 3 terpadu bagi Administrator BKAD yang mengintegrasikan 4 tab navigasi: *Panduan Update VPS (SOP)*, *Log Update (Changelog 14 Versi)*, *Matriks Hak Akses Peran*, dan *Katalog Modul & Arsitektur*.
+  * **Panduan Interaktif Deployment VPS aaPanel (SOP Production):**
+    * Tombol salin 1-klik jalur eksekusi script otomatis: `cd /www/wwwroot/sireke.cloud && bash pull.sh`.
+    * Prosedur manual CLI 8 langkah lengkap dengan tombol copy tiap baris perintah (Maintenance -> Git Reset -> Composer -> Migrate -> Optimize Cache -> Chmod/Chown Web Permissions -> Live).
+    * Toolkit prosedur darurat & rollback commit jika terjadi kendala pasca rilis (`git reset --hard HEAD~1`, pemantauan log error `tail -n 50 -f storage/logs/laravel.log`, dan pengecekan integritas sistem `artisan about`).
+    * Checklist interaktif Pra-Update & Pasca-Update dengan checkbox interaktif di browser.
+  * **Matriks Hak Akses 4 Peran Pengguna (Access Control Matrix):**
+    * Tabel pembanding transparan hak akses untuk 10 pilar modul antara *Administrator BKAD*, *Konsolidator*, *Operator SKPD*, dan *Auditor (Inspektorat / BPK)*.
+    * Penjelasan landasan Standar Pemeriksaan Keuangan Negara (SPKN) terkait perlakuan *Strict Read-Only & Zero-Interference* serta eksklusi fitur komunikasi WhatsApp bagi akun peran Auditor.
+  * **Detektor Runtime & Git Status Real-time:**
+    * Deteksi otomatis hash commit git aktif, branch target, pesan commit rilis, dan status mode pemeliharaan sistem.
 
 
 

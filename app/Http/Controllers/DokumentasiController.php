@@ -19,27 +19,37 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.3',
+                'version' => 'v2.7.4',
                 'date' => '11 Oktober 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'emerald',
-                'title' => 'Eksklusi Fitur Komunikasi WhatsApp untuk Peran Auditor',
-                'summary' => 'Penonaktifan seluruh integrasi aksi WhatsApp bagi akun Auditor, termasuk generator broadcast rekapitulasi WA, tombol kirim peringatan, dan tautan kontak langsung ke Bendahara SKPD guna menjaga independensi audit.',
+                'title' => 'Pusat Informasi & Dokumentasi Update Aplikasi serta SOP Deployment VPS Terpadu',
+                'summary' => 'Penyediaan portal informasi pembaruan sistem khusus Administrator BKAD yang menyajikan log pembaruan interaktif, matriks hak akses 4 peran (termasuk Auditor), dan panduan komprehensif prosedur update server VPS aaPanel dengan 1-klik salin perintah.',
                 'items' => [
                     [
-                        'type' => 'security',
-                        'label' => 'Independensi Audit',
-                        'desc' => 'Penyembunyian Menu Broadcast WA: Rute dan menu /laporan/rekap-wa disembunyikan dari sidebar navigasi Auditor dan diproteksi dengan HTTP 403 Forbidden.'
+                        'type' => 'new',
+                        'label' => 'Fitur Baru',
+                        'desc' => 'Portal Hub Update Aplikasi (/pengaturan/dokumentasi & /pengaturan/update-aplikasi) berdesain modern Material Design 3 dengan 4 tab navigasi terpadu: Panduan SOP Update VPS, Log Pembaruan (Changelog), Matriks Hak Akses Peran, dan Katalog Arsitektur Sistem.'
                     ],
                     [
-                        'type' => 'security',
-                        'label' => 'Antarmuka Laporan',
-                        'desc' => 'Eksklusi Tombol Kirim WhatsApp: Menghilangkan kolom aksi WhatsApp pada tabel Laporan Konsolidasi, ketiga tab Laporan Tunggakan, serta matriks instansi Dashboard Eksekutif khusus saat diakses oleh akun Auditor.'
+                        'type' => 'new',
+                        'label' => 'Deployment SOP',
+                        'desc' => 'Panduan Interaktif Deployment Server VPS: Salin cepat 1-klik perintah eksekusi otomatis (cd /www/wwwroot/sireke.cloud && bash pull.sh), panduan CLI manual 8 langkah, prosedur darurat rollback commit, dan checklist pra/pasca-deployment.'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Hak Akses',
+                        'desc' => 'Matriks Hak Akses 4 Peran Pengguna: Perbandingan transparan wewenang antara Admin, Konsolidator, Operator SKPD, dan Auditor Inspektorat/BPK untuk 10 pilar modul utama.'
+                    ],
+                    [
+                        'type' => 'improvement',
+                        'label' => 'Runtime & Git',
+                        'desc' => 'Detektor Runtime & Git Status: Integrasi otomatis hash commit git aktif, branch rilis, status pemeliharaan server, dan spesifikasi lingkungan server hosting/VPS.'
                     ]
                 ]
             ],
             [
-                'version' => 'v2.7.2',
+                'version' => 'v2.7.3',
                 'date' => '11 Oktober 2026',
                 'badge' => 'STABLE',
                 'badge_color' => 'slate',
@@ -544,10 +554,201 @@ class DokumentasiController extends Controller
             ]
         ];
 
-        // 3. Spesifikasi Arsitektur Sistem
+        // 3. Informasi Git & Runtime Environment
+        $gitInfo = [
+            'branch' => 'main',
+            'commit' => 'HEAD',
+            'date' => '11 Okt 2026',
+            'message' => 'Pembaruan rilis SiReKa',
+            'repo_url' => 'https://github.com/rullyperdhana/rekonkaske',
+        ];
+
+        try {
+            if (function_exists('shell_exec')) {
+                $b = trim((string) @shell_exec('git rev-parse --abbrev-ref HEAD 2>/dev/null'));
+                if (!empty($b)) $gitInfo['branch'] = $b;
+
+                $c = trim((string) @shell_exec('git log -1 --format="%h" 2>/dev/null'));
+                if (!empty($c)) $gitInfo['commit'] = $c;
+
+                $d = trim((string) @shell_exec('git log -1 --format="%cd" --date=format:"%d %b %Y %H:%M" 2>/dev/null'));
+                if (!empty($d)) $gitInfo['date'] = $d;
+
+                $m = trim((string) @shell_exec('git log -1 --format="%s" 2>/dev/null'));
+                if (!empty($m)) $gitInfo['message'] = $m;
+            }
+        } catch (\Throwable $e) {
+            // graceful fallback
+        }
+
+        // 4. Prosedur & SOP Update VPS Production (aaPanel)
+        $vpsDeploymentInfo = [
+            'vps_path' => '/www/wwwroot/sireke.cloud',
+            'quick_cmd' => 'cd /www/wwwroot/sireke.cloud && bash pull.sh',
+            'php_bin' => '/www/server/php/84/bin/php',
+            'composer_bin' => '/usr/bin/composer',
+            'web_user' => 'www:www',
+            'github_repo' => 'https://github.com/rullyperdhana/rekonkaske.git',
+            'branch' => 'main',
+            'steps' => [
+                [
+                    'num' => '1',
+                    'title' => 'Arahkan ke Direktori Aplikasi',
+                    'desc' => 'Buka Terminal SSH (Putty / Terminal Mac / aaPanel Web Terminal) dan buka folder aplikasi SiReKa di server.',
+                    'cmd' => 'cd /www/wwwroot/sireke.cloud',
+                ],
+                [
+                    'num' => '2',
+                    'title' => 'Aktifkan Mode Maintenance Sementara',
+                    'desc' => 'Mengunci akses pengguna umum sementara agar proses update tidak mengganggu transaksi SKPD yang sedang berlangsung.',
+                    'cmd' => '/www/server/php/84/bin/php artisan down --secret="bypass-admin"',
+                ],
+                [
+                    'num' => '3',
+                    'title' => 'Tarik Pembaruan Kode dari GitHub',
+                    'desc' => 'Menyelaraskan codebase server dengan branch main resmi di GitHub.',
+                    'cmd' => 'git fetch --all && git reset --hard origin/main',
+                ],
+                [
+                    'num' => '4',
+                    'title' => 'Perbarui Dependensi Composer',
+                    'desc' => 'Menginstal dependensi backend secara teroptimasi tanpa pustaka dev untuk efisiensi server produksi.',
+                    'cmd' => '/www/server/php/84/bin/php /usr/bin/composer install --optimize-autoloader --no-dev',
+                ],
+                [
+                    'num' => '5',
+                    'title' => 'Jalankan Migrasi Database',
+                    'desc' => 'Menyesuaikan struktur tabel database terbaru dengan flag eksekusi paksa production (--force).',
+                    'cmd' => '/www/server/php/84/bin/php artisan migrate --force',
+                ],
+                [
+                    'num' => '6',
+                    'title' => 'Segarkan & Optimalkan Kinerja Cache',
+                    'desc' => 'Membersihkan cache view, route, config lama dan menyusun cache terkompilasi berkecepatan tinggi.',
+                    'cmd' => '/www/server/php/84/bin/php artisan view:clear && /www/server/php/84/bin/php artisan optimize',
+                ],
+                [
+                    'num' => '7',
+                    'title' => 'Amankan Hak Akses Berkas (aaPanel)',
+                    'desc' => 'Memastikan permission folder storage dan bootstrap/cache dapat ditulis oleh user www:www web server.',
+                    'cmd' => 'chown -R www:www /www/wwwroot/sireke.cloud && chmod -R 775 storage bootstrap/cache',
+                ],
+                [
+                    'num' => '8',
+                    'title' => 'Buka Kembali Akses Web (Selesai)',
+                    'desc' => 'Menonaktifkan mode pemeliharaan sehingga seluruh SKPD dapat kembali mengakses aplikasi.',
+                    'cmd' => '/www/server/php/84/bin/php artisan up',
+                ],
+            ],
+            'rollback_cmds' => [
+                'Kembali ke 1 Commit Sebelumnya' => 'git reset --hard HEAD~1 && /www/server/php/84/bin/php artisan optimize:clear',
+                'Pantau Log Error Real-time' => 'tail -n 50 -f storage/logs/laravel.log',
+                'Cek Status & Integritas Sistem' => '/www/server/php/84/bin/php artisan about',
+                'Perbaiki Permission Storage aaPanel' => 'chown -R www:www /www/wwwroot/sireke.cloud && chmod -R 775 storage bootstrap/cache',
+            ],
+            'preflight_checklist' => [
+                'Pastikan backup database terbaru telah diekspor melalui aaPanel Database Backup atau phpMyAdmin.',
+                'Pastikan tidak ada SKPD yang sedang dalam proses upload berkas Berita Acara mendesak.',
+                'Pastikan commit perubahan di GitHub telah di-review dan berstatus green/lulus build.',
+            ],
+            'postflight_checklist' => [
+                'Buka browser dan muat ulang halaman login SiReKa.',
+                'Verifikasi nomor rilis versi pada footer sidebar telah terbarui ke versi target.',
+                'Coba buka menu Laporan Konsolidasi & Brankas Dokumen untuk memastikan driver storage berjalan normal.',
+                'Jika ada notifikasi Telegram aktif, lakukan tombol uji coba pesan dari menu Pengaturan Telegram.',
+            ]
+        ];
+
+        // 5. Matriks Hak Akses Peran Pengguna (Access Control Matrix)
+        $roleMatrix = [
+            [
+                'modul' => 'Entri & Edit Transaksi Kas SKPD',
+                'kategori' => 'Transaksi',
+                'admin' => ['status' => 'full', 'desc' => 'Akses penuh entri, edit, dan hapus transaksi'],
+                'konsolidator' => ['status' => 'readonly', 'desc' => 'Hanya memeriksa berkas tanpa hak ubah angka saldo'],
+                'operator' => ['status' => 'limited', 'desc' => 'Kelola transaksi SKPD sendiri sebelum verifikasi'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Dilarang keras (Strict Read-Only Audit)'],
+            ],
+            [
+                'modul' => 'Unggah Bukti Dukung (4 Berkas Fisik)',
+                'kategori' => 'Dokumen',
+                'admin' => ['status' => 'full', 'desc' => 'Hapus file salah & kontrol izin re-upload'],
+                'konsolidator' => ['status' => 'readonly', 'desc' => 'Pratinjau in-browser dokumen untuk verifikasi'],
+                'operator' => ['status' => 'limited', 'desc' => 'Unggah berkas bukti SKPD sendiri'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Dilarang memanipulasi atau mengunggah dokumen'],
+            ],
+            [
+                'modul' => 'Pemeriksaan & Pengesahan Berita Acara',
+                'kategori' => 'Verifikasi',
+                'admin' => ['status' => 'full', 'desc' => 'Akses verifikasi & reset status transaksi ke draft'],
+                'konsolidator' => ['status' => 'full', 'desc' => 'Wewenang utama pengesahan & tanda bukti digital'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Objek yang diperiksa (tidak ada wewenang)'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Dilarang mengesahkan demi netralitas audit'],
+            ],
+            [
+                'modul' => 'Dashboard Analitik Eksekutif (KDH/Sekda)',
+                'kategori' => 'Monitoring',
+                'admin' => ['status' => 'full', 'desc' => 'Akses penuh Kiosk Mode, DSS & cetak brief eksekutif'],
+                'konsolidator' => ['status' => 'full', 'desc' => 'Akses pemantauan kepatuhan fiskal daerah'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Dibatasi (hanya dashboard operasional SKPD)'],
+                'auditor' => ['status' => 'full', 'desc' => 'Akses pengawasan penuh 4 KPI & status seluruh SKPD'],
+            ],
+            [
+                'modul' => 'Brankas Dokumen & Unduh ZIP Massal BPK',
+                'kategori' => 'Arsip & Audit',
+                'admin' => ['status' => 'full', 'desc' => 'Akses hirarki pohon, preview, & ekspor ZIP massal'],
+                'konsolidator' => ['status' => 'full', 'desc' => 'Akses hirarki pohon & ekspor ZIP massal'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Hanya melihat arsip instansi sendiri'],
+                'auditor' => ['status' => 'full', 'desc' => 'Akses penuh arsip se-Kabupaten & unduh ZIP audit BPK'],
+            ],
+            [
+                'modul' => 'Broadcast Rekap WhatsApp & Kontak Bendahara',
+                'kategori' => 'Komunikasi',
+                'admin' => ['status' => 'full', 'desc' => 'Generator broadcast rekap WA & kontak bendahara'],
+                'konsolidator' => ['status' => 'full', 'desc' => 'Akses broadcast WA & kontak bendahara SKPD'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Tidak tersedia menu broadcast pimpinan'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Eksklusi 100% demi independensi audit'],
+            ],
+            [
+                'modul' => 'Notifikasi Telegram Otomatis Posting Final',
+                'kategori' => 'Notifikasi',
+                'admin' => ['status' => 'full', 'desc' => 'Konfigurasi Bot Token, target chat ID & trigger siaran'],
+                'konsolidator' => ['status' => 'readonly', 'desc' => 'Penerima siaran verifikasi berkas SKPD'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Tidak menerima siaran antrean verifikasi'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Tidak dilibatkan dalam jalur komunikasi operasional'],
+            ],
+            [
+                'modul' => 'Manajemen Pengguna & Pengaturan Peran',
+                'kategori' => 'Administrasi',
+                'admin' => ['status' => 'full', 'desc' => 'Kelola seluruh user, reset password & tetapkan peran'],
+                'konsolidator' => ['status' => 'forbidden', 'desc' => 'Hanya dapat mengubah password sendiri'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Hanya dapat mengubah profil & password sendiri'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Hanya dapat mengubah profil & password sendiri'],
+            ],
+            [
+                'modul' => 'Mode Lockdown & Maintenance Sistem',
+                'kategori' => 'Infrastruktur',
+                'admin' => ['status' => 'full', 'desc' => 'Aktivasi/nonaktifkan maintenance & backup database'],
+                'konsolidator' => ['status' => 'bypass', 'desc' => 'Bypass lock (tetap dapat login saat maintenance)'],
+                'operator' => ['status' => 'locked', 'desc' => 'Terkunci otomatis ke layar pemeliharaan animasi'],
+                'auditor' => ['status' => 'locked', 'desc' => 'Terkunci selama masa pemeliharaan sistem'],
+            ],
+            [
+                'modul' => 'Jejak Audit Forensik (Activity Log)',
+                'kategori' => 'Keamanan',
+                'admin' => ['status' => 'full', 'desc' => 'Akses pemantauan seluruh log aktivitas & alamat IP'],
+                'konsolidator' => ['status' => 'forbidden', 'desc' => 'Tidak memiliki hak akses log server'],
+                'operator' => ['status' => 'forbidden', 'desc' => 'Tidak memiliki hak akses log server'],
+                'auditor' => ['status' => 'forbidden', 'desc' => 'Objek pengawasan internal admin BKAD'],
+            ],
+        ];
+
+        // 6. Spesifikasi Arsitektur Sistem
         $systemSpecs = [
             'app_name' => config('app.name', 'SiReKa'),
-            'app_version' => 'v2.6.0 Enterprise',
+            'app_version' => 'v2.7.4 Enterprise',
+            'release_date' => '11 Oktober 2026',
+            'release_status' => 'Production Ready (Stable)',
             'php_version' => PHP_VERSION,
             'laravel_version' => app()->version(),
             'server_os' => php_uname('s') . ' ' . php_uname('r'),
@@ -556,8 +757,16 @@ class DokumentasiController extends Controller
             'storage_driver' => config('filesystems.disks.public.driver', 'local'),
             'cache_driver' => config('cache.default', 'file'),
             'session_driver' => config('session.driver', 'file'),
+            'maintenance_mode' => app()->isDownForMaintenance() ? 'Aktif (Maintenance Mode)' : 'Normal (Live Production)',
         ];
 
-        return view('pengaturan.dokumentasi.index', compact('changelogs', 'modulKatalog', 'systemSpecs'));
+        return view('pengaturan.dokumentasi.index', compact(
+            'changelogs',
+            'modulKatalog',
+            'systemSpecs',
+            'vpsDeploymentInfo',
+            'roleMatrix',
+            'gitInfo'
+        ));
     }
 }

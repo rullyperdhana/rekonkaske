@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
 
         // Dokumentasi & Log Update Fitur
         Route::get('pengaturan/dokumentasi', [\App\Http\Controllers\DokumentasiController::class, 'index'])->name('pengaturan.dokumentasi.index');
+        Route::get('pengaturan/update-aplikasi', [\App\Http\Controllers\DokumentasiController::class, 'index'])->name('pengaturan.update.index');
 
         // Reset Status Transaksi ke Draft oleh Admin Pusat
         Route::post('/transaksi/{transaksi}/reset-draft', [\App\Http\Controllers\TransaksiController::class, 'resetToDraft'])->name('transaksi.reset-draft');
