@@ -543,6 +543,35 @@
                                             x-text="securityAuditResult?.total_packages_scanned + ' paket'"></span>
                                     </div>
                                     <p class="text-xs text-slate-300 leading-relaxed" x-text="securityAuditResult?.message"></p>
+
+                                    <!-- Detail Kerentanan jika ada paket terdampak -->
+                                    <template x-if="securityAuditResult?.status === 'vulnerable' && securityAuditResult?.advisories && Object.keys(securityAuditResult.advisories).length > 0">
+                                        <div class="mt-3 pt-3 border-t border-rose-500/30 space-y-2">
+                                            <p class="text-[11px] font-bold text-rose-300 uppercase tracking-wider">Rincian Paket &amp; Kerentanan Teridentifikasi:</p>
+                                            <div class="max-h-60 overflow-y-auto space-y-2 pr-1">
+                                                <template x-for="(pkgAdvList, pkgName) in securityAuditResult.advisories" :key="pkgName">
+                                                    <div class="bg-black/40 rounded-xl p-2.5 border border-rose-500/30 text-xs">
+                                                        <div class="flex items-center justify-between gap-2">
+                                                            <span class="font-mono font-bold text-rose-200" x-text="pkgName"></span>
+                                                            <span class="text-[10px] px-2 py-0.5 rounded bg-rose-500/30 text-rose-100 font-mono" x-text="pkgAdvList[0]?.installed_version ? 'v' + pkgAdvList[0].installed_version : ''"></span>
+                                                        </div>
+                                                        <div class="mt-1.5 space-y-1">
+                                                            <template x-for="adv in pkgAdvList" :key="adv.advisoryId || adv.remoteId">
+                                                                <div class="text-[11px] text-slate-300 flex items-start justify-between gap-2">
+                                                                    <div>
+                                                                        <span class="font-bold text-white font-mono" x-text="adv.cve || adv.remoteId || 'CVE'"></span>:
+                                                                        <span x-text="adv.title"></span>
+                                                                        <span class="text-amber-300 font-mono" x-text="'(' + adv.affectedVersions + ')'"></span>
+                                                                    </div>
+                                                                    <a x-show="adv.link" :href="adv.link" target="_blank" rel="noopener noreferrer" class="shrink-0 text-rose-300 underline hover:text-white font-semibold">Detail</a>
+                                                                </div>
+                                                            </template>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
                                 </div>
                             </div>
                             <button @click="securityAuditResult = null" class="text-slate-400 hover:text-white p-1">

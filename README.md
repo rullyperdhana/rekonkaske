@@ -231,6 +231,7 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **SOP Tanggap Darurat Penambalan Celah Keamanan (Security Hotfix):** Panduan standar 4-langkah mitigasi celah keamanan (Audit di VPS, Update Patch di Komputer Lokal, Testing Mandiri, dan Deploy aman ke VPS via `pull.sh`).
   * **Solusi Diagnostik CLI Terminal VPS aaPanel:** Panduan penyelesaian kendala platform PHP 8.3 bawaan OS vs PHP 8.4 aaPanel saat menjalankan perintah `php artisan --version` di terminal SSH.
   * **Radar Eksternal Celah Keamanan (Zero-Day Watch):** Tautan langsung ke basis data pengumuman resmi GitHub Security Advisories, Packagist Tracker, Changelog Rilis Laravel, dan MITRE CVE Directory.
-
-
-
+* **v2.7.6** - **Penyempurnaan Live CVE Scanner (Semver Version Matching & Zero False-Positive Engine):**
+  * **Eliminasi Alarm Palsu (Zero False-Positive Engine):** Mengintegrasikan semantic versioning parser `Composer\Semver\Semver::satisfies()` dengan fallback parser cerdas `version_compare` pada scanner Packagist Security Advisories API. Sistem kini memvalidasi versi dependensi yang benar-benar terpasang di `composer.lock` terhadap rentang kerentanan (`affectedVersions`), menghapuskan alarm palsu yang sebelumnya menghitung seluruh 172 riwayat CVE historis paket.
+  * **Rincian Kerentanan Interaktif (Actionable Advisory Card):** Menambahkan kartu visual rincian celah keamanan jika di kemudian hari ditemukan paket rentan secara riil, memuat ID CVE, versi terdampak, dan tautan langsung ke referensi penambalan resmi.
+  * **Hasil Audit Terverifikasi (0 CVE Clean Status):** Memastikan 130 paket dependensi aktif terproteksi penuh sesuai verifikasi resmi `composer audit`.
