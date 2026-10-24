@@ -25,10 +25,17 @@ class TransaksiController extends Controller
             return response()->json(['bku_saldo_akhir' => 0, 'bank_saldo_akhir' => 0, 'existing_months' => []]);
         }
         
-        $existingMonths = Transaksi::where('skpd_id', $skpdId)
+        $query = Transaksi::where('skpd_id', $skpdId)
             ->where('rekening_id', $rekeningId)
-            ->where('periode_tahun', $periodeTahun)
-            ->pluck('periode_bulan')
+            ->where('periode_tahun', $periodeTahun);
+
+        if ($request->filled('ignore_id')) {
+            $query->where('id', '!=', $request->ignore_id);
+        }
+
+        $existingMonths = $query->pluck('periode_bulan')
+            ->map(fn($m) => (int)$m)
+            ->values()
             ->toArray();
 
         // Cari transaksi di bulan sebelumnya pada tahun yang sama
@@ -100,7 +107,22 @@ class TransaksiController extends Controller
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
         $tahunAktif = session('tahun_login') ?? date('Y');
         $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
-        return view('transaksi.create', compact('skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth'));
+
+        $skpdId = Auth::user()->role === 'operator' ? Auth::user()->skpd_id : old('skpd_id');
+        $defaultRekeningId = old('rekening_id') ?? ($rekenings->count() === 1 ? $rekenings->first()->id : null);
+        
+        $existingMonths = [];
+        if ($skpdId && $defaultRekeningId) {
+            $existingMonths = Transaksi::where('skpd_id', $skpdId)
+                ->where('rekening_id', $defaultRekeningId)
+                ->where('periode_tahun', $tahunAktif)
+                ->pluck('periode_bulan')
+                ->map(fn($m) => (int)$m)
+                ->values()
+                ->toArray();
+        }
+
+        return view('transaksi.create', compact('skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth', 'existingMonths', 'defaultRekeningId'));
     }
 
     public function store(StoreTransaksiRequest $request)
@@ -172,7 +194,17 @@ class TransaksiController extends Controller
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
         $tahunAktif = $transaksi->periode_tahun ?? (session('tahun_login') ?? date('Y'));
         $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
-        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth'));
+
+        $existingMonths = Transaksi::where('skpd_id', $transaksi->skpd_id)
+            ->where('rekening_id', $transaksi->rekening_id)
+            ->where('periode_tahun', $tahunAktif)
+            ->where('id', '!=', $transaksi->id)
+            ->pluck('periode_bulan')
+            ->map(fn($m) => (int)$m)
+            ->values()
+            ->toArray();
+
+        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth', 'existingMonths'));
     }
 
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)

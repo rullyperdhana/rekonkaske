@@ -65,12 +65,17 @@
                                 $selectedBulanEdit = old('periode_bulan', $transaksi->periode_bulan);
                             @endphp
                             @for($i=1; $i<=$maxBulanEdit; $i++)
-                                <option value="{{ $i }}" {{ $selectedBulanEdit == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
+                                @php
+                                    $isExisting = in_array($i, $existingMonths ?? []);
+                                @endphp
+                                <option value="{{ $i }}" {{ $selectedBulanEdit == $i ? 'selected' : '' }} {{ $isExisting ? 'disabled class=text-slate-400 bg-slate-100' : '' }}>
+                                    {{ $namaBulan[$i - 1] }}{{ $isExisting ? ' (Sudah Ada Berita Rekon)' : '' }}
+                                </option>
                             @endfor
                         </select>
                         <p class="text-[11px] text-on-surface-variant mt-1 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[13px] text-amber-600">info</span>
-                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20).</span>
+                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20). Bulan yang sudah memiliki Berita Rekon tidak dapat dipilih kembali.</span>
                         </p>
                     </div>
                     <div>
@@ -390,6 +395,56 @@
             const namaBulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
             const originalBulan = {{ (int)$transaksi->periode_bulan }};
             const originalTahun = {{ (int)$transaksi->periode_tahun }};
+            const currentTransaksiId = {{ (int)$transaksi->id }};
+            let lastExistingMonths = @json($existingMonths ?? []);
+
+            function applyExistingMonths(existingMonths) {
+                const bulanSelect = document.querySelector('select[name="periode_bulan"]');
+                if (!bulanSelect) return;
+                if (Array.isArray(existingMonths)) {
+                    lastExistingMonths = existingMonths.map(Number);
+                }
+
+                Array.from(bulanSelect.options).forEach(opt => {
+                    if (!opt.value) return;
+                    const val = parseInt(opt.value, 10);
+                    const baseText = namaBulanList[val - 1] || opt.text.replace(/ \((Sudah Diinput|Sudah Ada Berita Rekon)\)/g, '');
+
+                    if (lastExistingMonths.includes(val)) {
+                        opt.disabled = true;
+                        opt.textContent = baseText + ' (Sudah Ada Berita Rekon)';
+                        opt.classList.add('text-slate-400', 'bg-slate-100');
+                    } else {
+                        opt.disabled = false;
+                        opt.textContent = baseText;
+                        opt.classList.remove('text-slate-400', 'bg-slate-100');
+                    }
+                });
+
+                if (bulanSelect.selectedOptions[0]?.disabled) {
+                    const firstEnabled = Array.from(bulanSelect.options).find(opt => !opt.disabled && opt.value !== '');
+                    if (firstEnabled) {
+                        bulanSelect.value = firstEnabled.value;
+                    }
+                }
+            }
+
+            function fetchExistingMonths() {
+                const skpdId = skpdSelect ? skpdSelect.value : '';
+                const rekeningId = rekeningSelect ? rekeningSelect.value : '';
+                const periodeTahun = document.querySelector('input[name="periode_tahun"]')?.value || '';
+
+                if (skpdId && rekeningId && periodeTahun) {
+                    fetch(`{{ route('transaksi.getSaldoAwal') }}?skpd_id=${skpdId}&rekening_id=${rekeningId}&periode_tahun=${periodeTahun}&ignore_id=${currentTransaksiId}`)
+                        .then(res => res.json())
+                        .then(data => {
+                            if (data.existing_months) {
+                                applyExistingMonths(data.existing_months);
+                            }
+                        })
+                        .catch(err => console.error('Error fetching existing months:', err));
+                }
+            }
 
             function getMaxAllowedMonthForYear(yearVal) {
                 const now = new Date();
@@ -430,6 +485,7 @@
                     opt.disabled = true;
                     opt.selected = true;
                     bulanSelect.appendChild(opt);
+                    applyExistingMonths(lastExistingMonths);
                     return;
                 }
 
@@ -446,12 +502,24 @@
                 if (!bulanSelect.value || parseInt(bulanSelect.value, 10) > maxMonth) {
                     bulanSelect.value = maxMonth;
                 }
+
+                applyExistingMonths(lastExistingMonths);
+            }
+
+            if (rekeningSelect) {
+                rekeningSelect.addEventListener('change', fetchExistingMonths);
             }
 
             const tahunInputEl = document.querySelector('input[name="periode_tahun"]');
             if (tahunInputEl) {
-                tahunInputEl.addEventListener('input', syncPeriodeBulanOptions);
-                tahunInputEl.addEventListener('change', syncPeriodeBulanOptions);
+                tahunInputEl.addEventListener('input', function() {
+                    syncPeriodeBulanOptions();
+                    fetchExistingMonths();
+                });
+                tahunInputEl.addEventListener('change', function() {
+                    syncPeriodeBulanOptions();
+                    fetchExistingMonths();
+                });
             }
         });
     </script>

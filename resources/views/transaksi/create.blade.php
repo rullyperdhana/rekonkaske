@@ -54,7 +54,7 @@
                         <select id="rekening_id" name="rekening_id" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                             <option value="">-- Pilih Rekening --</option>
                             @foreach($rekenings as $rekening)
-                                <option value="{{ $rekening->id }}" data-skpd-id="{{ $rekening->skpd_id }}" {{ old('rekening_id') == $rekening->id ? 'selected' : '' }}>{{ $rekening->nama }} ({{ $rekening->nomor }})</option>
+                                <option value="{{ $rekening->id }}" data-skpd-id="{{ $rekening->skpd_id }}" {{ old('rekening_id', $defaultRekeningId ?? '') == $rekening->id ? 'selected' : '' }}>{{ $rekening->nama }} ({{ $rekening->nomor }})</option>
                             @endforeach
                         </select>
                     </div>
@@ -63,20 +63,42 @@
                         <select id="periode_bulan" name="periode_bulan" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                             @php
                                 $maxBulanInit = $maxAllowedMonth ?? 12;
-                                $defaultBulanInit = old('periode_bulan', min((int)date('n'), $maxBulanInit > 0 ? $maxBulanInit : 1));
+                                $currM = min((int)date('n'), $maxBulanInit > 0 ? $maxBulanInit : 1);
+                                $defaultBulanInit = old('periode_bulan');
+                                if (!$defaultBulanInit) {
+                                    if (!in_array($currM, $existingMonths ?? [])) {
+                                        $defaultBulanInit = $currM;
+                                    } else {
+                                        for ($m = 1; $m <= $maxBulanInit; $m++) {
+                                            if (!in_array($m, $existingMonths ?? [])) {
+                                                $defaultBulanInit = $m;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                             @endphp
                             @if($maxBulanInit < 1)
                                 <option value="" disabled selected>-- Belum Ada Periode Pelaporan --</option>
                             @else
                                 @for($i=1; $i<=$maxBulanInit; $i++)
-                                    <option value="{{ $i }}" {{ $defaultBulanInit == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
+                                    @php
+                                        $isExisting = in_array($i, $existingMonths ?? []);
+                                    @endphp
+                                    <option value="{{ $i }}" {{ $defaultBulanInit == $i && !$isExisting ? 'selected' : '' }} {{ $isExisting ? 'disabled class=text-slate-400 bg-slate-100' : '' }}>
+                                        {{ $namaBulan[$i - 1] }}{{ $isExisting ? ' (Sudah Ada Berita Rekon)' : '' }}
+                                    </option>
                                 @endfor
                             @endif
                         </select>
                         <p class="text-[11px] text-on-surface-variant mt-1 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[13px] text-amber-600">info</span>
-                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20).</span>
+                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20). Bulan yang sudah memiliki Berita Rekon tidak dapat dipilih kembali.</span>
                         </p>
+                        <div id="all-months-rekon-alert" class="hidden mt-2 p-2.5 rounded bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px] text-amber-600">warning</span>
+                            <span>Semua periode bulan pelaporan untuk rekening dan tahun ini sudah memiliki Berita Acara Rekonsiliasi.</span>
+                        </div>
                     </div>
                     <div>
                         <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Periode Tahun</label>
@@ -370,20 +392,81 @@
                 if (!rekeningSelect) return;
                 const options = rekeningSelect.querySelectorAll('option');
                 let hasValidSelection = false;
+                let visibleOptions = [];
 
                 options.forEach(option => {
                     if (option.value === "") return;
                     const optionSkpdId = option.getAttribute('data-skpd-id');
                     if (skpdId && optionSkpdId === skpdId) {
                         option.style.display = 'block';
+                        visibleOptions.push(option);
                         if (option.selected) hasValidSelection = true;
                     } else {
                         option.style.display = 'none';
                         if (option.selected) option.selected = false;
                     }
                 });
-                if (!hasValidSelection && skpdId) {
+
+                if (!hasValidSelection && visibleOptions.length === 1) {
+                    visibleOptions[0].selected = true;
+                    hasValidSelection = true;
+                }
+
+                if (!hasValidSelection && skpdId && visibleOptions.length === 0) {
                     rekeningSelect.value = "";
+                }
+            }
+
+            let lastExistingMonths = @json($existingMonths ?? []);
+
+            function applyExistingMonths(existingMonths) {
+                const bulanSelect = document.querySelector('select[name="periode_bulan"]');
+                if (!bulanSelect) return;
+                if (Array.isArray(existingMonths)) {
+                    lastExistingMonths = existingMonths.map(Number);
+                }
+
+                const allAlert = document.getElementById('all-months-rekon-alert');
+                let enabledCount = 0;
+
+                Array.from(bulanSelect.options).forEach(opt => {
+                    if (!opt.value) return; // skip placeholder
+                    const val = parseInt(opt.value, 10);
+                    const baseText = namaBulanList[val - 1] || opt.text.replace(/ \((Sudah Diinput|Sudah Ada Berita Rekon)\)/g, '');
+
+                    if (lastExistingMonths.includes(val)) {
+                        opt.disabled = true;
+                        opt.textContent = baseText + ' (Sudah Ada Berita Rekon)';
+                        opt.classList.add('text-slate-400', 'bg-slate-100');
+                    } else {
+                        opt.disabled = false;
+                        opt.textContent = baseText;
+                        opt.classList.remove('text-slate-400', 'bg-slate-100');
+                        enabledCount++;
+                    }
+                });
+
+                if (allAlert) {
+                    if (enabledCount === 0 && bulanSelect.options.length > 0 && bulanSelect.options[0].value !== '') {
+                        allAlert.classList.remove('hidden');
+                    } else {
+                        allAlert.classList.add('hidden');
+                    }
+                }
+
+                // Jika bulan yang saat ini dipilih ternyata disabled, otomatis ganti ke bulan pertama yang tidak disabled
+                const currentOpt = bulanSelect.selectedOptions[0];
+                if (!currentOpt || currentOpt.disabled) {
+                    const firstEnabled = Array.from(bulanSelect.options).find(opt => !opt.disabled && opt.value !== '');
+                    if (firstEnabled) {
+                        const oldVal = bulanSelect.value;
+                        bulanSelect.value = firstEnabled.value;
+                        if (oldVal !== firstEnabled.value) {
+                            fetchSaldoAwal();
+                        }
+                    } else {
+                        bulanSelect.value = '';
+                    }
                 }
             }
 
@@ -391,33 +474,15 @@
                 const skpdId = skpdSelect ? skpdSelect.value : '';
                 const rekeningId = rekeningSelect ? rekeningSelect.value : '';
                 const bulanSelect = document.querySelector('select[name="periode_bulan"]');
-                const periodeBulan = bulanSelect.value;
-                const periodeTahun = document.querySelector('input[name="periode_tahun"]').value;
+                const periodeBulan = bulanSelect ? bulanSelect.value : '';
+                const periodeTahun = document.querySelector('input[name="periode_tahun"]')?.value || '';
 
-                if (skpdId && rekeningId) {
+                if (skpdId && rekeningId && periodeTahun) {
                     fetch(`{{ route('transaksi.getSaldoAwal') }}?skpd_id=${skpdId}&rekening_id=${rekeningId}&periode_bulan=${periodeBulan || 1}&periode_tahun=${periodeTahun}`)
                         .then(response => response.json())
                         .then(data => {
-                            // Filter disabled months
                             if (data.existing_months) {
-                                Array.from(bulanSelect.options).forEach(opt => {
-                                    if (data.existing_months.includes(parseInt(opt.value))) {
-                                        opt.disabled = true;
-                                        opt.text = opt.text.replace(' (Sudah Diinput)', '') + ' (Sudah Diinput)';
-                                    } else {
-                                        opt.disabled = false;
-                                        opt.text = opt.text.replace(' (Sudah Diinput)', '');
-                                    }
-                                });
-                                // Jika bulan yang saat ini dipilih ternyata disabled, otomatis ganti ke bulan pertama yang tidak disabled
-                                if (bulanSelect.selectedOptions[0]?.disabled) {
-                                    const firstEnabled = Array.from(bulanSelect.options).find(opt => !opt.disabled);
-                                    if (firstEnabled) {
-                                        bulanSelect.value = firstEnabled.value;
-                                    } else {
-                                        bulanSelect.value = '';
-                                    }
-                                }
+                                applyExistingMonths(data.existing_months);
                             }
 
                             if(data.bku_saldo_akhir > 0 || data.bank_saldo_akhir > 0) {
@@ -472,6 +537,7 @@
                     opt.disabled = true;
                     opt.selected = true;
                     bulanSelect.appendChild(opt);
+                    applyExistingMonths(lastExistingMonths);
                     return;
                 }
 
@@ -488,6 +554,8 @@
                 if (!bulanSelect.value || parseInt(bulanSelect.value, 10) > maxMonth) {
                     bulanSelect.value = maxMonth;
                 }
+
+                applyExistingMonths(lastExistingMonths);
             }
 
             if (skpdSelect && skpdSelect.tagName === 'SELECT') {

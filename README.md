@@ -75,6 +75,11 @@
 * **Cutoff Khusus Tutup Buku Kas Akhir Tahun (Desember > Tgl 20):** Bulan Desember hanya dapat dipilih dan diinput apabila waktu server telah melewati tanggal 20 Desember (WITA), mencegah input dini rekonsiliasi kas sebelum seluruh transaksi SP2D akhir tahun dan penutupan buku anggaran selesai.
 * **Sinkronisasi Multi-Layer Interaktif:** Sinkronisasi instan via JavaScript pada form input saat tahun anggaran diubah (tahun lampau otomatis membuka seluruh 12 bulan), serta diperkuat validasi ketat lapis kedua pada backend FormRequest (`StoreTransaksiRequest` dan `UpdateTransaksiRequest`).
 
+### 11. 🛡️ Proteksi Duplikasi Berita Acara Rekonsiliasi (`v2.7.8`)
+* **Pencegahan Duplikasi Berita Rekon (Anti-Duplicate Guard):** Dropdown pilihan periode bulan pada form tambah dan edit transaksi secara otomatis menonaktifkan (`disabled`) dan menandai bulan yang sudah memiliki Berita Acara Rekonsiliasi aktif untuk rekening dan tahun bersangkutan dengan label `[Nama Bulan] (Sudah Ada Berita Rekon)`.
+* **Smart Auto-Switch Selection:** Jika bulan yang sedang dipilih ternyata dinonaktifkan karena telah ada Berita Rekon, antarmuka otomatis mengalihkan pilihan ke bulan aktif pertama berikutnya yang belum memiliki Berita Rekon, sekaligus memuat saldo kas awal bulan sebelumnya secara instan via API AJAX `/transaksi/get-saldo-awal`.
+* **Multi-Layer Backend Guard & Mode Edit:** Endpoint `/transaksi/get-saldo-awal` mendukung parameter `ignore_id` sehingga pada mode edit (`/transaksi/{id}/edit`), bulan dari transaksi yang sedang disunting tidak dinonaktifkan. Dilengkapi pesan validasi `periode_bulan.unique` yang eksplisit dan banner peringatan visual jika seluruh periode bulan telah tuntas direkonsiliasi.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
@@ -244,3 +249,8 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Pembatasan Periode Bulan Pelaporan (Reporting Period Guard):** Opsi periode bulan pada modul transaksi (`/transaksi`, input transaksi `/transaksi/create`, edit `/transaksi/{id}/edit`, dan antrean pemeriksaan) hanya memunculkan bulan yang sudah memasuki periode pelaporan (bulan berjalan dan bulan lampau). Bulan masa depan yang belum tiba tidak dapat dipilih.
   * **Aturan Khusus Tutup Buku Kas Akhir Tahun (Cutoff Desember > Tgl 20):** Bulan Desember hanya dapat dipilih dan diinput apabila waktu server telah melewati tanggal 20 Desember (WITA), mencegah input dini rekonsiliasi kas sebelum penerbitan SP2D / penutupan buku anggaran selesai.
   * **Proteksi Validasi Multi-Layer (Front-end & Back-end):** Dilengkapi sinkronisasi interaktif instan via JavaScript saat tahun anggaran diubah, serta validasi ketat lapis kedua pada backend FormRequest (`StoreTransaksiRequest` dan `UpdateTransaksiRequest`).
+* **v2.7.8** - **Proteksi Duplikasi Berita Acara Rekonsiliasi (Anti-Duplicate Guard):**
+  * **Pencegahan Duplikasi Berita Rekon:** Dropdown periode bulan pada form tambah dan edit transaksi secara otomatis menonaktifkan (`disabled`) dan memberi label `[Nama Bulan] (Sudah Ada Berita Rekon)` pada bulan yang sudah memiliki Berita Rekon untuk rekening dan tahun bersangkutan.
+  * **Smart Auto-Switch Selection:** Jika bulan terpilih ternyata dinonaktifkan, antarmuka otomatis memilih bulan aktif pertama berikutnya yang belum memiliki Berita Rekon dan memuat saldo kas awal secara otomatis.
+  * **Integrasi API Saldo Awal & Multi-layer Backend:** Endpoint `/transaksi/get-saldo-awal` mendukung parameter `ignore_id` untuk mode edit agar tidak mendisabel bulan transaksi aktif yang sedang disunting, pesan validasi `periode_bulan.unique` yang jelas, dan banner peringatan ramah pengguna jika seluruh periode bulan telah terselesaikan.
+

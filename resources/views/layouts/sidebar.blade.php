@@ -259,7 +259,7 @@
                             <div class="absolute left-[-1.15rem] top-1/2 -translate-y-1/2 w-3 h-[1px] bg-on-primary/20"></div>
                             <span class="text-label-sm font-label-sm group-hover:translate-x-1 transition-transform duration-300">Dokumentasi & Update Sistem</span>
                         </div>
-                        <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-500/30 text-rose-200 border border-rose-300/40">v2.7.7</span>
+                        <span class="px-1.5 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-rose-500/30 text-rose-200 border border-rose-300/40">v2.7.8</span>
                     </a>
                 </li>
                 <li>
@@ -293,7 +293,7 @@
             </button>
         </form>
         <div class="pt-4 mt-2 border-t border-on-primary/10 text-center">
-            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.7</p>
+            <p class="text-[10px] text-on-primary/40 font-mono tracking-wider">SiReKa v2.7.8</p>
         </div>
     </div>
 </nav>

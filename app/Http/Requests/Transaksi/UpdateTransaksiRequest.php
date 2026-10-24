@@ -38,7 +38,11 @@ class UpdateTransaksiRequest extends FormRequest
                     }
                 },
                 Rule::unique('transaksis')->where(function ($query) {
-                    return $query->where('skpd_id', $this->skpd_id)
+                    $skpdId = (\Illuminate\Support\Facades\Auth::user() && \Illuminate\Support\Facades\Auth::user()->role === 'operator') 
+                        ? \Illuminate\Support\Facades\Auth::user()->skpd_id 
+                        : ($this->skpd_id ?? \Illuminate\Support\Facades\Auth::user()->skpd_id);
+
+                    return $query->where('skpd_id', $skpdId)
                                  ->where('rekening_id', $this->rekening_id)
                                  ->where('periode_tahun', $this->periode_tahun)
                                  ->whereNull('deleted_at');
@@ -63,7 +67,7 @@ class UpdateTransaksiRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'periode_bulan.unique' => 'Data rekonsiliasi untuk Rekening, Bulan, dan Tahun ini sudah terdaftar dan aktif. Silakan gunakan periode lain.',
+            'periode_bulan.unique' => 'Bulan yang dipilih sudah memiliki Berita Acara Rekonsiliasi untuk rekening dan tahun ini, sehingga tidak dapat dipilih kembali.',
             'keterangan_selisih.required' => 'Penjelasan / Keterangan Selisih wajib diisi karena terdapat selisih Kas.',
             'keterangan_selisih.max' => 'Penjelasan / Keterangan Selisih maksimal 255 karakter.',
         ];

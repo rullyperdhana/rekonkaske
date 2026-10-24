@@ -20,10 +20,35 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.7',
+                'version' => 'v2.7.8',
                 'date' => '24 Oktober 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'rose',
+                'title' => 'Proteksi Duplikasi Berita Rekon (Bulan yang Sudah Ada Rekon Tidak Dapat Dipilih)',
+                'summary' => 'Penambahan pengecekan cerdas di form transaksi di mana periode bulan yang sudah memiliki Berita Acara Rekonsiliasi (BA Rekon) untuk rekening dan tahun bersangkutan otomatis dinonaktifkan (disabled) dan tidak dapat dipilih kembali, lengkap dengan auto-switch ke bulan berikutnya yang tersedia dan proteksi backend.',
+                'items' => [
+                    [
+                        'type' => 'business_rule',
+                        'label' => 'Aturan Rekon',
+                        'desc' => 'Pencegahan Duplikasi Berita Rekon: Dropdown periode bulan pada form tambah dan edit transaksi otomatis menonaktifkan (disabled) dan menandai bulan yang sudah memiliki rekonsiliasi aktif dengan label "(Sudah Ada Berita Rekon)".'
+                    ],
+                    [
+                        'type' => 'ux',
+                        'label' => 'Smart Auto-Switch',
+                        'desc' => 'Pemilihan Bulan Otomatis: Apabila bulan terpilih ternyata telah memiliki Berita Rekon, form secara otomatis beralih ke bulan aktif berikutnya yang belum diinput dan memuat saldo kas awal secara instan.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Multi-layer Guard',
+                        'desc' => 'Integrasi API & Validasi FormRequest: Endpoint /transaksi/get-saldo-awal mendukung parameter ignore_id untuk mode edit, pesan validasi FormRequest yang eksplisit, serta banner peringatan ramah pengguna bila seluruh bulan telah direkonsiliasi.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.7',
+                'date' => '24 Oktober 2026',
+                'badge' => 'STABLE',
+                'badge_color' => 'slate',
                 'title' => 'Pembatasan Periode Bulan Pelaporan & Cutoff Tutup Kas Desember (Modul Transaksi)',
                 'summary' => 'Penerapan aturan baru pemilihan periode bulan pada modul transaksi (/transaksi), di mana hanya bulan pelaporan yang aktif yang dapat dipilih dan bulan yang belum tiba tidak dapat dipilih, serta aturan khusus bulan Desember yang baru terbuka di atas tanggal 20.',
                 'items' => [
@@ -827,7 +852,7 @@ class DokumentasiController extends Controller
         // 6. Spesifikasi Arsitektur Sistem
         $systemSpecs = [
             'app_name' => config('app.name', 'SiReKa'),
-            'app_version' => 'v2.7.7 Enterprise',
+            'app_version' => 'v2.7.8 Enterprise',
             'release_date' => '24 Oktober 2026',
             'release_status' => 'Production Ready (Stable)',
             'php_version' => PHP_VERSION,
