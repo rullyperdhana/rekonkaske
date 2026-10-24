@@ -73,7 +73,7 @@
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
-* **PHP:** >= 8.2 (Laravel 11 Framework)
+* **PHP:** >= 8.3 / 8.4 (Laravel 13 Framework - Server Production aaPanel PHP 8.4 CLI)
 * **Database:** MySQL / MariaDB / SQLite
 * **Composer:** Versi 2.x
 * **PHP Extensions:** BCMath, Ctype, Fileinfo, JSON, Mbstring, OpenSSL, PDO, Tokenizer, XML, GD/Imagick, DOM, Zip, cURL.
@@ -225,6 +225,12 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
     * Penjelasan landasan Standar Pemeriksaan Keuangan Negara (SPKN) terkait perlakuan *Strict Read-Only & Zero-Interference* serta eksklusi fitur komunikasi WhatsApp bagi akun peran Auditor.
   * **Detektor Runtime & Git Status Real-time:**
     * Deteksi otomatis hash commit git aktif, branch target, pesan commit rilis, dan status mode pemeliharaan sistem.
+* **v2.7.5** - **Radar Keamanan Framework Laravel, Live CVE Scanner & Solusi Diagnostik CLI VPS aaPanel:**
+  * **Tampilan Transparan Versi Laravel & Header Metric Bar:** Menampilkan versi Laravel terpasang (`v13.33.0`) secara jelas di header dan metric banner `/pengaturan/dokumentasi`, memudahkan administrator memantau siklus hidup framework.
+  * **Live CVE Vulnerability Scanner (Audit Keamanan 1-Klik):** Tombol scan keamanan interaktif di browser yang langsung memindai seluruh paket dependensi terhadap basis data kerentanan global (*GitHub Advisories & Packagist CVE*) via Composer Audit API tanpa harus login SSH.
+  * **SOP Tanggap Darurat Penambalan Celah Keamanan (Security Hotfix):** Panduan standar 4-langkah mitigasi celah keamanan (Audit di VPS, Update Patch di Komputer Lokal, Testing Mandiri, dan Deploy aman ke VPS via `pull.sh`).
+  * **Solusi Diagnostik CLI Terminal VPS aaPanel:** Panduan penyelesaian kendala platform PHP 8.3 bawaan OS vs PHP 8.4 aaPanel saat menjalankan perintah `php artisan --version` di terminal SSH.
+  * **Radar Eksternal Celah Keamanan (Zero-Day Watch):** Tautan langsung ke basis data pengumuman resmi GitHub Security Advisories, Packagist Tracker, Changelog Rilis Laravel, dan MITRE CVE Directory.
 
 
 

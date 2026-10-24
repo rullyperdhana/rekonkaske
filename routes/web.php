@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
 
         // Dokumentasi & Log Update Fitur
         Route::get('pengaturan/dokumentasi', [\App\Http\Controllers\DokumentasiController::class, 'index'])->name('pengaturan.dokumentasi.index');
+        Route::post('pengaturan/dokumentasi/audit-keamanan', [\App\Http\Controllers\DokumentasiController::class, 'auditSecurity'])->name('pengaturan.dokumentasi.audit');
         Route::get('pengaturan/update-aplikasi', [\App\Http\Controllers\DokumentasiController::class, 'index'])->name('pengaturan.update.index');
 
         // Reset Status Transaksi ke Draft oleh Admin Pusat

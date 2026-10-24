@@ -37,6 +37,8 @@
         copiedTarget: null,
         checkedPreflight: [],
         checkedPostflight: [],
+        scanningSecurity: false,
+        securityAuditResult: null,
 
         copyCommand(text, targetId) {
             navigator.clipboard.writeText(text).then(() => {
@@ -59,6 +61,34 @@
         filterItem(type) {
             if (this.selectedCategory === 'all') return true;
             return type === this.selectedCategory;
+        },
+
+        runSecurityScan() {
+            this.scanningSecurity = true;
+            fetch('{{ route('pengaturan.dokumentasi.audit') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.securityAuditResult = data;
+            })
+            .catch(err => {
+                console.error('Audit scan error:', err);
+                this.securityAuditResult = {
+                    success: false,
+                    status: 'error',
+                    message: 'Gagal menjalankan audit live scan otomatis. Silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
+                    cli_command: '{{ $laravelInfo['composer_audit_cmd'] }}'
+                };
+            })
+            .finally(() => {
+                this.scanningSecurity = false;
+            });
         }
     }">
         <!-- Page Header -->
@@ -77,8 +107,15 @@
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2 shrink-0">
+                <button @click="activeTab = 'keamanan'"
+                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black font-mono bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/30 hover:bg-rose-500/20 transition-all cursor-pointer shadow-2xs group"
+                    title="Buka Radar Keamanan & Versi Laravel">
+                    <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span>
+                    <span class="material-symbols-outlined text-[15px] text-rose-600">shield_with_heart</span>
+                    <span>Laravel v{{ $laravelInfo['version'] }}</span>
+                </button>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-black font-mono bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     {{ $systemSpecs['app_version'] }}
                 </span>
                 <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary text-on-primary shadow-xs">
@@ -88,21 +125,40 @@
             </div>
         </div>
 
-        <!-- Metric Banner & Quick Deployment Status -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Stat 1: Rilis Versi -->
+        <!-- Metric Banner & Quick Deployment Status (5 Pillars) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <!-- Stat 1: Rilis Versi SiReKa -->
             <div class="bg-surface p-4 rounded-2xl border border-outline-variant/60 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl" data-weight="fill">verified</span>
                 </div>
-                <div>
-                    <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Rilis Versi Aktif</p>
-                    <p class="text-xl font-black text-on-surface">{{ $systemSpecs['app_version'] }}</p>
+                <div class="min-w-0">
+                    <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Rilis Versi SiReKa</p>
+                    <p class="text-xl font-black text-on-surface truncate">{{ $systemSpecs['app_version'] }}</p>
                     <p class="text-[11px] text-emerald-600 font-semibold mt-0.5">{{ $systemSpecs['release_date'] }}</p>
                 </div>
             </div>
 
-            <!-- Stat 2: Git Repository Sync -->
+            <!-- Stat 2: Versi Laravel Engine & Radar Keamanan -->
+            <div class="bg-surface p-4 rounded-2xl border border-outline-variant/60 shadow-xs flex items-center gap-4 cursor-pointer hover:border-rose-500/50 hover:shadow-md transition-all group"
+                @click="activeTab = 'keamanan'" title="Klik untuk membuka tab Versi Laravel & Radar Keamanan">
+                <div class="w-12 h-12 rounded-xl bg-rose-500/10 text-rose-600 group-hover:bg-rose-500/20 flex items-center justify-center shrink-0 transition-colors">
+                    <span class="material-symbols-outlined text-2xl" data-weight="fill">shield_with_heart</span>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Laravel Engine</p>
+                        <span class="px-1.5 py-0.2 rounded text-[9px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-700 dark:text-emerald-300">Aktif</span>
+                    </div>
+                    <p class="text-xl font-black text-on-surface truncate">v{{ $laravelInfo['version'] }}</p>
+                    <p class="text-[11px] text-rose-600 font-semibold truncate mt-0.5 flex items-center gap-1">
+                        <span>PHP {{ $laravelInfo['php_runtime'] }}</span>
+                        <span>&middot; Radar Keamanan</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stat 3: Git Repository Sync -->
             <div class="bg-surface p-4 rounded-2xl border border-outline-variant/60 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl" data-weight="fill">source_environment</span>
@@ -117,7 +173,7 @@
                 </div>
             </div>
 
-            <!-- Stat 3: Jalur Server VPS -->
+            <!-- Stat 4: Jalur Server VPS -->
             <div class="bg-surface p-4 rounded-2xl border border-outline-variant/60 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl" data-weight="fill">dns</span>
@@ -129,14 +185,14 @@
                 </div>
             </div>
 
-            <!-- Stat 4: Mode Sistem -->
+            <!-- Stat 5: Mode Sistem -->
             <div class="bg-surface p-4 rounded-2xl border border-outline-variant/60 shadow-xs flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center shrink-0">
                     <span class="material-symbols-outlined text-2xl" data-weight="fill">health_and_safety</span>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Status Produksi</p>
-                    <p class="text-sm font-black text-sky-700 dark:text-sky-300">{{ $systemSpecs['maintenance_mode'] }}</p>
+                    <p class="text-sm font-black text-sky-700 dark:text-sky-300 truncate">{{ $systemSpecs['maintenance_mode'] }}</p>
                     <a href="{{ route('pengaturan.maintenance.index') }}" class="text-[11px] text-primary hover:underline font-bold inline-flex items-center gap-0.5 mt-0.5">
                         <span>Kelola Maintenance</span>
                         <span class="material-symbols-outlined text-[13px]">arrow_forward</span>
@@ -155,6 +211,15 @@
                     class="px-4 py-2 rounded-lg text-xs md:text-sm flex items-center gap-2 transition-all shrink-0">
                     <span class="material-symbols-outlined text-[18px]">terminal</span>
                     <span>Panduan Update VPS (SOP)</span>
+                </button>
+
+                <!-- Tab Radar Keamanan & Versi Laravel -->
+                <button @click="activeTab = 'keamanan'"
+                    :class="activeTab === 'keamanan' ? 'bg-rose-600 text-white shadow-xs font-bold' : 'text-on-surface-variant hover:text-on-surface font-medium'"
+                    class="px-4 py-2 rounded-lg text-xs md:text-sm flex items-center gap-2 transition-all shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">shield_with_heart</span>
+                    <span>Versi Laravel & Radar Keamanan</span>
+                    <span class="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-white/20 text-white">v{{ $laravelInfo['version'] }}</span>
                 </button>
 
                 <!-- Tab Changelog -->
@@ -385,7 +450,381 @@
         </div>
 
         <!-- ========================================================== -->
-        <!-- TAB 2: LOG PEMBARUAN & RIWAYAT VERSI (CHANGELOG)           -->
+        <!-- TAB 2: VERSI LARAVEL & RADAR KEAMANAN SISTEM (CVE DEFENSE) -->
+        <!-- ========================================================== -->
+        <div x-show="activeTab === 'keamanan'" x-transition class="space-y-6">
+            <!-- 1. Hero Banner: Laravel Version & Live CVE Scanner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-rose-950 text-white p-6 md:p-8 shadow-xl border border-slate-800">
+                <div class="absolute -right-10 -bottom-10 w-72 h-72 bg-rose-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
+                    <div class="space-y-2.5 max-w-2xl">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                                RADAR KEAMANAN RESMI &middot; CVE DEFENSE
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                                {{ $laravelInfo['status'] }}
+                            </span>
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-sky-500/20 text-sky-400 border border-sky-500/30">
+                                aaPanel PHP 8.4
+                            </span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black tracking-tight text-white flex items-center gap-3">
+                            <span class="material-symbols-outlined text-rose-500 text-3xl">shield_with_heart</span>
+                            Laravel Framework Engine v{{ $laravelInfo['version'] }}
+                        </h2>
+                        <p class="text-xs md:text-sm text-slate-300 leading-relaxed">
+                            Sistem SiReKa ditenagai oleh <strong>Laravel v{{ $laravelInfo['version'] }}</strong> dengan perlindungan dependensi terenkripsi. Gunakan radar keamanan ini untuk mendeteksi potensi celah kerentanan (CVE), memeriksa kesesuaian platform server, serta mengikuti prosedur cepat tanggap penambalan (security patching).
+                        </p>
+                    </div>
+
+                    <div class="w-full lg:w-auto shrink-0 flex flex-col gap-2.5">
+                        <button @click="runSecurityScan()" :disabled="scanningSecurity"
+                            class="w-full lg:w-auto px-6 py-3.5 rounded-2xl bg-rose-600 hover:bg-rose-500 text-white font-black text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-rose-600/30 transition-all active:scale-95 disabled:opacity-60 cursor-pointer group">
+                            <span class="material-symbols-outlined text-xl" :class="scanningSecurity ? 'animate-spin' : 'group-hover:rotate-45 transition-transform'"
+                                x-text="scanningSecurity ? 'progress_activity' : 'verified_user'"></span>
+                            <span x-text="scanningSecurity ? 'Memindai Database CVE...' : 'Jalankan Audit Keamanan (Live Scan)'"></span>
+                        </button>
+                        <p class="text-[11px] text-center text-slate-400">Database: GitHub Advisories &middot; Packagist CVE</p>
+                    </div>
+                </div>
+
+                <!-- Live Audit Result Alert (Dynamic) -->
+                <div x-show="securityAuditResult" x-transition class="mt-6 pt-5 border-t border-slate-800">
+                    <div class="p-4 rounded-2xl border transition-all"
+                        :class="securityAuditResult?.status === 'vulnerable' ? 'bg-rose-500/15 border-rose-500/40 text-rose-200' : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'">
+                        <div class="flex items-start justify-between gap-3">
+                            <div class="flex items-start gap-3">
+                                <span class="material-symbols-outlined text-2xl mt-0.5 shrink-0"
+                                    :class="securityAuditResult?.status === 'vulnerable' ? 'text-rose-400' : 'text-emerald-400'"
+                                    x-text="securityAuditResult?.status === 'vulnerable' ? 'gpp_bad' : 'verified'"></span>
+                                <div class="space-y-1">
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-sm font-black tracking-wide uppercase"
+                                            :class="securityAuditResult?.status === 'vulnerable' ? 'text-rose-300' : 'text-emerald-300'"
+                                            x-text="securityAuditResult?.status === 'vulnerable' ? 'PERINGATAN: Ditemukan Celah Keamanan!' : 'STATUS: SISTEM TERPROTEKSI (0 Kerentanan)'"></p>
+                                        <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-black/40 text-slate-200"
+                                            x-text="'Scan: ' + (securityAuditResult?.scanned_at || 'WITA')"></span>
+                                    </div>
+                                    <p class="text-xs text-slate-300 leading-relaxed" x-text="securityAuditResult?.message"></p>
+                                </div>
+                            </div>
+                            <button @click="securityAuditResult = null" class="text-slate-400 hover:text-white p-1">
+                                <span class="material-symbols-outlined text-[18px]">close</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CLI Audit Command Banner -->
+                <div class="mt-6 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-black/40 rounded-2xl p-4 font-mono text-xs md:text-sm border border-white/5">
+                    <div class="flex items-center gap-3 overflow-x-auto">
+                        <span class="text-rose-400 select-none font-bold">root@sireke:~#</span>
+                        <span class="text-amber-300 font-bold tracking-wide">{{ $laravelInfo['composer_audit_cmd'] }}</span>
+                    </div>
+                    <button @click="copyCommand('{{ $laravelInfo['composer_audit_cmd'] }}', 'composer_audit_cmd')"
+                        class="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shrink-0">
+                        <span class="material-symbols-outlined text-[15px]" x-text="copiedTarget === 'composer_audit_cmd' ? 'check' : 'content_copy'"></span>
+                        <span x-text="copiedTarget === 'composer_audit_cmd' ? 'Tersalin' : 'Copy CLI Scan'"></span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2. Arsitektur 4 Pilar Keamanan Framework -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Pilar 1: Versi Framework Aktif -->
+                <div class="bg-surface rounded-3xl border border-outline-variant/70 p-5 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl" data-weight="fill">developer_board</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20 font-mono">
+                            {{ $laravelInfo['series'] }}
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Versi Framework</p>
+                        <p class="text-xl font-black text-on-surface">Laravel v{{ $laravelInfo['version'] }}</p>
+                        <p class="text-xs text-on-surface-variant mt-1">Syarat PHP: <code class="font-mono text-primary font-bold">{{ $laravelInfo['php_min_req'] }}</code></p>
+                    </div>
+                </div>
+
+                <!-- Pilar 2: Lingkungan PHP Server -->
+                <div class="bg-surface rounded-3xl border border-outline-variant/70 p-5 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl" data-weight="fill">terminal</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-sky-500/10 text-sky-700 dark:text-sky-300 border border-sky-500/20 font-mono">
+                            PHP 8.4 aaPanel
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Runtime PHP VPS</p>
+                        <p class="text-xl font-black text-on-surface">v{{ $laravelInfo['php_runtime'] }}</p>
+                        <p class="text-xs text-emerald-600 font-semibold mt-1">Jalur: <code class="font-mono text-[11px]">{{ $laravelInfo['vps_php_bin'] }}</code></p>
+                    </div>
+                </div>
+
+                <!-- Pilar 3: Siklus Pemeliharaan & Patching -->
+                <div class="bg-surface rounded-3xl border border-outline-variant/70 p-5 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl" data-weight="fill">verified</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
+                            STABLE
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Status Pemeliharaan</p>
+                        <p class="text-base font-black text-emerald-700 dark:text-emerald-300">Active Support</p>
+                        <p class="text-xs text-on-surface-variant mt-1">Menerima patch bug & security updates berkala</p>
+                    </div>
+                </div>
+
+                <!-- Pilar 4: Alat Audit Otomatis -->
+                <div class="bg-surface rounded-3xl border border-outline-variant/70 p-5 shadow-xs space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
+                            <span class="material-symbols-outlined text-2xl" data-weight="fill">policy</span>
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">
+                            COMPOSER 2
+                        </span>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-on-surface-variant uppercase tracking-wider">Deteksi Kerentanan</p>
+                        <p class="text-base font-black text-on-surface">Composer Audit</p>
+                        <p class="text-xs text-on-surface-variant mt-1">Sinkronisasi database CVE & GitHub Security</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Kotak Solusi Error Terminal SSH VPS (Penyebab & Solusi CLI PHP 8.3 vs 8.4) -->
+            <div class="bg-amber-500/10 border-2 border-amber-500/30 rounded-3xl p-6 md:p-8 space-y-4">
+                <div class="flex items-start gap-4">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                        <span class="material-symbols-outlined text-3xl">build_circle</span>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="text-lg font-black text-on-surface flex items-center gap-2">
+                            <span>Solusi Khusus: Mengatasi Error <code>php artisan --version</code> di Terminal VPS aaPanel</span>
+                        </h3>
+                        <p class="text-xs md:text-sm text-on-surface-variant leading-relaxed">
+                            Jika Anda mengetik <code class="bg-surface-container px-1.5 py-0.5 rounded font-mono text-rose-600">php artisan --version</code> di terminal SSH server dan muncul pesan:
+                            <em class="font-mono text-xs block my-1.5 bg-black/70 text-amber-300 p-2 rounded-xl">"Composer detected issues in your platform: Your Composer dependencies require a PHP version '>= 8.4.1'. You are running 8.3.6."</em>
+                            Hal itu terjadi karena sistem terminal Linux secara bawaan masih memanggil <strong>PHP 8.3.6</strong> milik OS, bukan <strong>PHP 8.4</strong> milik aaPanel tempat SiReKa berjalan.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                    <!-- Solusi 1: Panggil Jalur Penuh PHP 8.4 -->
+                    <div class="bg-surface rounded-2xl p-4 border border-outline-variant/60 shadow-xs space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 text-xs flex items-center justify-center font-bold">1</span>
+                                <span>Cara Cepat (Panggil Binary PHP 8.4)</span>
+                            </span>
+                            <span class="text-[10px] uppercase font-bold text-emerald-600 bg-emerald-500/10 px-2 py-0.5 rounded">Instan</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Jalankan perintah dengan menyebutkan jalur lengkap PHP 8.4 aaPanel:</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface-container-highest p-2.5 rounded-xl font-mono text-xs">
+                            <span class="text-on-surface truncate">{{ $laravelInfo['vps_cli_check_cmd'] }}</span>
+                            <button @click="copyCommand('{{ $laravelInfo['vps_cli_check_cmd'] }}', 'cli_check')"
+                                class="px-2 py-1 rounded bg-primary text-on-primary text-[11px] font-bold shrink-0">
+                                <span x-text="copiedTarget === 'cli_check' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Solusi 2: Buat Symlink Permanen -->
+                    <div class="bg-surface rounded-2xl p-4 border border-outline-variant/60 shadow-xs space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+                                <span class="w-5 h-5 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center font-bold">2</span>
+                                <span>Cara Permanen (Symlink Terminal Global)</span>
+                            </span>
+                            <span class="text-[10px] uppercase font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">Rekomendasi</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Arahkan symlink sistem global agar kata kunci <code>php</code> otomatis menggunakan PHP 8.4:</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface-container-highest p-2.5 rounded-xl font-mono text-xs">
+                            <span class="text-on-surface truncate">{{ $laravelInfo['vps_symlink_cmd'] }}</span>
+                            <button @click="copyCommand('{{ $laravelInfo['vps_symlink_cmd'] }}', 'symlink_check')"
+                                class="px-2 py-1 rounded bg-primary text-on-primary text-[11px] font-bold shrink-0">
+                                <span x-text="copiedTarget === 'symlink_check' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. SOP Cepat Tanggap Penambalan Keamanan (Security Hotfix Playbook) -->
+            <div class="bg-surface rounded-3xl border border-outline-variant/70 p-6 md:p-8 shadow-xs space-y-6">
+                <div class="border-b border-outline-variant/40 pb-4">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-rose-600 text-2xl" data-weight="fill">security</span>
+                        <h3 class="text-lg md:text-xl font-black text-on-surface">Prosedur Cepat Tanggap Penambalan Celah Keamanan (Security Patching SOP)</h3>
+                    </div>
+                    <p class="text-xs md:text-sm text-on-surface-variant mt-1">
+                        Pedoman 4 langkah standar jika tim keamanan siber atau komunitas Laravel merilis peringatan kerentanan baru (CVE).
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Step 1 -->
+                    <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-rose-600 flex items-center gap-1.5 uppercase tracking-wider">
+                                <span class="w-5 h-5 rounded-full bg-rose-500/20 text-rose-700 text-xs flex items-center justify-center font-bold">Langkah 1</span>
+                                <span>Deteksi Keterdampakan di Server VPS</span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Jalankan audit dependensi di VPS untuk memastikan apakah SiReKa terdampak kerentanan:</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface p-2.5 rounded-xl font-mono text-xs border border-outline-variant/60">
+                            <span class="text-on-surface truncate">{{ $laravelInfo['composer_audit_cmd'] }}</span>
+                            <button @click="copyCommand('{{ $laravelInfo['composer_audit_cmd'] }}', 'sop_audit')"
+                                class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-[11px] font-bold shrink-0 transition-colors">
+                                <span x-text="copiedTarget === 'sop_audit' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-primary flex items-center gap-1.5 uppercase tracking-wider">
+                                <span class="w-5 h-5 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center font-bold">Langkah 2</span>
+                                <span>Unduh Patch di Komputer Lokal</span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Update patch keamanan framework di laptop pengembang (jangan update langsung di VPS):</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface p-2.5 rounded-xl font-mono text-xs border border-outline-variant/60">
+                            <span class="text-on-surface truncate">{{ $laravelInfo['local_update_cmd'] }}</span>
+                            <button @click="copyCommand('{{ $laravelInfo['local_update_cmd'] }}', 'sop_update')"
+                                class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-[11px] font-bold shrink-0 transition-colors">
+                                <span x-text="copiedTarget === 'sop_update' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-amber-600 flex items-center gap-1.5 uppercase tracking-wider">
+                                <span class="w-5 h-5 rounded-full bg-amber-500/20 text-amber-700 text-xs flex items-center justify-center font-bold">Langkah 3</span>
+                                <span>Uji Coba Mandiri (Local Testing)</span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Jalankan unit testing di komputer lokal untuk memastikan tidak ada fitur yang patah:</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface p-2.5 rounded-xl font-mono text-xs border border-outline-variant/60">
+                            <span class="text-on-surface truncate">php artisan test</span>
+                            <button @click="copyCommand('php artisan test', 'sop_test')"
+                                class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-[11px] font-bold shrink-0 transition-colors">
+                                <span x-text="copiedTarget === 'sop_test' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/50 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-black text-emerald-600 flex items-center gap-1.5 uppercase tracking-wider">
+                                <span class="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-700 text-xs flex items-center justify-center font-bold">Langkah 4</span>
+                                <span>Deploy Patch ke Server Produksi (VPS)</span>
+                            </span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant">Push commit ke GitHub, lalu eksekusi script penarik otomatis di VPS aaPanel:</p>
+                        <div class="flex items-center justify-between gap-2 bg-surface p-2.5 rounded-xl font-mono text-xs border border-outline-variant/60">
+                            <span class="text-on-surface truncate">{{ $laravelInfo['vps_pull_cmd'] }}</span>
+                            <button @click="copyCommand('{{ $laravelInfo['vps_pull_cmd'] }}', 'sop_pull')"
+                                class="px-2 py-1 rounded bg-surface-container-high hover:bg-primary hover:text-on-primary text-[11px] font-bold shrink-0 transition-colors">
+                                <span x-text="copiedTarget === 'sop_pull' ? 'Disalin' : 'Salin'"></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. Radar Eksternal: Tautan Resmi Pemantauan Celah Keamanan -->
+            <div class="space-y-4">
+                <div>
+                    <h3 class="text-lg md:text-xl font-black text-on-surface">Pusat Radar Eksternal & Informasi Celah Keamanan (Zero-Day Watch)</h3>
+                    <p class="text-xs text-on-surface-variant">Tautan langsung ke basis data pengumuman kerentanan resmi dunia</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Link 1: GitHub Laravel Security -->
+                    <a href="{{ $laravelInfo['advisory_url'] }}" target="_blank" rel="noopener noreferrer"
+                        class="bg-surface rounded-2xl border border-outline-variant/70 p-5 shadow-xs hover:border-rose-500/50 hover:shadow-md transition-all flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">security</span>
+                            </div>
+                            <h4 class="text-sm font-black text-on-surface group-hover:text-rose-600 transition-colors">GitHub Security Advisories</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Papan rilis resmi celah keamanan yang ditemukan dan ditambal oleh tim pengembang inti Laravel.</p>
+                        </div>
+                        <div class="pt-4 mt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs font-bold text-rose-600">
+                            <span>Buka GitHub Advisories</span>
+                            <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">open_in_new</span>
+                        </div>
+                    </a>
+
+                    <!-- Link 2: Packagist Security Tracker -->
+                    <a href="{{ $laravelInfo['packagist_url'] }}" target="_blank" rel="noopener noreferrer"
+                        class="bg-surface rounded-2xl border border-outline-variant/70 p-5 shadow-xs hover:border-primary/50 hover:shadow-md transition-all flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">inventory_2</span>
+                            </div>
+                            <h4 class="text-sm font-black text-on-surface group-hover:text-primary transition-colors">Packagist Package Tracker</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Basis data repositori Composer untuk melacak riwayat versi dan status ketergantungan library.</p>
+                        </div>
+                        <div class="pt-4 mt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs font-bold text-primary">
+                            <span>Buka Packagist</span>
+                            <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">open_in_new</span>
+                        </div>
+                    </a>
+
+                    <!-- Link 3: Laravel Official Releases -->
+                    <a href="{{ $laravelInfo['release_notes_url'] }}" target="_blank" rel="noopener noreferrer"
+                        class="bg-surface rounded-2xl border border-outline-variant/70 p-5 shadow-xs hover:border-emerald-500/50 hover:shadow-md transition-all flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">release_alert</span>
+                            </div>
+                            <h4 class="text-sm font-black text-on-surface group-hover:text-emerald-600 transition-colors">Laravel Release Changelog</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Catatan pembaruan berkala setiap rilis patch versi baru beserta daftar bug yang diperbaiki.</p>
+                        </div>
+                        <div class="pt-4 mt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs font-bold text-emerald-600">
+                            <span>Buka Riwayat Rilis</span>
+                            <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">open_in_new</span>
+                        </div>
+                    </a>
+
+                    <!-- Link 4: MITRE CVE Directory -->
+                    <a href="{{ $laravelInfo['cve_tracker_url'] }}" target="_blank" rel="noopener noreferrer"
+                        class="bg-surface rounded-2xl border border-outline-variant/70 p-5 shadow-xs hover:border-purple-500/50 hover:shadow-md transition-all flex flex-col justify-between group">
+                        <div class="space-y-2">
+                            <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-600 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-xl">shield</span>
+                            </div>
+                            <h4 class="text-sm font-black text-on-surface group-hover:text-purple-600 transition-colors">MITRE CVE Global Directory</h4>
+                            <p class="text-xs text-on-surface-variant leading-relaxed">Katalog resmi identifikasi kerentanan keamanan siber dunia standar NIST / US-CERT.</p>
+                        </div>
+                        <div class="pt-4 mt-3 border-t border-outline-variant/30 flex items-center justify-between text-xs font-bold text-purple-600">
+                            <span>Buka Direktori CVE</span>
+                            <span class="material-symbols-outlined text-[16px] group-hover:translate-x-1 transition-transform">open_in_new</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- TAB 3: LOG PEMBARUAN & RIWAYAT VERSI (CHANGELOG)           -->
         <!-- ========================================================== -->
         <div x-show="activeTab === 'changelog'" x-transition class="space-y-6">
             <!-- Category Filter Buttons -->
