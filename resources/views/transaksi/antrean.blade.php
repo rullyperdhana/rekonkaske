@@ -134,7 +134,7 @@
                 <label class="block font-label-sm text-xs font-bold text-on-surface mb-1">Filter Bulan</label>
                 <select name="bulan" class="w-full h-10 border border-outline-variant rounded-xl px-3 bg-surface focus:ring-2 focus:ring-primary focus:border-primary outline-none font-body-md text-on-surface text-sm">
                     <option value="">Semua Bulan</option>
-                    @for($i = 1; $i <= 12; $i++)
+                    @for($i = 1; $i <= ($maxAllowedMonth ?? 12); $i++)
                         <option value="{{ $i }}" {{ request('bulan') == $i ? 'selected' : '' }}>
                             {{ $namaBulan[$i - 1] }}
                         </option>

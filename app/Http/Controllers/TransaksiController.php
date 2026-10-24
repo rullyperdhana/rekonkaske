@@ -83,7 +83,8 @@ class TransaksiController extends Controller
         }
 
         $transaksis = $query->paginate(10)->withQueryString();
-        return view('transaksi.index', compact('transaksis'));
+        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        return view('transaksi.index', compact('transaksis', 'tahunAktif', 'maxAllowedMonth'));
     }
 
     public function create()
@@ -97,7 +98,9 @@ class TransaksiController extends Controller
         }
         $rekenings = $rekeningQuery->orderBy('nama')->get();
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
-        return view('transaksi.create', compact('skpds', 'rekenings', 'pengaturanGlobal'));
+        $tahunAktif = session('tahun_login') ?? date('Y');
+        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        return view('transaksi.create', compact('skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth'));
     }
 
     public function store(StoreTransaksiRequest $request)
@@ -167,7 +170,9 @@ class TransaksiController extends Controller
         }
         $rekenings = $rekeningQuery->orderBy('nama')->get();
         $pengaturanGlobal = \App\Models\Pengaturan::whereNull('skpd_id')->first() ?? \App\Models\Pengaturan::first();
-        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings', 'pengaturanGlobal'));
+        $tahunAktif = $transaksi->periode_tahun ?? (session('tahun_login') ?? date('Y'));
+        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        return view('transaksi.edit', compact('transaksi', 'skpds', 'rekenings', 'pengaturanGlobal', 'tahunAktif', 'maxAllowedMonth'));
     }
 
     public function update(UpdateTransaksiRequest $request, Transaksi $transaksi)
@@ -450,7 +455,8 @@ class TransaksiController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        return view('transaksi.antrean', compact('transaksis', 'namaBulan', 'tahunAktif', 'counts', 'activeTab'));
+        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        return view('transaksi.antrean', compact('transaksis', 'namaBulan', 'tahunAktif', 'counts', 'activeTab', 'maxAllowedMonth'));
     }
 
     public function pemeriksaanForm(Transaksi $transaksi)

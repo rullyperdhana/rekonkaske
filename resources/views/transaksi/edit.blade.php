@@ -59,15 +59,23 @@
                     </div>
                     <div>
                         <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Periode Bulan</label>
-                        <select name="periode_bulan" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-                            @for($i=1; $i<=12; $i++)
-                                <option value="{{ $i }}" {{ old('periode_bulan', $transaksi->periode_bulan) == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
+                        <select id="periode_bulan" name="periode_bulan" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                            @php
+                                $maxBulanEdit = max($maxAllowedMonth ?? 12, (int)$transaksi->periode_bulan);
+                                $selectedBulanEdit = old('periode_bulan', $transaksi->periode_bulan);
+                            @endphp
+                            @for($i=1; $i<=$maxBulanEdit; $i++)
+                                <option value="{{ $i }}" {{ $selectedBulanEdit == $i ? 'selected' : '' }}>{{ $namaBulan[$i - 1] }}</option>
                             @endfor
                         </select>
+                        <p class="text-[11px] text-on-surface-variant mt-1 flex items-center gap-1">
+                            <span class="material-symbols-outlined text-[13px] text-amber-600">info</span>
+                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20).</span>
+                        </p>
                     </div>
                     <div>
                         <label class="block text-label-sm font-label-sm text-on-surface font-semibold mb-1">Periode Tahun</label>
-                        <input type="number" name="periode_tahun" value="{{ old('periode_tahun', $transaksi->periode_tahun) }}" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                        <input type="number" id="periode_tahun" name="periode_tahun" value="{{ old('periode_tahun', $transaksi->periode_tahun) }}" required class="w-full h-10 px-3 rounded border border-outline-variant bg-surface text-body-md focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
                     </div>
                 </div>
 
@@ -378,6 +386,73 @@
                 skpdSelect.addEventListener('change', filterRekenings);
             }
             filterRekenings();
+
+            const namaBulanList = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const originalBulan = {{ (int)$transaksi->periode_bulan }};
+            const originalTahun = {{ (int)$transaksi->periode_tahun }};
+
+            function getMaxAllowedMonthForYear(yearVal) {
+                const now = new Date();
+                const currYear = now.getFullYear();
+                const currMonth = now.getMonth() + 1;
+                const currDay = now.getDate();
+
+                const t = parseInt(yearVal, 10);
+                if (isNaN(t)) return 12;
+
+                if (t < currYear) return 12;
+                if (t > currYear) return 0;
+
+                if (currMonth < 12) {
+                    return currMonth;
+                }
+                return (currDay > 20) ? 12 : 11;
+            }
+
+            function syncPeriodeBulanOptions() {
+                const tahunInput = document.querySelector('input[name="periode_tahun"]');
+                const bulanSelect = document.querySelector('select[name="periode_bulan"]');
+                if (!tahunInput || !bulanSelect) return;
+
+                let maxMonth = getMaxAllowedMonthForYear(tahunInput.value);
+                const t = parseInt(tahunInput.value, 10);
+                if (t === originalTahun && originalBulan > maxMonth) {
+                    maxMonth = originalBulan;
+                }
+
+                const prevVal = parseInt(bulanSelect.value, 10);
+
+                bulanSelect.innerHTML = '';
+                if (maxMonth < 1) {
+                    const opt = document.createElement('option');
+                    opt.value = '';
+                    opt.textContent = '-- Belum Ada Periode Pelaporan --';
+                    opt.disabled = true;
+                    opt.selected = true;
+                    bulanSelect.appendChild(opt);
+                    return;
+                }
+
+                for (let i = 1; i <= maxMonth; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = namaBulanList[i - 1];
+                    if (prevVal === i || (!prevVal && i === originalBulan)) {
+                        opt.selected = true;
+                    }
+                    bulanSelect.appendChild(opt);
+                }
+
+                if (!bulanSelect.value || parseInt(bulanSelect.value, 10) > maxMonth) {
+                    bulanSelect.value = maxMonth;
+                }
+            }
+
+            const tahunInputEl = document.querySelector('input[name="periode_tahun"]');
+            if (tahunInputEl) {
+                tahunInputEl.addEventListener('input', syncPeriodeBulanOptions);
+                tahunInputEl.addEventListener('change', syncPeriodeBulanOptions);
+            }
         });
     </script>
 </x-app-layout>

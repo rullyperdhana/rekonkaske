@@ -20,10 +20,35 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.6',
+                'version' => 'v2.7.7',
                 'date' => '24 Oktober 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'rose',
+                'title' => 'Pembatasan Periode Bulan Pelaporan & Cutoff Tutup Kas Desember (Modul Transaksi)',
+                'summary' => 'Penerapan aturan baru pemilihan periode bulan pada modul transaksi (/transaksi), di mana hanya bulan pelaporan yang aktif yang dapat dipilih dan bulan yang belum tiba tidak dapat dipilih, serta aturan khusus bulan Desember yang baru terbuka di atas tanggal 20.',
+                'items' => [
+                    [
+                        'type' => 'business_rule',
+                        'label' => 'Aturan Bisnis',
+                        'desc' => 'Pembatasan Bulan Pelaporan: Pilihan periode bulan pada form input dan edit transaksi hanya menampilkan bulan yang sudah memasuki periode pelaporan. Bulan yang belum tiba tidak dapat dipilih.'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Cutoff Desember',
+                        'desc' => 'Aturan Khusus Tutup Buku Kas: Bulan Desember hanya dapat dipilih dan diinput apabila waktu server telah melewati tanggal 20 Desember (WITA), mencegah input dini sebelum penutupan anggaran selesai.'
+                    ],
+                    [
+                        'type' => 'new',
+                        'label' => 'Multi-layer Guard',
+                        'desc' => 'Validasi Dinamis Front-end & Back-end: Sinkronisasi instan dropdown periode bulan saat tahun diubah, filter cerdas pada tabel data transaksi, serta validasi backend FormRequest.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.6',
+                'date' => '24 Oktober 2026',
+                'badge' => 'STABLE',
+                'badge_color' => 'slate',
                 'title' => 'Penyempurnaan Live CVE Scanner (Semver Matching & Zero False-Positive Engine)',
                 'summary' => 'Peningkatan akurasi Live CVE Scanner dengan integrasi Composer Semver matching untuk mengeliminasi alarm palsu pada pemindaian Packagist Security Advisories API serta penambahan kartu visual rincian advisory.',
                 'items' => [
@@ -802,7 +827,7 @@ class DokumentasiController extends Controller
         // 6. Spesifikasi Arsitektur Sistem
         $systemSpecs = [
             'app_name' => config('app.name', 'SiReKa'),
-            'app_version' => 'v2.7.6 Enterprise',
+            'app_version' => 'v2.7.7 Enterprise',
             'release_date' => '24 Oktober 2026',
             'release_status' => 'Production Ready (Stable)',
             'php_version' => PHP_VERSION,
