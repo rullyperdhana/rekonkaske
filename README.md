@@ -70,6 +70,11 @@
 * **Matriks Status Seluruh SKPD se-Kabupaten Tapin:** Grid visual interaktif yang memetakan seluruh instansi dengan kode warna status (Klop, Draft, Selisih, Belum Lapor), pencarian instan, dan tautan langsung WhatsApp ke Bendahara SKPD.
 * **Cetak Ringkasan Eksekutif 1-Halaman (`/eksekutif/cetak-brief`):** Dokumen formal berkop resmi Pemerintah Kabupaten Tapin siap cetak/unduh PDF untuk bahan rapat pimpinan (Rapim) mingguan.
 
+### 10. 📅 Aturan Ketat Periode Bulan Pelaporan & Cutoff Tutup Kas Desember (`v2.7.7`)
+* **Pembatasan Periode Bulan Pelaporan (Reporting Period Guard):** Form input dan filter transaksi rekonsiliasi kas (`/transaksi`, `/transaksi/create`, `/transaksi/{id}/edit`, dan antrean pemeriksaan) secara cerdas hanya menampilkan bulan-bulan yang sudah memasuki masa pelaporan (bulan berjalan dan bulan lampau). Bulan masa depan yang belum tiba (*future months*) dicegah dari pemilihan untuk menjaga integritas data akuntansi.
+* **Cutoff Khusus Tutup Buku Kas Akhir Tahun (Desember > Tgl 20):** Bulan Desember hanya dapat dipilih dan diinput apabila waktu server telah melewati tanggal 20 Desember (WITA), mencegah input dini rekonsiliasi kas sebelum seluruh transaksi SP2D akhir tahun dan penutupan buku anggaran selesai.
+* **Sinkronisasi Multi-Layer Interaktif:** Sinkronisasi instan via JavaScript pada form input saat tahun anggaran diubah (tahun lampau otomatis membuka seluruh 12 bulan), serta diperkuat validasi ketat lapis kedua pada backend FormRequest (`StoreTransaksiRequest` dan `UpdateTransaksiRequest`).
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
