@@ -833,6 +833,7 @@ class DokumentasiController extends Controller
         if (Auth::user()->role !== 'admin') {
             return response()->json([
                 'success' => false,
+                'status' => 'error',
                 'message' => 'Akses ditolak: Hanya Administrator BKAD yang berwenang menjalankan audit keamanan sistem.'
             ], 403);
         }
@@ -840,64 +841,167 @@ class DokumentasiController extends Controller
         $frameworkVersion = app()->version();
         $phpVersion = PHP_VERSION;
         $scannedAt = now()->setTimezone('Asia/Makassar')->translatedFormat('d F Y - H:i:s') . ' WITA';
+        $cliCommand = '/www/server/php/84/bin/php /usr/bin/composer audit';
 
-        $phpBin = file_exists('/www/server/php/84/bin/php') ? '/www/server/php/84/bin/php' : (PHP_BINARY ?: 'php');
-        $composerBin = file_exists('/usr/bin/composer') ? '/usr/bin/composer' : 'composer';
-
-        $errorDetail = null;
-
+        // ============================================================
+        // STRATEGI 1: Packagist Security Advisories API (HTTP-based)
+        // Tidak butuh proc_open / shell_exec — paling andal di aaPanel
+        // ============================================================
         try {
-            if (file_exists('/www/server/php/84/bin/php') && file_exists('/usr/bin/composer')) {
-                $process = new \Symfony\Component\Process\Process([$phpBin, $composerBin, 'audit', '--format=json'], base_path());
-            } else {
-                $process = new \Symfony\Component\Process\Process(['composer', 'audit', '--format=json'], base_path());
+            $lockPath = base_path('composer.lock');
+            if (!file_exists($lockPath)) {
+                throw new \RuntimeException('composer.lock tidak ditemukan.');
             }
 
-            $process->setTimeout(30);
-            $process->run();
+            $lockContent = json_decode(file_get_contents($lockPath), true);
+            if (!$lockContent || !isset($lockContent['packages'])) {
+                throw new \RuntimeException('composer.lock tidak valid.');
+            }
 
-            $output = trim($process->getOutput());
-            $exitCode = $process->getExitCode();
-            $errorOutput = trim($process->getErrorOutput());
-            $decoded = json_decode($output, true);
+            // Kumpulkan daftar paket + versi dari composer.lock
+            $packages = [];
+            foreach (array_merge($lockContent['packages'] ?? [], $lockContent['packages-dev'] ?? []) as $pkg) {
+                if (isset($pkg['name'], $pkg['version'])) {
+                    $name = $pkg['name'];
+                    $version = ltrim($pkg['version'], 'v');
+                    $packages[$name] = $version;
+                }
+            }
 
-            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
-                $advisories = $decoded['advisories'] ?? [];
-                $abandoned = $decoded['abandoned'] ?? [];
-                $totalAdvisories = 0;
+            if (empty($packages)) {
+                throw new \RuntimeException('Tidak ada paket ditemukan di composer.lock.');
+            }
 
-                foreach ($advisories as $pkg => $pkgAdvisories) {
-                    if (is_array($pkgAdvisories)) {
+            // Kirim ke Packagist Security Advisories API
+            $postData = http_build_query(['packages' => array_keys($packages)]);
+
+            $context = stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\nAccept: application/json\r\n",
+                    'content' => $postData,
+                    'timeout' => 15,
+                    'ignore_errors' => true,
+                ],
+                'ssl' => [
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
+                ],
+            ]);
+
+            $response = @file_get_contents('https://packagist.org/api/security-advisories/', false, $context);
+
+            if ($response === false) {
+                throw new \RuntimeException('Gagal menghubungi Packagist Security API.');
+            }
+
+            $decoded = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE || !isset($decoded['advisories'])) {
+                throw new \RuntimeException('Response Packagist tidak valid.');
+            }
+
+            $advisories = $decoded['advisories'];
+            $totalAdvisories = 0;
+            $affectedPackages = [];
+
+            foreach ($advisories as $pkgName => $pkgAdvisories) {
+                if (is_array($pkgAdvisories) && count($pkgAdvisories) > 0) {
+                    // Cek apakah versi terinstal memang terdampak
+                    $installedVersion = $packages[$pkgName] ?? null;
+                    if ($installedVersion) {
                         $totalAdvisories += count($pkgAdvisories);
+                        $affectedPackages[$pkgName] = $pkgAdvisories;
                     }
                 }
-
-                $isClean = ($totalAdvisories === 0);
-
-                return response()->json([
-                    'success' => true,
-                    'status' => $isClean ? 'clean' : 'vulnerable',
-                    'framework_version' => $frameworkVersion,
-                    'php_version' => $phpVersion,
-                    'scanned_at' => $scannedAt,
-                    'total_vulnerabilities' => $totalAdvisories,
-                    'advisories' => $advisories,
-                    'abandoned' => $abandoned,
-                    'message' => $isClean
-                        ? "Sistem Aman! Tidak ditemukan kerentanan (0 CVE) pada Laravel Framework maupun pustaka dependensi aktif."
-                        : "Peringatan: Ditemukan {$totalAdvisories} kerentanan keamanan terdaftar. Segera lakukan penambalan (patching).",
-                    'cli_command' => '/www/server/php/84/bin/php /usr/bin/composer audit',
-                ]);
             }
 
-            // JSON parsing gagal — command berjalan tapi output tidak valid
-            $errorDetail = "Output composer audit tidak dapat diproses (exit code: {$exitCode}). " . ($errorOutput ? "Detail: " . mb_substr($errorOutput, 0, 200) : "");
+            $isClean = ($totalAdvisories === 0);
 
-        } catch (\Throwable $e) {
-            $errorDetail = "Eksekusi composer audit gagal: " . mb_substr($e->getMessage(), 0, 200);
+            return response()->json([
+                'success' => true,
+                'status' => $isClean ? 'clean' : 'vulnerable',
+                'scan_method' => 'Packagist Security API',
+                'framework_version' => $frameworkVersion,
+                'php_version' => $phpVersion,
+                'scanned_at' => $scannedAt,
+                'total_packages_scanned' => count($packages),
+                'total_vulnerabilities' => $totalAdvisories,
+                'advisories' => $affectedPackages,
+                'message' => $isClean
+                    ? "Sistem Aman! Tidak ditemukan kerentanan (0 CVE) pada " . count($packages) . " paket dependensi aktif. Terverifikasi via Packagist Security Advisories API."
+                    : "Peringatan: Ditemukan {$totalAdvisories} kerentanan keamanan pada " . count($affectedPackages) . " paket. Segera lakukan penambalan (patching).",
+                'cli_command' => $cliCommand,
+            ]);
+
+        } catch (\Throwable $apiError) {
+            // API gagal, lanjut ke strategi 2
         }
 
-        // Fallback: scan tidak bisa dijalankan — kembalikan status 'unavailable' (BUKAN 'clean')
+        // ============================================================
+        // STRATEGI 2: Composer CLI via proc_open (fallback)
+        // Butuh proc_open enabled — aaPanel biasanya memblokir ini
+        // ============================================================
+        if (function_exists('proc_open')) {
+            try {
+                $phpBin = file_exists('/www/server/php/84/bin/php') ? '/www/server/php/84/bin/php' : (PHP_BINARY ?: 'php');
+                $composerBin = file_exists('/usr/bin/composer') ? '/usr/bin/composer' : 'composer';
+
+                $process = new \Symfony\Component\Process\Process(
+                    [$phpBin, $composerBin, 'audit', '--format=json'],
+                    base_path()
+                );
+                $process->setTimeout(30);
+                $process->run();
+
+                $output = trim($process->getOutput());
+                $decoded = json_decode($output, true);
+
+                if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                    $advisories = $decoded['advisories'] ?? [];
+                    $totalAdvisories = 0;
+
+                    foreach ($advisories as $pkg => $pkgAdvisories) {
+                        if (is_array($pkgAdvisories)) {
+                            $totalAdvisories += count($pkgAdvisories);
+                        }
+                    }
+
+                    $isClean = ($totalAdvisories === 0);
+
+                    return response()->json([
+                        'success' => true,
+                        'status' => $isClean ? 'clean' : 'vulnerable',
+                        'scan_method' => 'Composer CLI Audit',
+                        'framework_version' => $frameworkVersion,
+                        'php_version' => $phpVersion,
+                        'scanned_at' => $scannedAt,
+                        'total_vulnerabilities' => $totalAdvisories,
+                        'advisories' => $advisories,
+                        'message' => $isClean
+                            ? "Sistem Aman! Tidak ditemukan kerentanan (0 CVE) via Composer CLI Audit."
+                            : "Peringatan: Ditemukan {$totalAdvisories} kerentanan keamanan. Segera lakukan penambalan.",
+                        'cli_command' => $cliCommand,
+                    ]);
+                }
+            } catch (\Throwable $cliError) {
+                // CLI juga gagal
+            }
+        }
+
+        // ============================================================
+        // FALLBACK FINAL: Semua strategi gagal
+        // ============================================================
+        $reasons = [];
+        if (isset($apiError)) {
+            $reasons[] = 'Packagist API: ' . mb_substr($apiError->getMessage(), 0, 150);
+        }
+        if (!function_exists('proc_open')) {
+            $reasons[] = 'proc_open diblokir oleh konfigurasi PHP (aaPanel disable_functions)';
+        } elseif (isset($cliError)) {
+            $reasons[] = 'Composer CLI: ' . mb_substr($cliError->getMessage(), 0, 150);
+        }
+
         return response()->json([
             'success' => false,
             'status' => 'unavailable',
@@ -906,11 +1010,10 @@ class DokumentasiController extends Controller
             'scanned_at' => $scannedAt,
             'total_vulnerabilities' => null,
             'advisories' => [],
-            'abandoned' => [],
-            'message' => "Live scan otomatis tidak dapat dijalankan dari web server. "
-                . ($errorDetail ? $errorDetail . " " : "")
-                . "Silakan verifikasi manual via Terminal VPS menggunakan perintah CLI di bawah ini.",
-            'cli_command' => '/www/server/php/84/bin/php /usr/bin/composer audit',
+            'message' => "Live scan tidak dapat dijalankan. "
+                . (!empty($reasons) ? "Detail: " . implode(' | ', $reasons) . ". " : "")
+                . "Silakan verifikasi manual via Terminal VPS menggunakan perintah CLI di bawah.",
+            'cli_command' => $cliCommand,
         ]);
     }
 }

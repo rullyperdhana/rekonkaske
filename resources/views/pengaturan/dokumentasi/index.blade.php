@@ -65,24 +65,41 @@
 
         runSecurityScan() {
             this.scanningSecurity = true;
+            this.securityAuditResult = null;
             fetch('{{ route('pengaturan.dokumentasi.audit') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
                     'Accept': 'application/json'
                 }
             })
-            .then(res => res.json())
-            .then(data => {
-                this.securityAuditResult = data;
+            .then(res => {
+                if (!res.ok && res.status === 419) {
+                    throw new Error('Sesi CSRF telah kedaluwarsa. Silakan muat ulang halaman (Ctrl+Shift+R) lalu coba lagi.');
+                }
+                return res.text();
+            })
+            .then(text => {
+                try {
+                    const data = JSON.parse(text);
+                    this.securityAuditResult = data;
+                } catch (parseErr) {
+                    console.error('Audit response bukan JSON:', text.substring(0, 300));
+                    this.securityAuditResult = {
+                        success: false,
+                        status: 'unavailable',
+                        message: 'Server merespons dengan format tidak valid (bukan JSON). Kemungkinan terjadi error 500 pada server. Silakan verifikasi manual via Terminal VPS.',
+                        cli_command: '{{ $laravelInfo['composer_audit_cmd'] }}'
+                    };
+                }
             })
             .catch(err => {
                 console.error('Audit scan error:', err);
                 this.securityAuditResult = {
                     success: false,
                     status: 'unavailable',
-                    message: 'Gagal menghubungi server untuk menjalankan audit live scan otomatis. Periksa koneksi jaringan atau silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
+                    message: err.message || 'Gagal menghubungi server. Periksa koneksi jaringan atau silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
                     cli_command: '{{ $laravelInfo['composer_audit_cmd'] }}'
                 };
             })
@@ -518,6 +535,10 @@
                                             x-text="securityAuditResult?.status === 'vulnerable' ? 'PERINGATAN: Ditemukan Celah Keamanan!' : (securityAuditResult?.status === 'clean' ? 'STATUS: SISTEM TERPROTEKSI (0 Kerentanan)' : 'SCAN TIDAK TERSEDIA — Verifikasi Manual Diperlukan')"></p>
                                         <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-black/40 text-slate-200"
                                             x-text="'Scan: ' + (securityAuditResult?.scanned_at || 'WITA')"></span>
+                                        <span x-show="securityAuditResult?.scan_method" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-indigo-500/30 text-indigo-200"
+                                            x-text="securityAuditResult?.scan_method"></span>
+                                        <span x-show="securityAuditResult?.total_packages_scanned" class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-black/30 text-slate-300"
+                                            x-text="securityAuditResult?.total_packages_scanned + ' paket'"></span>
                                     </div>
                                     <p class="text-xs text-slate-300 leading-relaxed" x-text="securityAuditResult?.message"></p>
                                 </div>
