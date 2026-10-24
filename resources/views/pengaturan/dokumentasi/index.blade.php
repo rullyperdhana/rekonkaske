@@ -81,8 +81,8 @@
                 console.error('Audit scan error:', err);
                 this.securityAuditResult = {
                     success: false,
-                    status: 'error',
-                    message: 'Gagal menjalankan audit live scan otomatis. Silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
+                    status: 'unavailable',
+                    message: 'Gagal menghubungi server untuk menjalankan audit live scan otomatis. Periksa koneksi jaringan atau silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
                     cli_command: '{{ $laravelInfo['composer_audit_cmd'] }}'
                 };
             })
@@ -493,17 +493,29 @@
                 <!-- Live Audit Result Alert (Dynamic) -->
                 <div x-show="securityAuditResult" x-transition class="mt-6 pt-5 border-t border-slate-800">
                     <div class="p-4 rounded-2xl border transition-all"
-                        :class="securityAuditResult?.status === 'vulnerable' ? 'bg-rose-500/15 border-rose-500/40 text-rose-200' : 'bg-emerald-500/15 border-emerald-500/40 text-emerald-200'">
+                        :class="{
+                            'bg-rose-500/15 border-rose-500/40 text-rose-200': securityAuditResult?.status === 'vulnerable',
+                            'bg-emerald-500/15 border-emerald-500/40 text-emerald-200': securityAuditResult?.status === 'clean',
+                            'bg-amber-500/15 border-amber-500/40 text-amber-200': securityAuditResult?.status !== 'vulnerable' && securityAuditResult?.status !== 'clean'
+                        }">
                         <div class="flex items-start justify-between gap-3">
                             <div class="flex items-start gap-3">
                                 <span class="material-symbols-outlined text-2xl mt-0.5 shrink-0"
-                                    :class="securityAuditResult?.status === 'vulnerable' ? 'text-rose-400' : 'text-emerald-400'"
-                                    x-text="securityAuditResult?.status === 'vulnerable' ? 'gpp_bad' : 'verified'"></span>
+                                    :class="{
+                                        'text-rose-400': securityAuditResult?.status === 'vulnerable',
+                                        'text-emerald-400': securityAuditResult?.status === 'clean',
+                                        'text-amber-400': securityAuditResult?.status !== 'vulnerable' && securityAuditResult?.status !== 'clean'
+                                    }"
+                                    x-text="securityAuditResult?.status === 'vulnerable' ? 'gpp_bad' : (securityAuditResult?.status === 'clean' ? 'verified_user' : 'warning')"></span>
                                 <div class="space-y-1">
                                     <div class="flex items-center gap-2">
                                         <p class="text-sm font-black tracking-wide uppercase"
-                                            :class="securityAuditResult?.status === 'vulnerable' ? 'text-rose-300' : 'text-emerald-300'"
-                                            x-text="securityAuditResult?.status === 'vulnerable' ? 'PERINGATAN: Ditemukan Celah Keamanan!' : 'STATUS: SISTEM TERPROTEKSI (0 Kerentanan)'"></p>
+                                            :class="{
+                                                'text-rose-300': securityAuditResult?.status === 'vulnerable',
+                                                'text-emerald-300': securityAuditResult?.status === 'clean',
+                                                'text-amber-300': securityAuditResult?.status !== 'vulnerable' && securityAuditResult?.status !== 'clean'
+                                            }"
+                                            x-text="securityAuditResult?.status === 'vulnerable' ? 'PERINGATAN: Ditemukan Celah Keamanan!' : (securityAuditResult?.status === 'clean' ? 'STATUS: SISTEM TERPROTEKSI (0 Kerentanan)' : 'SCAN TIDAK TERSEDIA — Verifikasi Manual Diperlukan')"></p>
                                         <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-black/40 text-slate-200"
                                             x-text="'Scan: ' + (securityAuditResult?.scanned_at || 'WITA')"></span>
                                     </div>

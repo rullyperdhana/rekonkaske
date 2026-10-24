@@ -844,6 +844,8 @@ class DokumentasiController extends Controller
         $phpBin = file_exists('/www/server/php/84/bin/php') ? '/www/server/php/84/bin/php' : (PHP_BINARY ?: 'php');
         $composerBin = file_exists('/usr/bin/composer') ? '/usr/bin/composer' : 'composer';
 
+        $errorDetail = null;
+
         try {
             if (file_exists('/www/server/php/84/bin/php') && file_exists('/usr/bin/composer')) {
                 $process = new \Symfony\Component\Process\Process([$phpBin, $composerBin, 'audit', '--format=json'], base_path());
@@ -855,6 +857,8 @@ class DokumentasiController extends Controller
             $process->run();
 
             $output = trim($process->getOutput());
+            $exitCode = $process->getExitCode();
+            $errorOutput = trim($process->getErrorOutput());
             $decoded = json_decode($output, true);
 
             if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
@@ -885,20 +889,27 @@ class DokumentasiController extends Controller
                     'cli_command' => '/www/server/php/84/bin/php /usr/bin/composer audit',
                 ]);
             }
+
+            // JSON parsing gagal — command berjalan tapi output tidak valid
+            $errorDetail = "Output composer audit tidak dapat diproses (exit code: {$exitCode}). " . ($errorOutput ? "Detail: " . mb_substr($errorOutput, 0, 200) : "");
+
         } catch (\Throwable $e) {
-            // Tangkap graceful fallback
+            $errorDetail = "Eksekusi composer audit gagal: " . mb_substr($e->getMessage(), 0, 200);
         }
 
+        // Fallback: scan tidak bisa dijalankan — kembalikan status 'unavailable' (BUKAN 'clean')
         return response()->json([
-            'success' => true,
-            'status' => 'clean',
+            'success' => false,
+            'status' => 'unavailable',
             'framework_version' => $frameworkVersion,
             'php_version' => $phpVersion,
             'scanned_at' => $scannedAt,
-            'total_vulnerabilities' => 0,
+            'total_vulnerabilities' => null,
             'advisories' => [],
             'abandoned' => [],
-            'message' => "Scan otomatis selesai. Tidak ada kerentanan lokal yang teridentifikasi. Jalankan perintah CLI di server untuk verifikasi penuh.",
+            'message' => "Live scan otomatis tidak dapat dijalankan dari web server. "
+                . ($errorDetail ? $errorDetail . " " : "")
+                . "Silakan verifikasi manual via Terminal VPS menggunakan perintah CLI di bawah ini.",
             'cli_command' => '/www/server/php/84/bin/php /usr/bin/composer audit',
         ]);
     }
