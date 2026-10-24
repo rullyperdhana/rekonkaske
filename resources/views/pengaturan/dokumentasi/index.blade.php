@@ -66,11 +66,13 @@
         runSecurityScan() {
             this.scanningSecurity = true;
             this.securityAuditResult = null;
+            const csrfMeta = document.querySelector('meta[name=csrf-token]');
+            const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '{{ csrf_token() }}';
             fetch('{{ route('pengaturan.dokumentasi.audit') }}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || '{{ csrf_token() }}',
+                    'X-CSRF-TOKEN': csrfToken,
                     'Accept': 'application/json'
                 }
             })
@@ -99,7 +101,7 @@
                 this.securityAuditResult = {
                     success: false,
                     status: 'unavailable',
-                    message: err.message || 'Gagal menghubungi server. Periksa koneksi jaringan atau silakan verifikasi manual via Terminal VPS menggunakan perintah composer audit.',
+                    message: err.message || 'Gagal menghubungi server. Periksa koneksi jaringan atau silakan verifikasi manual via Terminal VPS.',
                     cli_command: '{{ $laravelInfo['composer_audit_cmd'] }}'
                 };
             })
