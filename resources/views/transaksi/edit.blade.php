@@ -75,7 +75,7 @@
                         </select>
                         <p class="text-[11px] text-on-surface-variant mt-1 flex items-center gap-1">
                             <span class="material-symbols-outlined text-[13px] text-amber-600">info</span>
-                            <span>Hanya bulan pelaporan yang dapat dipilih (khusus Desember dibuka di atas tanggal 20). Bulan yang sudah memiliki Berita Rekon tidak dapat dipilih kembali.</span>
+                            <span>Hanya bulan pelaporan yang telah selesai yang dapat dipilih (bulan berjalan baru aktif dilaporkan pada bulan berikutnya, khusus Desember dibuka di atas tanggal 20). Bulan yang sudah memiliki Berita Rekon tidak dapat dipilih kembali.</span>
                         </p>
                     </div>
                     <div>
@@ -459,7 +459,7 @@
                 if (t > currYear) return 0;
 
                 if (currMonth < 12) {
-                    return currMonth;
+                    return Math.max(0, currMonth - 1);
                 }
                 return (currDay > 20) ? 12 : 11;
             }

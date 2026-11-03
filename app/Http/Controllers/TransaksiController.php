@@ -90,7 +90,8 @@ class TransaksiController extends Controller
         }
 
         $transaksis = $query->paginate(10)->withQueryString();
-        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        $isOperator = Auth::user()->role === 'operator';
+        $maxAllowedMonth = $isOperator ? Transaksi::getMaxAllowedMonth((int)$tahunAktif) : 12;
         return view('transaksi.index', compact('transaksis', 'tahunAktif', 'maxAllowedMonth'));
     }
 
@@ -487,7 +488,7 @@ class TransaksiController extends Controller
             ->paginate(12)
             ->withQueryString();
 
-        $maxAllowedMonth = Transaksi::getMaxAllowedMonth((int)$tahunAktif);
+        $maxAllowedMonth = 12;
         return view('transaksi.antrean', compact('transaksis', 'namaBulan', 'tahunAktif', 'counts', 'activeTab', 'maxAllowedMonth'));
     }
 

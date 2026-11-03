@@ -20,10 +20,35 @@ class DokumentasiController extends Controller
         // 1. Data Riwayat Pembaruan (Changelog)
         $changelogs = [
             [
-                'version' => 'v2.7.8',
-                'date' => '24 Oktober 2026',
+                'version' => 'v2.7.9',
+                'date' => '3 November 2026',
                 'badge' => 'VERSI AKTIF',
                 'badge_color' => 'rose',
+                'title' => 'Penyesuaian Siklus Periode Pelaporan Operator (Bulan Berjalan Baru Aktif di Bulan Berikutnya & Cutoff Desember > 20)',
+                'summary' => 'Penyempurnaan aturan bisnis periode pelaporan untuk level Operator SKPD. Apabila login di suatu bulan (contoh: November), maka yang aktif hanya bulan pelaporan yang telah selesai (Oktober) serta bulan-bulan lampau yang belum ada laporan. Bulan berjalan (November) baru aktif apabila login di bulan berikutnya (Desember), terkecuali untuk pelaporan Desember yang tetap bisa diinput pada bulan Desember di atas tanggal 20.',
+                'items' => [
+                    [
+                        'type' => 'new',
+                        'label' => 'Aturan Bisnis',
+                        'desc' => 'Pada bulan N (misal: November), periode pelaporan yang aktif maksimal adalah bulan N-1 (Oktober) dan bulan lampau yang belum ada laporan. Bulan N (November) baru aktif saat login di bulan N+1 (Desember).'
+                    ],
+                    [
+                        'type' => 'security',
+                        'label' => 'Cutoff Tutup Buku',
+                        'desc' => 'Pengecualian khusus untuk pelaporan bulan Desember yang tetap dapat diakses dan diinput di bulan Desember apabila waktu server telah melewati tanggal 20 Desember (> 20 Desember WITA).'
+                    ],
+                    [
+                        'type' => 'improvement',
+                        'label' => 'Diferensiasi Role',
+                        'desc' => 'Filter dropdown pada halaman data transaksi (/transaksi) secara pintar menyesuaikan: dibatasi sesuai bulan pelaporan aktif untuk Operator SKPD, dan menampilkan seluruh 12 bulan penuh bagi Administrator, Konsolidator, dan Auditor.'
+                    ]
+                ]
+            ],
+            [
+                'version' => 'v2.7.8',
+                'date' => '24 Oktober 2026',
+                'badge' => 'STABLE',
+                'badge_color' => 'slate',
                 'title' => 'Proteksi Duplikasi Berita Rekon (Bulan yang Sudah Ada Rekon Tidak Dapat Dipilih)',
                 'summary' => 'Penambahan pengecekan cerdas di form transaksi di mana periode bulan yang sudah memiliki Berita Acara Rekonsiliasi (BA Rekon) untuk rekening dan tahun bersangkutan otomatis dinonaktifkan (disabled) dan tidak dapat dipilih kembali, lengkap dengan auto-switch ke bulan berikutnya yang tersedia dan proteksi backend.',
                 'items' => [

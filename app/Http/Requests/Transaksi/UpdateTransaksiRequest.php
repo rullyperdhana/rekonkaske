@@ -28,13 +28,16 @@ class UpdateTransaksiRequest extends FormRequest
                 'min:1',
                 'max:12',
                 function ($attribute, $value, $fail) use ($transaksiId) {
-                    $existing = $this->route('transaksi');
-                    $tahun = (int) ($this->periode_tahun ?? (session('tahun_login') ?? date('Y')));
-                    if ($existing && $existing->periode_bulan == $value && $existing->periode_tahun == $tahun) {
-                        return;
-                    }
-                    if (!\App\Models\Transaksi::isMonthAllowed((int) $value, $tahun)) {
-                        $fail('Periode bulan ' . \App\Models\Transaksi::getNamaBulan((int) $value) . ' belum dapat dipilih karena belum memasuki periode pelaporan. Khusus bulan Desember baru dapat dipilih di atas tanggal 20.');
+                    $user = \Illuminate\Support\Facades\Auth::user();
+                    if (!$user || $user->role === 'operator') {
+                        $existing = $this->route('transaksi');
+                        $tahun = (int) ($this->periode_tahun ?? (session('tahun_login') ?? date('Y')));
+                        if ($existing && $existing->periode_bulan == $value && $existing->periode_tahun == $tahun) {
+                            return;
+                        }
+                        if (!\App\Models\Transaksi::isMonthAllowed((int) $value, $tahun)) {
+                            $fail('Periode bulan ' . \App\Models\Transaksi::getNamaBulan((int) $value) . ' belum dapat dipilih karena belum memasuki periode pelaporan. Bulan berjalan baru dapat dilaporkan pada bulan berikutnya (khusus bulan Desember dibuka di atas tanggal 20).');
+                        }
                     }
                 },
                 Rule::unique('transaksis')->where(function ($query) {

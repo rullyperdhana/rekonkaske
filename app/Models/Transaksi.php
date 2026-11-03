@@ -53,13 +53,18 @@ class Transaksi extends Model
     }
 
     /**
-     * Hitung batas bulan maksimum yang diizinkan untuk dilaporkan.
-     * Aturan:
+     * Hitung batas bulan maksimum yang diizinkan untuk dilaporkan oleh Operator SKPD.
+     * Aturan Bisnis Pelaporan Kas & Rekon:
      * - Tahun lampau (< tahun berjalan): Semua bulan (1..12) diizinkan.
      * - Tahun mendatang (> tahun berjalan): Belum ada bulan yang diizinkan (0).
      * - Tahun berjalan (== tahun berjalan):
-     *   * Bulan 1 s/d 11 diizinkan hingga bulan berjalan saat ini.
-     *   * Bulan 12 (Desember) hanya bisa keluar jika sudah di atas tanggal 20 Desember.
+     *   * Bulan 1 s/d 11: Hanya bulan pelaporan yang sudah selesai yang aktif (currMonth - 1).
+     *     Contoh: Jika saat ini bulan November (11), maka yang aktif adalah pelaporan bulan Oktober (10)
+     *     dan bulan-bulan di bawah Oktober yang belum ada laporan. Bulan November baru aktif apabila login di bulan Desember (12).
+     *     Untuk bulan Januari (1), belum ada bulan yang selesai pada tahun berjalan (0).
+     *   * Bulan 12 (Desember):
+     *     - Tanggal 1 s/d 20: Hanya sampai bulan November (11) yang aktif.
+     *     - Di atas tanggal 20 (> 20 Desember): Bulan Desember (12) baru dibuka dan aktif untuk penutupan kas akhir tahun.
      */
     public static function getMaxAllowedMonth(?int $tahun = null, ?\DateTimeInterface $now = null): int
     {
@@ -79,7 +84,7 @@ class Transaksi extends Model
         }
 
         if ($currMonth < 12) {
-            return $currMonth;
+            return max(0, $currMonth - 1);
         }
 
         // Bulan Desember: Hanya diizinkan jika sudah di atas tanggal 20

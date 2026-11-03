@@ -80,6 +80,12 @@
 * **Smart Auto-Switch Selection:** Jika bulan yang sedang dipilih ternyata dinonaktifkan karena telah ada Berita Rekon, antarmuka otomatis mengalihkan pilihan ke bulan aktif pertama berikutnya yang belum memiliki Berita Rekon, sekaligus memuat saldo kas awal bulan sebelumnya secara instan via API AJAX `/transaksi/get-saldo-awal`.
 * **Multi-Layer Backend Guard & Mode Edit:** Endpoint `/transaksi/get-saldo-awal` mendukung parameter `ignore_id` sehingga pada mode edit (`/transaksi/{id}/edit`), bulan dari transaksi yang sedang disunting tidak dinonaktifkan. Dilengkapi pesan validasi `periode_bulan.unique` yang eksplisit dan banner peringatan visual jika seluruh periode bulan telah tuntas direkonsiliasi.
 
+### 12. 🔄 Penyesuaian Siklus Periode Pelaporan Operator (`v2.7.9`)
+* **Siklus Pelaporan Bulan Lampau:** Sesuai prinsip akuntansi rekonsiliasi kas, pada bulan berjalan $N$ (contoh: November), periode pelaporan yang aktif untuk Operator SKPD maksimal adalah bulan $N-1$ (Oktober) serta bulan-bulan lampau yang belum ada laporan rekonsiliasi.
+* **Bulan Berjalan Baru Aktif di Bulan Berikutnya:** Bulan $N$ (November) baru terbuka dan aktif apabila login di bulan $N+1$ (Desember).
+* **Pengecualian Cutoff Akhir Tahun:** Pelaporan bulan Desember tetap dapat diinput pada bulan Desember apabila server telah melewati tanggal 20 Desember (> 20 Desember WITA).
+* **Fleksibilitas Pengawasan Administrator:** Dropdown filter data transaksi pada `/transaksi` dibatasi sesuai siklus aktif bagi Operator, namun tetap membuka 12 bulan penuh bagi Administrator, Konsolidator, dan Auditor guna kelancaran pengawasan.
+
 ---
 
 ## 🛠️ Persyaratan Sistem (Server Production)
@@ -253,4 +259,8 @@ Untuk menjalin integritas database selama proses pembaruan dari repositori GitHu
   * **Pencegahan Duplikasi Berita Rekon:** Dropdown periode bulan pada form tambah dan edit transaksi secara otomatis menonaktifkan (`disabled`) dan memberi label `[Nama Bulan] (Sudah Ada Berita Rekon)` pada bulan yang sudah memiliki Berita Rekon untuk rekening dan tahun bersangkutan.
   * **Smart Auto-Switch Selection:** Jika bulan terpilih ternyata dinonaktifkan, antarmuka otomatis memilih bulan aktif pertama berikutnya yang belum memiliki Berita Rekon dan memuat saldo kas awal secara otomatis.
   * **Integrasi API Saldo Awal & Multi-layer Backend:** Endpoint `/transaksi/get-saldo-awal` mendukung parameter `ignore_id` untuk mode edit agar tidak mendisabel bulan transaksi aktif yang sedang disunting, pesan validasi `periode_bulan.unique` yang jelas, dan banner peringatan ramah pengguna jika seluruh periode bulan telah terselesaikan.
+* **v2.7.9** - **Penyesuaian Siklus Periode Pelaporan Operator & Pengecualian Cutoff Desember:**
+  * **Siklus Pelaporan Bulan Berjalan & Lampau:** Penyesuaian aturan periode pelaporan untuk level Operator SKPD. Pada bulan berjalan (misal: November), yang aktif adalah pelaporan bulan lampau yang telah selesai (Oktober) beserta bulan-bulan sebelumnya yang belum ada laporan. Bulan berjalan (November) baru aktif apabila login di bulan berikutnya (Desember).
+  * **Pengecualian Tutup Kas Desember:** Pelaporan bulan Desember tetap dapat diakses dan diinput di bulan Desember apabila telah melewati tanggal 20 Desember (> 20 Desember WITA).
+  * **Preservasi Hak Akses Administrator & Pengawas:** Filter dropdown pada halaman utama transaksi (`/transaksi`) tetap menampilkan seluruh 12 bulan bagi Admin, Konsolidator, dan Auditor guna memudahkan audit dan pemeriksaan.
 
